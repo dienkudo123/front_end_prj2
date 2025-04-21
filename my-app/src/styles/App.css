@@ -1,0 +1,14 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    background-color: black; /* Đảm bảo nền toàn trang là màu đen */
+    color: white;
+    overflow-x: hidden;
+}
+
+.app-container {
+    margin-left: 250px;
+    min-height: 100vh; /* Đảm bảo toàn bộ trang chiếm đủ chiều cao */
+    background-color: black;
+    display: flex;
+}

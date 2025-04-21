@@ -1,8 +1,11 @@
+import Navbar from "../components/Navbar"; // Import Navbar
+import "../styles/SearchPage.css"; // Import CSS riêng cho SearchPage
+
 export default function SearchPage() {
     return (
         <div className="search-page">
-            <h2>Search</h2>
-            <input type="text" placeholder="Tìm kiếm..." />
+            <Navbar /> {/* Navbar ở trên cùng */}
+
         </div>
     );
 }

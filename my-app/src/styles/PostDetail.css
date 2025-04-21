@@ -1,0 +1,114 @@
+/* Toàn bộ trang */
+.post-detail {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+}
+
+/* Ảnh bài viết chiếm 50% màn hình */
+.post-detail-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    padding: 20px;
+}
+
+.post-detail-image img {
+    height: 90%; /* Cố định chiều cao ảnh */
+    width: auto;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Phần bình luận chiếm 50% màn hình */
+.post-detail-comments {
+    flex: 1;
+    padding: 20px;
+    color: white;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Đẩy bình luận lên trên */
+    gap: 10px;
+    position: relative;
+}
+
+/* Danh sách bình luận bắt đầu từ trên */
+.comment-list {
+    list-style: none;
+    padding: 0;
+    max-height: calc(90vh - 60px); /* Trừ khoảng trống ô nhập */
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column-reverse; /* Bình luận mới nhất ở trên */
+}
+
+/* Một bình luận */
+.comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #444;
+}
+
+/* Avatar bình luận */
+.comment-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Nội dung bình luận */
+.comment-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tên tài khoản */
+.comment-username {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Nội dung bình luận */
+.comment-text {
+    font-size: 14px;
+    color: #ccc;
+}
+
+/* Ô nhập bình luận cố định dưới đáy */
+.comment-input {
+    display: flex;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background-color: black;
+}
+
+/* Ô nhập văn bản */
+.comment-input input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: black;
+    color: white;
+}
+
+/* Nút gửi */
+.comment-input button {
+    padding: 10px 15px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

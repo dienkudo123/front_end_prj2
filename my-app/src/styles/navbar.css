@@ -1,0 +1,20 @@
+.navbar {
+    padding: 15px 20px;
+    background: #000;
+    display: flex;
+    justify-content: center;
+}
+
+.navbar-search {
+    background: #262626;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #fff;
+    width: 250px;
+    outline: none;
+}
+
+.navbar-search::placeholder {
+    color: #bbb;
+}

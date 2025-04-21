@@ -1,0 +1,63 @@
+.post-container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    background-color: black;
+}
+
+.post-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-form label {
+    margin: 10px 0 5px;
+    font-weight: bold;
+    color: white; /* Nhãn màu trắng */
+}
+
+.post-form textarea {
+    padding: 10px;
+    resize: vertical;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    background-color: black;
+    color: white;
+}
+
+.post-form input[type="file"] {
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: black;
+    color: white;
+}
+
+.post-form select {
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: black;
+    color: white;
+}
+
+.post-form button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #1e1e1e;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.post-form button:hover {
+    background-color: #005fa3;
+}

@@ -1,0 +1,29 @@
+.trending-page {
+    text-align: center;
+    padding: 20px;
+    color: white;
+    margin-left: 250px;
+}
+
+.trending-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.trending-tag {
+    background: #262626;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.trending-tag:hover {
+    background: #444;
+}

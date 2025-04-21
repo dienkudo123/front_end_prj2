@@ -1,0 +1,50 @@
+.sidebar {
+    width: 250px;
+    background: #000;
+    height: 100vh;
+    padding: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    border-right: 1px solid #262626;
+}
+
+.sidebar-title {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sidebar-link:hover {
+    background: #262626;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center; /* Căn giữa icon và chữ theo chiều dọc */
+    gap: 12px; /* Tạo khoảng cách giữa icon và chữ */
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+    width: 100%; /* Đảm bảo phần tử full chiều ngang */
+}
+
+.sidebar-icon {
+    font-size: 22px; /* Giữ icon lớn hơn chữ một chút */
+    display: flex;
+    align-items: center; /* Đảm bảo icon nằm giữa theo chiều dọc */
+}
+
+.sidebar-text {
+    flex: 1; /* Đảm bảo chữ căn chỉnh đều với icon */
+}
+

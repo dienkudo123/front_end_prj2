@@ -1,0 +1,86 @@
+/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Layout chung */
+body {
+    background-color: #fafafa;
+}
+
+.container {
+    display: flex;
+    max-width: 900px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: white;
+    border-bottom: 1px solid #dbdbdb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar input {
+    border: 1px solid #dbdbdb;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Feed */
+.feed {
+    flex: 2;
+}
+
+.post {
+    background: white;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.post img {
+    width: 100%;
+    display: block;
+}
+
+.post-content {
+    padding: 10px;
+}
+
+.post .username {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Sidebar */
+.sidebar {
+    flex: 1;
+    background: white;
+    padding: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 5px;
+    height: fit-content;
+}
+
+.sidebar h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 5px;
+}

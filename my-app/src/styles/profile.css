@@ -1,11 +1,12 @@
 .profile-page {
-    max-width: 800px;
+    width: auto;
     margin: auto;
     padding: 20px;
     background-color: #000; /* Nền đen */
     color: white;
     border-radius: 10px;
     margin-left: 23px;
+    margin-right: 23px;
 }
 
 .profile-header {

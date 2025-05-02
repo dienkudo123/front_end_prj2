@@ -1,11 +1,10 @@
 .search-page {
-    width: calc(100% - 250px);
+    width: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
     color: white;
-    margin-left: 250px;
 }
 
 .search-content {

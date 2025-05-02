@@ -7,8 +7,13 @@ html, body {
 }
 
 .app-container {
-    margin-left: 250px;
+    margin-left: 300px;
     min-height: 100vh; /* Đảm bảo toàn bộ trang chiếm đủ chiều cao */
     background-color: black;
     display: flex;
+}
+
+.main-content {
+    flex: 1; /* Phần còn lại của màn hình sau khi trừ sidebar */
+    overflow-y: auto;
 }

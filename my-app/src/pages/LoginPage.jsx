@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/LoginPage.css"; 
+import axiosInstance from "../utils/api";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -16,24 +17,19 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     try {
-      const res = await fetch("http://localhost:4000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const res = await axiosInstance.post('http://localhost:3000/auth/login', {
+        ...formData
+      })
 
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.message);
-      }
-      const userData = await res.json();
-      console.log("userData", userData);
-      localStorage.setItem("token", userData.access_token);
+      const userData = await res.data;
+      localStorage.setItem("accessToken", userData.accessToken);
       localStorage.setItem("user", JSON.stringify(userData.user));
 
       alert(`Xin chào, ${userData.user.username}!`);
+      window.location.href = '/';
     } catch (err) {
-      setError(err.message || "Đăng nhập thất bại"); 
+      const errorMessage = err.response?.data?.message || err.message || "Đăng nhập thất bại";
+      setError(errorMessage);
     }
   };
 

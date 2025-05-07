@@ -72,3 +72,20 @@
 .profile-post img:hover {
     transform: scale(1.05); /* Hiệu ứng zoom nhẹ khi hover */
 }
+
+
+.profile-username-input {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+}
+
+.profile-username-input {
+  background-color: #1a1a1a;
+  color: white;
+  border: 1px solid #444;
+  width: 150px;
+}
+

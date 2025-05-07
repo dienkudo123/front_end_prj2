@@ -18,12 +18,19 @@ export default function Sidebar() {
                 <Link to="/notifications" className="sidebar-link">
                     <FaBell className="sidebar-icon" /> Notifications
                 </Link>
-                <Link to={`/profile/${username}`} className="sidebar-link">
-                    <FaUser className="sidebar-icon" /> Profile
-                </Link>
+                
                 <Link to="/trending" className="sidebar-link">
                     <FaFire className="sidebar-icon" /> Trending
                 </Link>
+                <Link to={`/profile/${username}`} className="sidebar-link">
+                    <img
+                        src={`https://i.pravatar.cc/40?u=${username}`} 
+                        alt="Avatar"
+                        className="sidebar-avatar-icon"
+                    />
+                    Profile
+                </Link>
+
             </nav>
         </div>
     );

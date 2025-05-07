@@ -48,3 +48,13 @@
     flex: 1; /* Đảm bảo chữ căn chỉnh đều với icon */
 }
 
+.sidebar-avatar-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    border: 1px solid #fff;
+  }
+  
+

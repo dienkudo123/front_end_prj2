@@ -3,7 +3,7 @@ html, body {
     margin: 0;
     background-color: black; /* Đảm bảo nền toàn trang là màu đen */
     color: white;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 .app-container {

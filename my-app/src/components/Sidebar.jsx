@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaSearch, FaBell, FaUser, FaFire } from "react-icons/fa"; // Import icon
+import { FaHome, FaSearch, FaBell, FaUser, FaFire, FaComment, FaComments } from "react-icons/fa"; // Import icon
 import "../styles/sidebar.css"; // Import file CSS riêng
 
 export default function Sidebar() {
@@ -14,6 +14,9 @@ export default function Sidebar() {
                 </Link>
                 <Link to="/search" className="sidebar-link">
                     <FaSearch className="sidebar-icon" /> Search
+                </Link>
+                <Link to="/chat" className="sidebar-link">
+                    <FaComments className="sidebar-icon" /> Chat
                 </Link>
                 <Link to="/notifications" className="sidebar-link">
                     <FaBell className="sidebar-icon" /> Notifications

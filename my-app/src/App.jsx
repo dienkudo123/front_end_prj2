@@ -9,6 +9,7 @@ import PostPage from "./pages/PostPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ChatPage from "./pages/ChatPage";
 
 // Import CSS
 import "./styles/App.css";
@@ -38,6 +39,7 @@ function AppContent() {
                     <Route path="/trending" element={<Trending />} />
                     <Route path="/post/new" element={<PostPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />
+                    <Route path="/chat" element={<ChatPage />} />
 
                     {/* Routes không có sidebar */}
                     <Route path="/login" element={<LoginPage />} />

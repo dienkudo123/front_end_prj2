@@ -1,6 +1,9 @@
 import { useState } from "react";
 import "../styles/LoginPage.css"; // Dùng chung CSS với trang login
 
+import axiosInstance from "../utils/api";
+
+
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     username: "",
@@ -43,19 +46,37 @@ export default function RegisterPage() {
       return;
     }
     try {
-      const res = await fetch("http://localhost:4000/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!res.ok) {
-          const error = await res.json();
-          throw new Error(error.message);
-      }
+// <<<<<<< HEAD
+//       const res = await fetch("http://localhost:4000/auth/register", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(formData),
+//       });
+//       if (!res.ok) {
+//           const error = await res.json();
+//           throw new Error(error.message);
+//       }
         
+//       alert("Đăng ký thành công!");
+//     } catch (err) {
+//       setError(err.message || "Đăng ký thất bại");
+// =======
+      const res = await axiosInstance.post(
+        "http://localhost:3000/auth/register",
+        {
+          ...formData,
+        }
+      );
+
+      const userData = res.data;
+      localStorage.setItem("accessToken", userData.accessToken);
+      localStorage.setItem("user", JSON.stringify(userData.user));
+
       alert("Đăng ký thành công!");
+      window.location.href = '/login';
     } catch (err) {
-      setError(err.message || "Đăng ký thất bại");
+      const errorMessage = err.response?.data?.message || err.message || "Đăng ký thất bại";
+      setError(errorMessage);
     }
   };
 
@@ -64,6 +85,7 @@ export default function RegisterPage() {
       <div className="login-box">
         <h1 className="login-title">Tạo tài khoản</h1>
         <form onSubmit={handleRegister} className="login-form">
+{/* <<<<<<< HEAD
             <input
               type="text"
               name="username"
@@ -72,6 +94,16 @@ export default function RegisterPage() {
               onChange={handleChange}
               required
             />
+======= */}
+          <input
+            type="text"
+            name="username"
+            placeholder="Tên người dùng "
+            value={formData.username}
+            onChange={handleChange}
+            required
+          />
+
           <input
             type="text"
             name="displayName"

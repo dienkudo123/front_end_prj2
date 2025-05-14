@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 
 export default function Profile() {
     const { username: paramUsername } = useParams();
+    const navigate = useNavigate();
 
     const [posts] = useState([
         { id: 1, image: "https://th.bing.com/th/id/OIP.o2PwdCIlnk04dNQreJ3V2gHaMd?rs=1&pid=ImgDetMain" },
@@ -17,6 +19,7 @@ export default function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState(`https://i.pravatar.cc/150?u=${paramUsername}`);
     const [displayName, setDisplayName] = useState(paramUsername || "User");
+    const [showSettings, setShowSettings] = useState(false);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -33,6 +36,13 @@ export default function Profile() {
         // api
         setIsEditing(false);
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        navigate('/login');
+    };
+
 
     return (
         <div className="profile-page">
@@ -55,8 +65,6 @@ export default function Profile() {
                             onChange={(e) => setDisplayName(e.target.value)}
                             className="profile-username-input"
                         />
-
-                        
                     </>
                 ) : (
                     <>
@@ -65,20 +73,38 @@ export default function Profile() {
                             alt="Avatar"
                             className="profile-avatar"
                         />
-                        
                         <h2>{displayName}</h2>
                     </>
-                    )}
+                )}
 
-                <button className="edit-profile-button" onClick={() => {
-                    if (isEditing) {
-                        handleSave();
-                    } else {
-                        setIsEditing(true);
-                    }
-                }}>
-                    {isEditing ? "Save" : "Edit Profile"}
-                </button>
+                <div className="profile-actions">
+                    <button className="edit-profile-button" onClick={() => {
+                        if (isEditing) {
+                            handleSave();
+                        } else {
+                            setIsEditing(true);
+                        }
+                    }}>
+                        {isEditing ? "Save" : "Edit Profile"}
+                    </button>
+
+                    <div className="settings-container">
+                        <button 
+                            className="settings-button"
+                            onClick={() => setShowSettings(!showSettings)}
+                        >
+                            <FiSettings />
+                        </button>
+                        
+                        {showSettings && (
+                            <div className="settings-dropdown">
+                                <button onClick={handleLogout} className="dropdown-item">
+                                    <FiLogOut /> Đăng xuất
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="profile-posts">

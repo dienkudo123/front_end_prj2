@@ -38,6 +38,7 @@ const PostForm = ({ initialTrendName = "" }) => {
         const formData = new FormData();
         formData.append("title", title); // thêm title
         formData.append("content", content);
+        formData.append("trendTopicId", trendID);
         formData.append("userId", userId); // gửi userId lên backend
         if (images.length > 0) {
             formData.append("file", images[0]);
@@ -69,9 +70,8 @@ const PostForm = ({ initialTrendName = "" }) => {
             <h2>Đăng bài mới</h2>
             <form onSubmit={handleSubmit} className="post-form">
                 <label htmlFor="title">Tiêu đề:</label>
-                <input
+                <textarea
                     id="title"
-                    type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Tiêu đề bài viết"

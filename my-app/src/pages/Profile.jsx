@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
+import axiosInstance from "../utils/api";
 
 export default function Profile() {
     const { username: paramUsername } = useParams();
@@ -20,10 +21,13 @@ export default function Profile() {
     const [avatarUrl, setAvatarUrl] = useState(`https://i.pravatar.cc/150?u=${paramUsername}`);
     const [displayName, setDisplayName] = useState(paramUsername || "User");
     const [showSettings, setShowSettings] = useState(false);
+    const [avatarFile, setAvatarFile] = useState(null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setAvatarFile(file);
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 setAvatarUrl(reader.result);
@@ -32,15 +36,42 @@ export default function Profile() {
         }
     };
 
-    const handleSave = () => {
-        // api
-        setIsEditing(false);
+    const handleSave = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("displayName", displayName);
+            if (avatarFile) {
+                formData.append("avatar", avatarFile);
+            }
+
+            const response = await axiosInstance.patch('http://localhost:3000/user/update', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    // 'Authorization': `Bearer ${token}` nếu cần
+                    withCredentials: true, // Quan trọng nếu dùng cookie
+                }
+            });
+
+            console.log('User updated:', response.data);
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Update failed:', error);
+        }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
-        navigate('/login');
+
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('http://localhost:3000/auth/logout', {}, {
+                withCredentials: true, 
+            });
+        } catch (err) {
+            console.warn('Logout API failed:', err);
+        } finally {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+            navigate('/login');
+        }
     };
 
 

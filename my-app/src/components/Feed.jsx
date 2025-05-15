@@ -1,13 +1,38 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Post from "./Post";
-import dummyPosts from "../data/posts"; // Import danh sách post
 import "../styles/feed.css";
 
 export default function Feed() {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+        axios.get("http://localhost:3000/post")  // gọi API lấy tất cả bài đăng
+            .then(res => {
+                setPosts(res.data.data || []); // assuming API trả về { data: [...] }
+                setLoading(false);
+            })
+            .catch(err => {
+                setError("Không thể tải bài đăng");
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) return <p style={{color: "white", textAlign: "center"}}>Đang tải bài đăng...</p>;
+    if (error) return <p style={{color: "red", textAlign: "center"}}>{error}</p>;
+
     return (
         <div className="feed">
-            {dummyPosts.map(post => (
-                <Post key={post.id} post={post} />
-            ))}
+            {posts.length === 0 ? (
+                <p style={{color: "white", textAlign: "center"}}>Không có bài đăng nào</p>
+            ) : (
+                posts.map(post => (
+                    <Post key={post.id} post={post} />
+                ))
+            )}
         </div>
     );
 }

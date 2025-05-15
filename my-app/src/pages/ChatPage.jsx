@@ -3,14 +3,19 @@ import "../styles/ChatPage.css";
 import axiosInstance from "../utils/api";
 import { getUserId } from "../utils/auth";
 import io from "socket.io-client";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+import { FaSmile } from "react-icons/fa";
 
 const socket = io("http://localhost:3000");
 
 export default function ChatPage() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chatBoxes, setChatBoxes] = useState([]);
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState('');
   const lastMessageRef = useRef(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef(null);
   const userId = getUserId();
 
   useEffect(() => {
@@ -57,7 +62,7 @@ export default function ChatPage() {
         });
       }
     };
-    socket.on("message", handleMessage); 
+    socket.on("message", handleMessage);
 
     return () => {
       socket.off("message", handleMessage);
@@ -80,6 +85,31 @@ export default function ChatPage() {
     }
   }, [selectedChat]);
 
+  const handleEmojiSelect = (emoji) => {
+    setMessage((prev) => prev + emoji.native);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
+
   return (
     <div className="chat-container">
       <div className="chat-page">
@@ -100,7 +130,9 @@ export default function ChatPage() {
                   {item.partner.displayName}
                 </strong>
                 <p className="message">
-                  {item.messages[item.messages.length - 1].content}
+                  {item.messages.length > 0
+                    ? item.messages[item.messages.length - 1].content
+                    : "Bắt đầu cuộc trò chuyện"}
                 </p>
               </div>
             </li>
@@ -145,19 +177,32 @@ export default function ChatPage() {
                 </div>
               ))}
             </div>
-            <input
-              className="chat-input"
-              type="text"
-              placeholder="Nhập tin nhắn..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-            />
+            <div className="chat-input-wrapper">
+              <input
+                className="chat-input"
+                type="text"
+                placeholder="Nhập tin nhắn..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+              />
+              <button
+                className="emoji-button"
+                onClick={() => setShowEmojiPicker((prev) => !prev)}
+              >
+                <FaSmile/>
+              </button>
+              {showEmojiPicker && (
+                <div className="emoji-picker-wrapper" ref={emojiPickerRef}>
+                  <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                </div>
+              )}
+            </div>
           </>
         ) : (
           <div className="chat-placeholder">

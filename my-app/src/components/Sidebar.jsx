@@ -7,6 +7,14 @@ export default function Sidebar({ avatarUrl }) {
         <div className="sidebar">
             <h3 className="sidebar-title">Instagram</h3>
             <nav className="sidebar-menu">
+                <Link to={`/profile/me`} className="sidebar-link">
+                    <img
+                        src={avatarUrl}
+                        alt="Avatar"
+                        className="sidebar-avatar-icon"
+                    />
+                    Profile
+                </Link>
                 <Link to="/" className="sidebar-link">
                     <FaHome className="sidebar-icon" /> Home
                 </Link>
@@ -22,14 +30,7 @@ export default function Sidebar({ avatarUrl }) {
                 <Link to="/trending" className="sidebar-link">
                     <FaFire className="sidebar-icon" /> Trending
                 </Link>
-                <Link to={`/profile/me`} className="sidebar-link">
-                    <img
-                        src={avatarUrl}
-                        alt="Avatar"
-                        className="sidebar-avatar-icon"
-                    />
-                    Profile
-                </Link>
+                
             </nav>
         </div>
     );

@@ -93,7 +93,7 @@ export default function PostDetail() {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleAddComment();
+               if (e.key === "Enter") handleAddComment();
             }}
           />
           <span className="send-icon" onClick={handleAddComment}>

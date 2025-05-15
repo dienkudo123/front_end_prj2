@@ -40,7 +40,7 @@
 }
 
 .sidebar-icon {
-    font-size: 22px; /* Giữ icon lớn hơn chữ một chút */
+    font-size: 25px; /* Giữ icon lớn hơn chữ một chút */
     display: flex;
     align-items: center; /* Đảm bảo icon nằm giữa theo chiều dọc */
 }
@@ -54,7 +54,7 @@
     height: 24px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 8px;
+    /* margin-right: 8px; */
     border: 1px solid #fff;
   }
   

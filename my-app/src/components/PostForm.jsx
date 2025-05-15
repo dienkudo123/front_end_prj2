@@ -43,6 +43,7 @@ const PostForm = ({ initialTrendName = "" }) => {
             formData.append("file", images[0]);
         }
 
+
         const token = localStorage.getItem("accessToken");
         console.log(token);
 

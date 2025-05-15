@@ -70,9 +70,8 @@ const PostForm = ({ initialTrendName = "" }) => {
             <h2>Đăng bài mới</h2>
             <form onSubmit={handleSubmit} className="post-form">
                 <label htmlFor="title">Tiêu đề:</label>
-                <input
+                <textarea
                     id="title"
-                    type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Tiêu đề bài viết"

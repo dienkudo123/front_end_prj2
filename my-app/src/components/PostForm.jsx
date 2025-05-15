@@ -38,6 +38,7 @@ const PostForm = ({ initialTrendName = "" }) => {
         const formData = new FormData();
         formData.append("title", title); // thêm title
         formData.append("content", content);
+        formData.append("trendTopicId", trendID);
         formData.append("userId", userId); // gửi userId lên backend
         if (images.length > 0) {
             formData.append("file", images[0]);

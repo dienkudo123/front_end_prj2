@@ -11,6 +11,7 @@ export default function Post({ post, hideUser = false }) {
 
     return (
         <div className="post">
+            {/* User Info */}
             {!hideUser && post.user && (
                 <div className="post-header">
                     <img
@@ -26,24 +27,38 @@ export default function Post({ post, hideUser = false }) {
                 </div>
             )}
 
-            <img
-                src={`${API_BASE_URL}${post.imageUrl}`}
-                alt="Post"
-                className="post-image"
-            />
 
+            {/* Post Image */}
+            {post.imageUrl && (
+                <img
+                    src={`${API_BASE_URL}${post.imageUrl}`}
+                    alt="Post"
+                    className="post-image"
+                />
+            )}
+
+            {/* Actions */}
             <div className="post-actions">
                 <button onClick={() => setLiked(!liked)} className="icon-button">
-                    {liked ? <FaHeart className="liked"/> : <FaRegHeart/>}
+                    {liked ? <FaHeart className="liked" /> : <FaRegHeart />}
                 </button>
                 <button className="icon-button" onClick={() => navigate(`/post/${post.id}`)}>
-                    <FaComment/>
+                    <FaComment />
                 </button>
                 <button className="icon-button">
-                    <FaShare/>
+                    <FaShare />
                 </button>
             </div>
 
+            {/* Trend Topic Title */}
+            {post.trendTopic?.title && (
+                <div className="post-trend-topic">
+                    <span className="trend-label">#</span>
+                    <span className="trend-title">{post.trendTopic.title}</span>
+                </div>
+            )}
+
+            {/* Content */}
             <div className="post-content">
                 <p>{post.content}</p>
             </div>

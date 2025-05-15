@@ -11,83 +11,181 @@
 
 .profile-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 30px;
     margin-bottom: 20px;
-    padding-left: 250px;
+    padding: 20px 250px;
+    border-bottom: 1px solid #262626;
+}
 
+.profile-info {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
 }
 
 .profile-avatar {
-    width: 80px;
-    height: 80px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid white;
+}
+
+.profile-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.profile-stats h2 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.stats-container {
+    display: flex;
+    gap: 40px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.stat-value {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.stat-label {
+    color: #8e8e8e;
+    font-size: 14px;
+}
+
+.edit-profile-form {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.avatar-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-upload-input {
+    display: none;
+}
+
+.avatar-upload-label {
+    background-color: #0095f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.avatar-upload-label:hover {
+    background-color: #0081d6;
+}
+
+.profile-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.profile-input {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #262626;
+    border-radius: 4px;
+    background-color: #000;
+    color: white;
+    width: 250px;
+}
+
+.profile-input:focus {
+    outline: none;
+    border-color: #0095f6;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.edit-profile-button {
+    background-color: #0095f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.edit-profile-button:hover {
+    background-color: #0081d6;
+}
+
+.logout-button {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #262626;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #262626;
+}
+
+.profile-posts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 250px;
+}
+
+.profile-post {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 4px;
+    background-color: #262626;
+}
+
+.profile-post-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.profile-post:hover .profile-post-image {
+    transform: scale(1.05);
 }
 
 .profile-username {
     font-size: 22px;
     margin-top: 10px; /* Đẩy tên xuống dưới avatar */
 }
-
-.edit-profile-button {
-    background-color: black;
-    color: white;
-    border: 1px solid white; /* Thêm viền trắng */
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: 10px; /* Đẩy nút xuống dưới tên */
-    transition: background 0.3s;
-}
-
-.edit-profile-button:hover {
-    background-color: #2980b9;
-}
-
-/* Lưới bài đăng 3 cột */
-.profile-posts {
-    display: grid;
-    grid-template-columns: repeat(3, 200px); /* 3 post mỗi hàng */
-    gap: 15px;
-    margin-top: 100px; /* Đẩy post xuống xa avatar hơn */
-    padding-left: 200px;
-    padding-top: 20px;
-    position: relative;
-}
-
-.profile-posts::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 180px;
-    width: 670px; /* 3 ảnh + 2 khoảng cách giữa */
-    height: 1px;
-    background-color: #262626;
-}
-
-.profile-post {
-    width: 100%; /* Cố định kích thước */
-    aspect-ratio: 1; /* Đảm bảo hình vuông */
-    overflow: hidden;
-    border-radius: 8px;
-    background-color: #222; /* Nền tối cho bài post */
-}
-
-.profile-post img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Cắt ảnh vừa khung */
-    border-radius: 8px;
-    transition: transform 0.3s ease;
-}
-
-.profile-post img:hover {
-    transform: scale(1.05); /* Hiệu ứng zoom nhẹ khi hover */
-}
-
 
 .profile-username-input {
   padding: 8px 12px;
@@ -102,68 +200,5 @@
   color: white;
   border: 1px solid #444;
   width: 150px;
-}
-
-.profile-actions {
-    display: flex;
-    align-items: center;
-    gap: 200px;
-}
-
-.settings-container {
-    position: relative;
-}
-
-.settings-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: white;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s;
-}
-
-.settings-button:hover {
-    color: #666;
-}
-
-.settings-dropdown {
-    position: absolute;
-    right: 0;
-    top: 100%;
-    background: #1a1a1a;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    min-width: 150px;
-    z-index: 1000;
-    margin-top: 5px;
-    border: 1px solid #333;
-}
-
-.dropdown-item {
-    width: 100%;
-    padding: 10px 15px;
-    border: none;
-    background: none;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: white;
-    transition: background-color 0.2s;
-}
-
-/* .dropdown-item:hover {
-    background-color: #333;
-} */
-
-.dropdown-item svg {
-    width: 18px;
-    height: 18px;
 }
 

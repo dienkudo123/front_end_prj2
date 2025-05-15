@@ -10,6 +10,8 @@ import NotificationsPage from "./pages/NotificationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ChatPage from "./pages/ChatPage";
+import { useEffect, useState } from "react";
+import axiosInstance from "./utils/api";
 
 // Import CSS
 import "./styles/App.css";
@@ -25,10 +27,25 @@ import "./styles/Auth.css";
 function AppContent() {
     const location = useLocation();
     const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+    const [avatarUrl, setAvatarUrl] = useState(null);
+    // const [displayName, setDisplayName] = useState(null);
 
+    useEffect(() => {
+        const featchUserProfile = async () => {
+            const response = await axiosInstance.get(`http://localhost:3000/user/me`);
+            // console.log('User profile data:', response.data.data);
+            const userData = response.data.data;
+            // setDisplayName(userData.user.displayName || paramUsername);
+            if (userData.user.avatar) {
+            setAvatarUrl(`http://localhost:3000${userData.user.avatar}`);
+            }
+        }
+        featchUserProfile();        
+    }
+    , []);
     return (
         <div className="app-container">
-            {!isAuthPage && <Sidebar />}
+            {!isAuthPage && <Sidebar avatarUrl={avatarUrl}/>}
             <div className="main-content">
                 <Routes>
                     {/* Routes có sidebar */}

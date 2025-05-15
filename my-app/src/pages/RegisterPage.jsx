@@ -76,6 +76,7 @@ export default function RegisterPage() {
             onChange={handleChange}
             required
           />
+
           <input
             type="text"
             name="displayName"

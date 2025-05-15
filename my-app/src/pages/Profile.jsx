@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import "../styles/Profile.css"; // Import CSS riêng cho Profile
+import { useParams, useNavigate } from "react-router-dom";
+import { FiSettings, FiLogOut } from "react-icons/fi";
+import "../styles/Profile.css";
+import axiosInstance from "../utils/api";
 
 export default function Profile() {
-    const { username } = useParams();
-    const [posts, setPosts] = useState([
+    const { username: paramUsername } = useParams();
+    const navigate = useNavigate();
+
+    const [posts] = useState([
         { id: 1, image: "https://th.bing.com/th/id/OIP.o2PwdCIlnk04dNQreJ3V2gHaMd?rs=1&pid=ImgDetMain" },
         { id: 2, image: "https://th.bing.com/th/id/OIP.3A4HIGRlPCVjh9H_qTUdzAHaLH?rs=1&pid=ImgDetMain" },
         { id: 3, image: "https://toigingiuvedep.vn/wp-content/uploads/2022/04/hinh-anh-hai-huoc-ba-dao-nhat-the-gioi.jpg" },
@@ -13,16 +17,125 @@ export default function Profile() {
         { id: 6, image: "https://toigingiuvedep.vn/wp-content/uploads/2022/04/hinh-anh-hai-huoc-ba-dao-nhat-the-gioi.jpg" },
     ]);
 
+    const [isEditing, setIsEditing] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState(`https://i.pravatar.cc/150?u=${paramUsername}`);
+    const [displayName, setDisplayName] = useState(paramUsername || "User");
+    const [showSettings, setShowSettings] = useState(false);
+    const [avatarFile, setAvatarFile] = useState(null);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setAvatarFile(file);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatarUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSave = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("displayName", displayName);
+            if (avatarFile) {
+                formData.append("avatar", avatarFile);
+            }
+
+            const response = await axiosInstance.patch('http://localhost:3000/user/update', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    // 'Authorization': `Bearer ${token}` nếu cần
+                    withCredentials: true, // Quan trọng nếu dùng cookie
+                }
+            });
+
+            console.log('User updated:', response.data);
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Update failed:', error);
+        }
+    };
+
+
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('http://localhost:3000/auth/logout', {}, {
+                withCredentials: true, 
+            });
+        } catch (err) {
+            console.warn('Logout API failed:', err);
+        } finally {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("user");
+            navigate('/login');
+        }
+    };
+
+
     return (
         <div className="profile-page">
             <div className="profile-header">
-                <img
-                    src={`https://i.pravatar.cc/150?u=${username}`}
-                    alt="Avatar"
-                    className="profile-avatar"
-                />
-                <h2>{username || "User"}</h2>
-                <button className="edit-profile-button">Edit Profile</button>
+                {isEditing ? (
+                    <>
+                        <img
+                            src={avatarUrl}
+                            alt="Avatar"
+                            className="profile-avatar"
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="avatar-upload-input"
+                        />
+                        <input
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            className="profile-username-input"
+                        />
+                    </>
+                ) : (
+                    <>
+                        <img
+                            src={avatarUrl}
+                            alt="Avatar"
+                            className="profile-avatar"
+                        />
+                        <h2>{displayName}</h2>
+                    </>
+                )}
+
+                <div className="profile-actions">
+                    <button className="edit-profile-button" onClick={() => {
+                        if (isEditing) {
+                            handleSave();
+                        } else {
+                            setIsEditing(true);
+                        }
+                    }}>
+                        {isEditing ? "Save" : "Edit Profile"}
+                    </button>
+
+                    <div className="settings-container">
+                        <button 
+                            className="settings-button"
+                            onClick={() => setShowSettings(!showSettings)}
+                        >
+                            <FiSettings />
+                        </button>
+                        
+                        {showSettings && (
+                            <div className="settings-dropdown">
+                                <button onClick={handleLogout} className="dropdown-item">
+                                    <FiLogOut /> Đăng xuất
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="profile-posts">

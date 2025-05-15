@@ -12,6 +12,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ChatPage from "./pages/ChatPage";
 import { useEffect, useState } from "react";
 import axiosInstance from "./utils/api";
+import { UserProvider } from "./context/UserContext";
 
 // Import CSS
 import "./styles/App.css";
@@ -69,8 +70,12 @@ function AppContent() {
 
 export default function App() {
     return (
+        
         <Router>
+            <UserProvider>
             <AppContent />
+            </UserProvider>
         </Router>
+        
     );
 }

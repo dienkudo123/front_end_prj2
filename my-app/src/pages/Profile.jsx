@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
+import { useUser } from "../context/UserContext";
 
 // const API_BASE_URL = "http://localhost:3000";
 // const axiosInstance = axios.create({
@@ -24,6 +25,7 @@ export default function Profile() {
     const [following, setFollowing] = useState(0);
     const [avatarFile, setAvatarFile] = useState(null);
     const paramUsername = "User";
+    const { user, setUser } = useUser();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -73,10 +75,23 @@ export default function Profile() {
                     },
                 }
             );
+            console.log("User updated:", response.data.data.avatar);
+            const updatedUserData = response.data.data;
+            // setDisplayName(updatedUserData.displayName);
+            // setEmail(updatedUserData.email);
+            // setAvatarUrl(`${API_BASE_URL}${updatedUserData.avatar}`);
+
+            const updatedUser = {
+            ...user,
+            avatar: updatedUserData.avatar,
+            };
+            
+            setUser(updatedUser);
 
             console.log("User updated:", response.data);
             alert("Profile updated successfully!");
             setIsEditing(false);
+            
         } catch (error) {
             console.error("Update failed:", error);
         }

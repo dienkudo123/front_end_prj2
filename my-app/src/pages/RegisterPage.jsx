@@ -1,8 +1,6 @@
 import { useState } from "react";
 import "../styles/LoginPage.css"; // Dùng chung CSS với trang login
-
 import axiosInstance from "../utils/api";
-
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -46,21 +44,6 @@ export default function RegisterPage() {
       return;
     }
     try {
-// <<<<<<< HEAD
-//       const res = await fetch("http://localhost:4000/auth/register", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(formData),
-//       });
-//       if (!res.ok) {
-//           const error = await res.json();
-//           throw new Error(error.message);
-//       }
-        
-//       alert("Đăng ký thành công!");
-//     } catch (err) {
-//       setError(err.message || "Đăng ký thất bại");
-// =======
       const res = await axiosInstance.post(
         "http://localhost:3000/auth/register",
         {
@@ -85,16 +68,6 @@ export default function RegisterPage() {
       <div className="login-box">
         <h1 className="login-title">Tạo tài khoản</h1>
         <form onSubmit={handleRegister} className="login-form">
-{/* <<<<<<< HEAD
-            <input
-              type="text"
-              name="username"
-              placeholder="Tên người dùng "
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-======= */}
           <input
             type="text"
             name="username"

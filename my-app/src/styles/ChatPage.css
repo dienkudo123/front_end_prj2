@@ -1,0 +1,156 @@
+.chat-container {
+    display: flex;
+    height: 100vh;
+}
+
+.chat-page {
+    width: 300px;
+    background-color: #000;
+    color: white;
+    padding: 20px;
+    border-right: 1px solid #262626;
+    border-radius: 10px 0 0 10px;
+}
+
+.chat-partner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-box {
+    flex-grow: 1;
+    background-color: #121212;
+    color: white;
+    padding: 20px;
+    border-radius: 0 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chat-box h3 {
+    color: #ffffff;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    margin: 5px 0;
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-y: auto;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background-color: #777;
+}
+
+.message-list {
+    display: flex;
+    margin: 5px 0;
+}
+
+.message-list.owner {
+    font-size: 20px;
+    justify-content: flex-end;
+}
+
+.message-list.partner {
+    font-size: 20px;
+    justify-content: flex-start;
+}
+
+.owner-message, .partner-message {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    word-wrap: break-word;
+}
+
+.owner-message {
+    background-color: #1616fb;
+    border-bottom-right-radius: 0;
+}
+
+.partner-message {
+    background-color: #444;
+    border-bottom-left-radius: 0;
+}
+
+.chat-input {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #2c2c2c;
+    color: white;
+}
+.chat-input::placeholder {
+    color: #f2f2f2;
+}
+
+.chat-placeholder {
+    margin: auto;
+    color: #cbc8c8;
+    font-style: italic;
+}
+
+/*Danh sách nhắn tin*/
+.chat-list {
+    list-style: none;
+    padding: 0;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    transition: 0.3s;
+}
+
+.chat-item.unread .message {
+    color: rgb(254, 232, 175);
+}
+
+.chat-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.chat-content {
+    flex-grow: 1;
+}
+
+.partner-name {
+    font-weight: bold;
+    color: white;
+}
+
+.message {
+    font-size: 14px;
+    margin: 2px 0 0;
+    color: white;
+}

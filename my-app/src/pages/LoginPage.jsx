@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../styles/LoginPage.css"; 
 import axiosInstance from "../utils/api";
 
-
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     identifier: "",
@@ -18,26 +17,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     try {
-// <<<<<<< HEAD
-//       const res = await fetch("http://localhost:4000/auth/login", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(formData),
-//       });
-
-//       if (!res.ok) {
-//         const error = await res.json();
-//         throw new Error(error.message);
-//       }
-//       const userData = await res.json();
-//       console.log("userData", userData);
-//       localStorage.setItem("token", userData.access_token);
-//       localStorage.setItem("user", JSON.stringify(userData.user));
-
-//       alert(`Xin chào, ${userData.user.username}!`);
-//     } catch (err) {
-//       setError(err.message || "Đăng nhập thất bại"); 
-// =======
       const res = await axiosInstance.post('http://localhost:3000/auth/login', {
         ...formData
       })
@@ -51,7 +30,6 @@ export default function LoginPage() {
     } catch (err) {
       const errorMessage = err.response?.data?.message || err.message || "Đăng nhập thất bại";
       setError(errorMessage);
-
     }
   };
 

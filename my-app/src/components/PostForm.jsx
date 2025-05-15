@@ -1,55 +1,82 @@
 import React, { useState, useEffect } from "react";
 import "../styles/PostForm.css";
+import axios from "axios";
 
 const PostForm = ({ initialTrendName = "" }) => {
+    const [title, setTitle] = useState(""); // thêm title
     const [content, setContent] = useState("");
     const [images, setImages] = useState([]);
     const [trendID, setTrendID] = useState("");
     const [trends, setTrends] = useState([]);
 
     useEffect(() => {
-        fetch("/api/trends")
-            .then((res) => res.json())
-            .then((data) => {
-                setTrends(data);
-                // Nếu có initialTrendName, tìm trend tương ứng
-                if (initialTrendName) {
-                    const matched = data.find((t) => `#${t.name}`.toLowerCase() === initialTrendName.toLowerCase());
-                    if (matched) setTrendID(matched.id);
+        axios
+            .get("http://localhost:3000/trendTopic")
+            .then((res) => {
+                if (res.data && res.data.data) {
+                    setTrends(res.data.data);
+                    if (initialTrendName) {
+                        const matched = res.data.data.find(
+                            (t) => `#${t.title}`.toLowerCase() === initialTrendName.toLowerCase()
+                        );
+                        if (matched) setTrendID(matched.id);
+                    }
                 }
-            });
+            })
+            .catch((err) => console.error("Lỗi khi lấy trends:", err));
     }, [initialTrendName]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Lấy userId từ localStorage
+        const userJSON = localStorage.getItem("user");
+        const user = JSON.parse(userJSON);
+        const userId = user.id;
+        console.log(userId);
+
         const formData = new FormData();
+        formData.append("title", title); // thêm title
         formData.append("content", content);
-        formData.append("trendID", trendID);
-        for (let i = 0; i < images.length; i++) {
-            formData.append("images", images[i]);
+        formData.append("userId", userId); // gửi userId lên backend
+        if (images.length > 0) {
+            formData.append("file", images[0]);
         }
 
-        fetch("/api/posts", {
-            method: "POST",
-            body: formData,
-        })
-            .then((res) => {
-                if (res.ok) {
-                    alert("Đăng bài thành công!");
-                    setContent("");
-                    setImages([]);
-                    setTrendID("");
-                } else {
-                    alert("Đăng bài thất bại.");
-                }
+        const token = localStorage.getItem("accessToken");
+        console.log(token);
+
+        axios
+            .post("http://localhost:3000/post/create", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
             })
-            .catch((err) => console.error("Lỗi:", err));
+            .then(() => {
+                alert("Đăng bài thành công!");
+                setTitle("");
+                setContent("");
+                setImages([]);
+                setTrendID("");
+            })
+            .catch(() => alert("Đăng bài thất bại."));
     };
 
     return (
         <div className="post-container">
             <h2>Đăng bài mới</h2>
             <form onSubmit={handleSubmit} className="post-form">
+                <label htmlFor="title">Tiêu đề:</label>
+                <input
+                    id="title"
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Tiêu đề bài viết"
+                    required
+                />
+
                 <label htmlFor="content">Nội dung:</label>
                 <textarea
                     id="content"
@@ -78,7 +105,7 @@ const PostForm = ({ initialTrendName = "" }) => {
                     <option value="">-- Chọn trend --</option>
                     {trends.map((trend) => (
                         <option key={trend.id} value={trend.id}>
-                            {trend.name}
+                            {trend.title}
                         </option>
                     ))}
                 </select>

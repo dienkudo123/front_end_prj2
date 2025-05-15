@@ -1,17 +1,55 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
-import "../styles/Profile.css"; // Import CSS riêng cho Profile
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function Profile() {
-    const { username } = useParams();
-    const [posts, setPosts] = useState([
-        { id: 1, image: "https://th.bing.com/th/id/OIP.o2PwdCIlnk04dNQreJ3V2gHaMd?rs=1&pid=ImgDetMain" },
-        { id: 2, image: "https://th.bing.com/th/id/OIP.3A4HIGRlPCVjh9H_qTUdzAHaLH?rs=1&pid=ImgDetMain" },
-        { id: 3, image: "https://toigingiuvedep.vn/wp-content/uploads/2022/04/hinh-anh-hai-huoc-ba-dao-nhat-the-gioi.jpg" },
-        { id: 4, image: "https://th.bing.com/th/id/OIP.3A4HIGRlPCVjh9H_qTUdzAHaLH?rs=1&pid=ImgDetMain" },
-        { id: 5, image: "https://th.bing.com/th/id/OIP.o2PwdCIlnk04dNQreJ3V2gHaMd?rs=1&pid=ImgDetMain" },
-        { id: 6, image: "https://toigingiuvedep.vn/wp-content/uploads/2022/04/hinh-anh-hai-huoc-ba-dao-nhat-the-gioi.jpg" },
-    ]);
+    const [username, setUsername] = useState("User");
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const getUserFromLocalStorage = () => {
+        const userData = localStorage.getItem("user");
+        if (!userData) return null;
+        try {
+            return JSON.parse(userData);
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            return null;
+        }
+    };
+
+    const getTokenFromLocalStorage = () => {
+        return localStorage.getItem("accessToken");
+    };
+
+    useEffect(() => {
+        const user = getUserFromLocalStorage();
+        const token = getTokenFromLocalStorage();
+
+        if (user && user.username) {
+            setUsername(user.username);
+        }
+
+        if (token) {
+            axios
+                .get(`http://localhost:3000/post/user-posts/${user.id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+                .then((res) => {
+                    setPosts(res.data.data);
+                })
+                .catch((err) => {
+                    console.error("Error fetching posts:", err);
+                })
+                .finally(() => setLoading(false));
+        } else {
+            setLoading(false);
+            console.warn("User or token not found in localStorage");
+        }
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="profile-page">
@@ -21,14 +59,29 @@ export default function Profile() {
                     alt="Avatar"
                     className="profile-avatar"
                 />
-                <h2>{username || "User"}</h2>
-                <button className="edit-profile-button">Edit Profile</button>
+                <h2>{username}</h2>
+                {/*<button className="edit-profile-button">Edit Profile</button>*/}
             </div>
 
             <div className="profile-posts">
-                {posts.map(post => (
+                {posts.length === 0 && <p>Không có bài đăng nào.</p>}
+                {posts.map((post) => (
                     <div key={post.id} className="profile-post">
-                        <img src={post.image} alt="Post" className="profile-post-image" />
+                        {post.imageUrl && (
+                            <img
+                                src={post.imageUrl}
+                                alt="Post"
+                                className="profile-post-image"
+                            />
+                        )}
+                        {post.videoUrl && (
+                            <video controls className="profile-post-video">
+                                <source src={post.videoUrl} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        )}
+                        <h3>{post.title}</h3>
+                        <p>{post.content}</p>
                     </div>
                 ))}
             </div>

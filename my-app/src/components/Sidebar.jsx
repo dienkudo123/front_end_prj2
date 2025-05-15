@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import { FaHome, FaSearch, FaBell, FaUser, FaFire, FaComment, FaComments } from "react-icons/fa"; // Import icon
 import "../styles/sidebar.css"; // Import file CSS riêng
+import { useUser } from "../context/UserContext";
 
-export default function Sidebar({ avatarUrl }) {
+export default function Sidebar() {
+    const { user } = useUser();
     return (
         <div className="sidebar">
             <h3 className="sidebar-title">Instagram</h3>
             <nav className="sidebar-menu">
                 <Link to={`/profile/me`} className="sidebar-link">
                     <img
-                        src={avatarUrl}
+                        src={user?.avatar ? `http://localhost:3000${user.avatar}` : "https://via.placeholder.com/150"}
                         alt="Avatar"
                         className="sidebar-avatar-icon"
                     />

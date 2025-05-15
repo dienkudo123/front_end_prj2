@@ -17,8 +17,6 @@ export default function Profile() {
         }
     };
 
-
-
     const getTokenFromLocalStorage = () => {
         return localStorage.getItem("accessToken");
     };

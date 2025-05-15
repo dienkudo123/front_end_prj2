@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_BASE_URL = "http://localhost:3000";
+
 export default function Profile() {
     const [username, setUsername] = useState("User");
     const [posts, setPosts] = useState([]);
@@ -29,13 +31,13 @@ export default function Profile() {
             setUsername(user.username);
         }
 
-        if (token) {
+        if (user?.id && token) {
             axios
-                .get(`http://localhost:3000/post/user-posts/${user.id}`, {
+                .get(`${API_BASE_URL}/post/user-posts/${user.id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 })
                 .then((res) => {
-                    setPosts(res.data.data);
+                    setPosts(res.data.data || []);
                 })
                 .catch((err) => {
                     console.error("Error fetching posts:", err);
@@ -51,6 +53,12 @@ export default function Profile() {
         return <div>Loading...</div>;
     }
 
+    // Hàm helper để lấy URL đầy đủ cho ảnh hoặc video
+    const fullUrl = (url) => {
+        if (!url) return "";
+        if (url.startsWith("http")) return url;
+        return `${API_BASE_URL}${url}`;
+    };
 
     return (
         <div className="profile-page">
@@ -61,7 +69,6 @@ export default function Profile() {
                     className="profile-avatar"
                 />
                 <h2>{username}</h2>
-                {/*<button className="edit-profile-button">Edit Profile</button>*/}
             </div>
 
             <div className="profile-posts">
@@ -70,14 +77,14 @@ export default function Profile() {
                     <div key={post.id} className="profile-post">
                         {post.imageUrl && (
                             <img
-                                src={post.imageUrl}
+                                src={fullUrl(post.imageUrl)}
                                 alt="Post"
                                 className="profile-post-image"
                             />
                         )}
                         {post.videoUrl && (
                             <video controls className="profile-post-video">
-                                <source src={post.videoUrl} type="video/mp4" />
+                                <source src={fullUrl(post.videoUrl)} type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
                         )}

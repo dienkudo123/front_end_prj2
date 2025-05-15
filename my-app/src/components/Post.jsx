@@ -1,37 +1,51 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaHeart, FaRegHeart, FaComment, FaShare } from "react-icons/fa"; // Import icon
-import "../styles/Post.css"; // Import CSS riêng cho Post
+import { FaHeart, FaRegHeart, FaComment, FaShare } from "react-icons/fa";
+import "../styles/Post.css";
+
+const API_BASE_URL = "http://localhost:3000"; // Cần đồng bộ với backend
 
 export default function Post({ post, hideUser = false }) {
-    const [liked, setLiked] = useState(false); // Trạng thái like
-    const navigate = useNavigate(); // Hook điều hướng
+    const [liked, setLiked] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <div className="post">
-            {!hideUser && ( // Chỉ hiển thị avatar + username nếu không ẩn
+            {!hideUser && post.user && (
                 <div className="post-header">
-                    <img src={post.avatar} alt="Avatar" className="avatar" />
-                    <p className="username">{post.username}</p>
+                    <img
+                        src={
+                            post.user.avatar
+                                ? `${API_BASE_URL}${post.user.avatar}`
+                                : "/default-avatar.png"
+                        }
+                        alt="Avatar"
+                        className="avatar"
+                    />
+                    <p className="username">{post.user.displayName}</p>
                 </div>
             )}
 
-            <img src={post.image} alt="Post" className="post-image" />
+            <img
+                src={`${API_BASE_URL}${post.imageUrl}`}
+                alt="Post"
+                className="post-image"
+            />
 
             <div className="post-actions">
                 <button onClick={() => setLiked(!liked)} className="icon-button">
-                    {liked ? <FaHeart className="liked"/> : <FaRegHeart/>} {/* Like */}
+                    {liked ? <FaHeart className="liked"/> : <FaRegHeart/>}
                 </button>
                 <button className="icon-button" onClick={() => navigate(`/post/${post.id}`)}>
                     <FaComment/>
                 </button>
                 <button className="icon-button">
-                    <FaShare/> {/* Share */}
+                    <FaShare/>
                 </button>
             </div>
 
             <div className="post-content">
-                <p>{post.caption}</p>
+                <p>{post.content}</p>
             </div>
         </div>
     );

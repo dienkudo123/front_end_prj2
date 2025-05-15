@@ -51,6 +51,7 @@ export default function Profile() {
         return <div>Loading...</div>;
     }
 
+
     return (
         <div className="profile-page">
             <div className="profile-header">

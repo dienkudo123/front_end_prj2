@@ -2,9 +2,7 @@ import { Link } from "react-router-dom";
 import { FaHome, FaSearch, FaBell, FaUser, FaFire, FaComment, FaComments } from "react-icons/fa"; // Import icon
 import "../styles/sidebar.css"; // Import file CSS riêng
 
-export default function Sidebar() {
-    const username = "john_doe"; // Thay bằng tên user thật
-
+export default function Sidebar({ avatarUrl }) {
     return (
         <div className="sidebar">
             <h3 className="sidebar-title">Instagram</h3>
@@ -21,19 +19,17 @@ export default function Sidebar() {
                 <Link to="/notifications" className="sidebar-link">
                     <FaBell className="sidebar-icon" /> Notifications
                 </Link>
-                
                 <Link to="/trending" className="sidebar-link">
                     <FaFire className="sidebar-icon" /> Trending
                 </Link>
-                <Link to={`/profile/${username}`} className="sidebar-link">
+                <Link to={`/profile/me`} className="sidebar-link">
                     <img
-                        src={`https://i.pravatar.cc/40?u=${username}`} 
+                        src={avatarUrl}
                         alt="Avatar"
                         className="sidebar-avatar-icon"
                     />
                     Profile
                 </Link>
-
             </nav>
         </div>
     );

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
@@ -14,7 +14,6 @@ const API_BASE_URL = "http://localhost:3000";
 
 export default function Profile() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState("User");
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +23,7 @@ export default function Profile() {
     const [followers, setFollowers] = useState(0);
     const [following, setFollowing] = useState(0);
     const [avatarFile, setAvatarFile] = useState(null);
-    const paramUsername = "User"; 
+    const paramUsername = "User";
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -36,9 +35,8 @@ export default function Profile() {
             setFollowers(userData.followers.length || 0);
             setFollowing(userData.followings.length || 0);
             if (userData.user.avatar) {
-            setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
+                setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
             }
-            
         };
 
         fetchUserProfile();
@@ -65,140 +63,91 @@ export default function Profile() {
                 formData.append("avatar", avatarFile);
             }
 
-            const response = await axiosInstance.patch(`${API_BASE_URL}/user/update`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    withCredentials: true
+            const response = await axiosInstance.patch(
+                `${API_BASE_URL}/user/update`,
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        withCredentials: true,
+                    },
                 }
-            });
+            );
 
-            console.log('User updated:', response.data);
-            alert('Profile updated successfully!');
+            console.log("User updated:", response.data);
+            alert("Profile updated successfully!");
             setIsEditing(false);
         } catch (error) {
-            console.error('Update failed:', error);
+            console.error("Update failed:", error);
         }
     };
 
     const handleLogout = async () => {
         try {
-            await axiosInstance.post(`${API_BASE_URL}/auth/logout`, {}, {
-                withCredentials: true, 
-            });
+            await axiosInstance.post(
+                `${API_BASE_URL}/auth/logout`,
+                {},
+                {
+                    withCredentials: true,
+                }
+            );
         } catch (err) {
-            console.warn('Logout API failed:', err);
+            console.warn("Logout API failed:", err);
         } finally {
             localStorage.removeItem("accessToken");
             localStorage.removeItem("user");
-            navigate('/login');
+            navigate("/login");
         }
     };
 
-    // const handleLogout = async () => {
-    //     try {
-    //         await axiosInstance.post('http://localhost:3000/auth/logout', {}, {
-    //             withCredentials: true, 
-    //         });
-    //     } catch (err) {
-    //         console.warn('Logout API failed:', err);
-    //     } finally {
-    //         localStorage.removeItem("accessToken");
-    //         localStorage.removeItem("user");
-    //         navigate('/login');
-    //     }
-    // };
-
-
     useEffect(() => {
         const fetchPosts = async () => {
-            // const user = getUserFromLocalStorage();
-            // const token = getTokenFromLocalStorage();
+            const user = getUserFromLocalStorage();
+            const token = getTokenFromLocalStorage();
 
-            // if (user?.id && token) {
+            if (user?.id && token) {
                 try {
-                    const res = await axiosInstance.get(`${API_BASE_URL}/post/user-posts/${user.id}`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    });
+                    const res = await axiosInstance.get(
+                        `${API_BASE_URL}/post/user-posts/${user.id}`,
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    );
                     setPosts(res.data.data || []);
                 } catch (err) {
                     console.error("Error fetching posts:", err);
                 } finally {
                     setLoading(false);
                 }
-            // } else {
-            //     setLoading(false);
-            //     console.warn("User or token not found in localStorage");
-            // }
+            } else {
+                setLoading(false);
+                console.warn("User or token not found in localStorage");
+            }
         };
 
         fetchPosts();
     }, []);
 
+    const getUserFromLocalStorage = () => {
+        try {
+            const data = localStorage.getItem("user");
+            return data ? JSON.parse(data) : null;
+        } catch (err) {
+            console.error("Invalid user data in localStorage:", err);
+            return null;
+        }
+    };
 
-    // const getUserFromLocalStorage = () => {
-    //     try {
-    //         const data = localStorage.getItem("user");
-    //         return data ? JSON.parse(data) : null;
-    //     } catch (err) {
-    //         console.error("Invalid user data in localStorage:", err);
-    //         return null;
-    //     }
-    // };
+    const getTokenFromLocalStorage = () => {
+        return localStorage.getItem("accessToken");
+    };
 
-    // const getTokenFromLocalStorage = () => {
-    //     return localStorage.getItem("accessToken");
-    // };
+    const fullUrl = (url) => {
+        if (!url) return "";
+        return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+    };
 
-    // const handleImageChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         setAvatarFile(file);
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => setAvatarUrl(reader.result);
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
-
-    // const handleSave = async () => {
-    //     try {
-    //         const formData = new FormData();
-    //         formData.append("displayName", displayName);
-    //         formData.append("email", email);
-    //         if (avatarFile) {
-    //             formData.append("avatar", avatarFile);
-    //         }
-
-    //         const res = await axiosInstance.patch("/user/update", formData, {
-    //             headers: {
-    //                 "Content-Type": "multipart/form-data",
-    //             },
-    //         });
-
-    //         alert("Profile updated successfully!");
-    //         setIsEditing(false);
-    //     } catch (error) {
-    //         console.error("Update failed:", error);
-    //     }
-    // };
-
-    // const handleLogout = async () => {
-    //     try {
-    //         await axiosInstance.post("/auth/logout");
-    //     } catch (err) {
-    //         console.warn("Logout API failed:", err);
-    //     } finally {
-    //         localStorage.removeItem("accessToken");
-    //         localStorage.removeItem("user");
-    //         navigate("/login");
-    //     }
-    // };
-
-    // const fullUrl = (url) => {
-    //     if (!url) return "";
-    //     return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
-    // };
-
-    // if (loading) return <div>Loading...</div>;
+    if (loading) return <div>Loading...</div>;
 
     return (
         <div className="profile-page">
@@ -261,7 +210,10 @@ export default function Profile() {
                 </div>
 
                 <div className="profile-actions">
-                    <button className="edit-profile-button" onClick={() => (isEditing ? handleSave() : setIsEditing(true))}>
+                    <button
+                        className="edit-profile-button"
+                        onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
+                    >
                         {isEditing ? "Save" : "Edit Profile"}
                     </button>
                     <button onClick={handleLogout} className="logout-button">
@@ -275,7 +227,11 @@ export default function Profile() {
                 {posts.map((post) => (
                     <div key={post.id} className="profile-post">
                         {post.imageUrl && (
-                            <img src={fullUrl(post.imageUrl)} alt="Post" className="profile-post-image" />
+                            <img
+                                src={fullUrl(post.imageUrl)}
+                                alt="Post"
+                                className="profile-post-image"
+                            />
                         )}
                         {post.videoUrl && (
                             <video controls className="profile-post-video">

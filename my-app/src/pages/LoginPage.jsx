@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/LoginPage.css"; 
 import axiosInstance from "../utils/api";
+import { useUser } from "../context/UserContext";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const { user,setUser } = useUser();
+
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,6 +27,7 @@ export default function LoginPage() {
       const userData = await res.data;
       localStorage.setItem("accessToken", userData.accessToken);
       localStorage.setItem("user", JSON.stringify(userData.user));
+      setUser(userData.user);
 
       alert(`Xin chào, ${userData.user.username}!`);
       window.location.href = '/';

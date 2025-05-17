@@ -9,13 +9,20 @@ export default function Feed() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) {
+            window.location.href = '/login';
+        }
+    }, [])
+
+    useEffect(() => {
         setLoading(true);
         axios.get("http://localhost:3000/post")  // gọi API lấy tất cả bài đăng
             .then(res => {
                 setPosts(res.data.data || []); // assuming API trả về { data: [...] }
                 setLoading(false);
             })
-            .catch(err => {
+            .catch(() => {
                 setError("Không thể tải bài đăng");
                 setLoading(false);
             });

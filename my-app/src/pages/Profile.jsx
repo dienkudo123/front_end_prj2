@@ -111,6 +111,7 @@ export default function Profile() {
             console.warn("Logout API failed:", err);
         } finally {
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
             localStorage.removeItem("user");
             navigate("/login");
         }

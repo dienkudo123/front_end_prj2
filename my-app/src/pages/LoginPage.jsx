@@ -9,7 +9,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState("");
-  const { user,setUser } = useUser();
+  const { setUser } = useUser();
 
 
   const handleChange = (e) => {
@@ -26,6 +26,7 @@ export default function LoginPage() {
 
       const userData = await res.data;
       localStorage.setItem("accessToken", userData.accessToken);
+      localStorage.setItem("refreshToken", userData.refreshToken);
       localStorage.setItem("user", JSON.stringify(userData.user));
       setUser(userData.user);
 

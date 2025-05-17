@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-    const { username, displayName, email, password, avatar } = formData;
+    const { username, displayName, email, password } = formData;
     if (!username || !displayName || !email || !password) {
       setError("Vui lòng điền đầy đủ thông tin");
       return;
@@ -36,17 +36,13 @@ export default function RegisterPage() {
       setError("Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới");
       return;
     }
-    if (!/^[a-zA-Z0-9_]+$/.test(displayName)) {
-      setError("Tên hiển thị chỉ được chứa chữ cái, số và dấu gạch dưới");
-      return;
-    }
     if (username.length < 3 || username.length > 20) {
       setError("Tên người dùng phải có từ 3 đến 20 ký tự");
       return;
     }
     try {
       // formData.append("avatar", "uploads/user-images/default.png");
-      const res = await axiosInstance.post(
+      await axiosInstance.post(
         "http://localhost:3000/auth/register",
         {
           ...formData,

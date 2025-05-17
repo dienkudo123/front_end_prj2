@@ -6,15 +6,19 @@ import io from "socket.io-client";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { FaSmile } from "react-icons/fa";
+import Navbar from "../components/Navbar";
 
+const API_BASE_URL = "http://localhost:3000";
 const socket = io("http://localhost:3000");
 
 export default function ChatPage() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chatBoxes, setChatBoxes] = useState([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const lastMessageRef = useRef(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [userKeyWord, setUserKeyWord] = useState("");
+  const [users, setUsers] = useState([]);
   const emojiPickerRef = useRef(null);
   const userId = getUserId();
 
@@ -110,16 +114,42 @@ export default function ChatPage() {
     };
   }, [showEmojiPicker]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await axiosInstance.get(
+        `http://localhost:3000/user/search?keyword=${userKeyWord}`
+      );
+      setUsers(response.data.data);
+    };
+    fetchUsers();
+  }, [userKeyWord]);
+
+  const handleChat = async (partnerId) => {
+    await axiosInstance.post('http://localhost:3000/chatBox/create', {partnerId});
+  }
+
   return (
     <div className="chat-container">
       <div className="chat-page">
         <ul className="chat-list">
+          <Navbar onSearch={(value) => setUserKeyWord(value)} />
+          <ul className="search-suggestions">
+            {users.map((user) => (
+              <li key={user.id} onClick={() => handleChat(user.id)}>
+                <img
+                  src={`${API_BASE_URL}${user.avatar}`}
+                  alt={`${user.displayName} avatar`}
+                />
+                <span>{user.displayName}</span>
+              </li>
+            ))}
+          </ul>
           {chatBoxes.map((item) => (
             <li
               key={item.id}
               className={`chat-item ${item.read ? "read" : "unread"}`}
             >
-              <img src={item.partner.avatar} alt="Avatar" className="avatar" />
+              <img src={`${API_BASE_URL}${item.partner.avatar}`} alt="Avatar" className="avatar" />
               <div
                 className="chat-content"
                 onClick={() => {
@@ -145,7 +175,7 @@ export default function ChatPage() {
           <>
             <div className="chat-partner">
               <img
-                src={selectedChat.partner.avatar}
+                src={`${API_BASE_URL}${selectedChat.partner.avatar}`}
                 alt="Avatar"
                 className="avatar"
               ></img>
@@ -195,7 +225,7 @@ export default function ChatPage() {
                 className="emoji-button"
                 onClick={() => setShowEmojiPicker((prev) => !prev)}
               >
-                <FaSmile/>
+                <FaSmile />
               </button>
               {showEmojiPicker && (
                 <div className="emoji-picker-wrapper" ref={emojiPickerRef}>

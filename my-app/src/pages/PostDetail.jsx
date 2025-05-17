@@ -1,35 +1,46 @@
 import { useParams } from "react-router-dom";
-import { use, useEffect, useRef, useState } from "react";
-import dummyPosts from "../data/posts"; // Import danh sách post từ file riêng
-import "../styles/PostDetail.css"; // Import CSS riêng
+import { useEffect, useRef, useState } from "react";
+import "../styles/PostDetail.css";
 import { AiOutlineMessage } from 'react-icons/ai';
-import { useUser } from "../context/UserContext"; 
+import { useUser } from "../context/UserContext";
 import axiosInstance from "../utils/api";
 
 const API_BASE_URL = "http://localhost:3000";
 
-
 export default function PostDetail() {
   const { id } = useParams();
-  const post = dummyPosts.find((p) => p.id === parseInt(id));
-  const lastCommentRef = useRef(null); 
-  const {user, setUser} = useUser();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const lastCommentRef = useRef(null);
+  const { user } = useUser();
 
-
-  const [comments, setComments] = useState([]); 
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
-    // Cuộn đến bình luận cuối cùng sau khi thay đổi danh sách bình luận
+    const fetchPost = async () => {
+      try {
+        const response = await axiosInstance.get(`${API_BASE_URL}/post/${id}`);
+        setPost(response.data.data);
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [id]);
+
+  useEffect(() => {
     if (lastCommentRef.current) {
       lastCommentRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [comments]);
-  const getUser = (userId) => {
-    try{
-      const response = axiosInstance.get(`http://localhost:3000/user/${userId}`);
-      const userData = response;
-      return userData;
+
+  const getUser = async (userId) => {
+    try {
+      const response = await axiosInstance.get(`${API_BASE_URL}/user/${userId}`);
+      return response;
     } catch (error) {
       console.error("Error fetching user:", error);
     }
@@ -38,14 +49,13 @@ export default function PostDetail() {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await axiosInstance.get(`http://localhost:3000/comment/post-comments?postId=${id}`);
+        const response = await axiosInstance.get(`${API_BASE_URL}/comment/post-comments?postId=${id}`);
         const data = response.data.data;
 
         const formattedComments = await Promise.all(
           data.map(async (comment) => {
             const userRes = await getUser(comment.userId);
             const userData = userRes.data.data;
-
             return {
               id: comment.id,
               userId: comment.userId,
@@ -56,28 +66,25 @@ export default function PostDetail() {
           })
         );
         setComments(formattedComments);
-        console.log(comments);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
-    }
-
+    };
     fetchComments();
-  },[id])
+  }, [id]);
 
   const uploadComment = async (comment) => {
     try {
-      const response = await axiosInstance.post("http://localhost:3000/comment/create", {
+      await axiosInstance.post(`${API_BASE_URL}/comment/create`, {
         postId: id,
         userId: user.id,
         content: comment,
         status: "Published",
       });
-      console.log(response.data);
     } catch (error) {
       console.error("Error uploading comment:", error);
     }
-  }
+  };
 
   const handleAddComment = () => {
     if (newComment.trim()) {
@@ -94,41 +101,25 @@ export default function PostDetail() {
     }
   };
 
-  
-
-  // useEffect(() => {
-  //   console.log(comments); // In ra comments mỗi khi thay đổi
-  // }, [comments]);
+  if (loading) {
+    return <h2 style={{ color: "white", textAlign: "center" }}>Đang tải...</h2>;
+  }
 
   if (!post) {
-    return (
-      <h2 style={{ color: "white", textAlign: "center" }}>
-        Bài viết không tồn tại
-      </h2>
-    );
+    return <h2 style={{ color: "white", textAlign: "center" }}>Bài viết không tồn tại</h2>;
   }
 
   return (
     <div className="post-detail">
-      {/* Ảnh bài viết */}
       <div className="post-detail-image">
-        <img src={post.image} alt="Post" />
+        <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" />
       </div>
 
-      {/* Bình luận */}
       <div className="post-detail-comments">
         <ul className="comment-list">
           {comments.map((comment, index) => (
-            <li
-              key={comment.id}
-              className="comment"
-              ref={index === comments.length - 1 ? lastCommentRef : null} 
-            >
-              <img
-                src={`http://localhost:3000${comment.avatar}`}
-                alt="Avatar"
-                className="comment-avatar"
-              />
+            <li key={comment.id} className="comment" ref={index === comments.length - 1 ? lastCommentRef : null}>
+              <img src={`http://localhost:3000${comment.avatar}`} alt="Avatar" className="comment-avatar" />
               <div className="comment-content">
                 <p className="comment-username">{comment.displayName}</p>
                 <p className="comment-text">{comment.text}</p>
@@ -143,7 +134,7 @@ export default function PostDetail() {
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             onKeyDown={(e) => {
-               if (e.key === "Enter") handleAddComment();
+              if (e.key === "Enter") handleAddComment();
             }}
           />
           <span className="send-icon" onClick={handleAddComment}>

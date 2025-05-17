@@ -83,6 +83,7 @@ export default function Profile() {
 
             const updatedUser = {
             ...user,
+            displayName: updatedUserData.displayName,
             avatar: updatedUserData.avatar,
             };
             

@@ -8,9 +8,10 @@ export default function RegisterPage() {
     displayName: "",
     email: "",
     password: "",
+    avatar: "/uploads/user-images/default.png",
   });
   const [error, setError] = useState("");
-
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -18,7 +19,7 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-    const { username, displayName, email, password } = formData;
+    const { username, displayName, email, password, avatar } = formData;
     if (!username || !displayName || !email || !password) {
       setError("Vui lòng điền đầy đủ thông tin");
       return;
@@ -44,6 +45,7 @@ export default function RegisterPage() {
       return;
     }
     try {
+      // formData.append("avatar", "uploads/user-images/default.png");
       const res = await axiosInstance.post(
         "http://localhost:3000/auth/register",
         {
@@ -51,9 +53,9 @@ export default function RegisterPage() {
         }
       );
 
-      const userData = res.data;
-      localStorage.setItem("accessToken", userData.accessToken);
-      localStorage.setItem("user", JSON.stringify(userData.user));
+      // const userData = res.data;
+      // localStorage.setItem("accessToken", userData.accessToken);
+      // localStorage.setItem("user", JSON.stringify(userData.user));
 
       alert("Đăng ký thành công!");
       window.location.href = '/login';

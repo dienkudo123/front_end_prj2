@@ -1,29 +1,22 @@
 import { useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import dummyPosts from "../data/posts"; // Import danh sách post từ file riêng
 import "../styles/PostDetail.css"; // Import CSS riêng
 import { AiOutlineMessage } from 'react-icons/ai';
+import { useUser } from "../context/UserContext"; 
+import axiosInstance from "../utils/api";
+
+const API_BASE_URL = "http://localhost:3000";
+
 
 export default function PostDetail() {
   const { id } = useParams();
   const post = dummyPosts.find((p) => p.id === parseInt(id));
+  const lastCommentRef = useRef(null); 
+  const {user, setUser} = useUser();
 
-  const lastCommentRef = useRef(null); // Ref cho bình luận cuối cùng
 
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      username: "user1",
-      avatar: "https://i.pravatar.cc/50?u=user1",
-      text: "Bài viết đẹp quá!",
-    },
-    {
-      id: 2,
-      username: "user2",
-      avatar: "https://i.pravatar.cc/50?u=user2",
-      text: "Tuyệt vời!",
-    },
-  ]);
+  const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
@@ -32,23 +25,80 @@ export default function PostDetail() {
       lastCommentRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [comments]);
+  const getUser = (userId) => {
+    try{
+      const response = axiosInstance.get(`http://localhost:3000/user/${userId}`);
+      const userData = response;
+      return userData;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axiosInstance.get(`http://localhost:3000/comment/post-comments?postId=${id}`);
+        const data = response.data.data;
+
+        const formattedComments = await Promise.all(
+          data.map(async (comment) => {
+            const userRes = await getUser(comment.userId);
+            const userData = userRes.data.data;
+
+            return {
+              id: comment.id,
+              userId: comment.userId,
+              displayName: userData.displayName,
+              avatar: userData.avatar,
+              text: comment.content,
+            };
+          })
+        );
+        setComments(formattedComments);
+        console.log(comments);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    }
+
+    fetchComments();
+  },[id])
+
+  const uploadComment = async (comment) => {
+    try {
+      const response = await axiosInstance.post("http://localhost:3000/comment/create", {
+        postId: id,
+        userId: user.id,
+        content: comment,
+        status: "Published",
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error uploading comment:", error);
+    }
+  }
 
   const handleAddComment = () => {
     if (newComment.trim()) {
       const newCommentObj = {
         id: comments.length + 1,
-        username: "Bạn", // Giả sử user chưa đăng nhập (có thể thay bằng user thực tế)
-        avatar: "https://i.pravatar.cc/50?u=newUser",
+        displayName: user.displayName,
+        userId: user.id,
+        avatar: `${user.avatar}`,
         text: newComment,
       };
       setComments([...comments, newCommentObj]);
       setNewComment("");
+      uploadComment(newComment);
     }
   };
 
-  useEffect(() => {
-    console.log(comments); // In ra comments mỗi khi thay đổi
-  }, [comments]);
+  
+
+  // useEffect(() => {
+  //   console.log(comments); // In ra comments mỗi khi thay đổi
+  // }, [comments]);
 
   if (!post) {
     return (
@@ -72,15 +122,15 @@ export default function PostDetail() {
             <li
               key={comment.id}
               className="comment"
-              ref={index === comments.length - 1 ? lastCommentRef : null} // Thêm ref cho bình luận cuối cùng
+              ref={index === comments.length - 1 ? lastCommentRef : null} 
             >
               <img
-                src={comment.avatar}
+                src={`http://localhost:3000${comment.avatar}`}
                 alt="Avatar"
                 className="comment-avatar"
               />
               <div className="comment-content">
-                <p className="comment-username">{comment.username}</p>
+                <p className="comment-username">{comment.displayName}</p>
                 <p className="comment-text">{comment.text}</p>
               </div>
             </li>

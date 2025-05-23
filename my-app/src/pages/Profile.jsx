@@ -98,24 +98,24 @@ export default function Profile() {
         }
     };
 
-    const handleLogout = async () => {
-        try {
-            await axiosInstance.post(
-                `${API_BASE_URL}/auth/logout`,
-                {},
-                {
-                    withCredentials: true,
-                }
-            );
-        } catch (err) {
-            console.warn("Logout API failed:", err);
-        } finally {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("user");
-            navigate("/login");
-        }
-    };
+    // const handleLogout = async () => {
+    //     try {
+    //         await axiosInstance.post(
+    //             `${API_BASE_URL}/auth/logout`,
+    //             {},
+    //             {
+    //                 withCredentials: true,
+    //             }
+    //         );
+    //     } catch (err) {
+    //         console.warn("Logout API failed:", err);
+    //     } finally {
+    //         localStorage.removeItem("accessToken");
+    //         localStorage.removeItem("refreshToken");
+    //         localStorage.removeItem("user");
+    //         navigate("/login");
+    //     }
+    // };
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -233,9 +233,9 @@ export default function Profile() {
                     >
                         {isEditing ? "Save" : "Edit Profile"}
                     </button>
-                    <button onClick={handleLogout} className="logout-button">
+                    {/* <button onClick={handleLogout} className="logout-button">
                         <FiLogOut /> Log out
-                    </button>
+                    </button> */}
                 </div>
             </div>
 

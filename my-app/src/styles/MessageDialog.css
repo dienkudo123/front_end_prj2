@@ -1,0 +1,153 @@
+.message-dialog {
+  position: fixed;
+  bottom: 5px;
+  right: 320px; /* Đặt cạnh partner sidebar */
+  width: 380px;
+  min-height: 420px;
+  max-height: 70vh;
+  background: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  border: 1px solid #e3e8ee;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.message-dialog-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #9cb4d1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 18px;
+  background: #fff;
+  color: #410b88;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.message-dialog-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.message-dialog-header-info img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  background: #e3e8ee;
+}
+.message-dialog-header-info span {
+  font-size: 17px;
+  font-weight: 600;
+  color: #410b88;
+  letter-spacing: 0.2px;
+}
+
+.message-dialog-header button {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.message-dialog-header button:hover {
+  color: #1976d2;
+}
+
+.message-dialog-body {
+  flex: 1;
+  padding: 18px 20px;
+  overflow-y: auto;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message-item {
+  margin-bottom: 0;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #c0d2e0;
+  color: #000;
+  max-width: 75%;
+  word-break: break-word;
+  font-size: 15px;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+.message-own {
+  background: #020449;
+  color: #fff;
+  align-self: flex-end;
+}
+
+.message-dialog-footer {
+  display: flex;
+  border-top: 1px solid #e3e8ee;
+  padding: 14px 16px;
+  background: #fff;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  align-items: center;
+  position: relative;
+  gap: 0;
+}
+
+.message-dialog-footer-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.message-dialog-footer input {
+  width: 100%;
+  border: 1px solid #cfd8dc;
+  border-radius: 8px;
+  padding: 10px 38px 10px 14px; /* chừa chỗ cho icon bên phải */
+  font-size: 15px;
+  outline: none;
+  background: #f5f7fa;
+  transition: border 0.2s;
+}
+
+.message-dialog-footer input:focus {
+  border: 1.5px solid #1976d2;
+  background: #fff;
+}
+
+.emoji-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.emoji-button:hover {
+  color: #1976d2;
+}
+
+.emoji-picker-wrapper {
+  position: absolute;
+  bottom: 50px;
+  right: 0;
+  z-index: 10;
+}

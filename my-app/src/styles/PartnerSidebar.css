@@ -1,0 +1,52 @@
+.partner-sidebar {
+  width: 300px;
+  background: #fff;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px 0;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.partner-sidebar-tile {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 18px;
+  padding: 0 24px;
+  color: #333;
+}
+
+.partner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 16px;
+}
+
+.partner-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.partner-item:hover {
+  background: #f5f5f5;
+}
+
+.partner-avatar-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.partner-name {
+  font-size: 16px;
+  color: #222;
+  font-weight: 500;
+}

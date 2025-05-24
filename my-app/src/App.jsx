@@ -24,6 +24,7 @@ import "./styles/PostDetail.css";
 import "./styles/PostPage.css";
 import "./styles/NotificationsPage.css";
 import "./styles/Auth.css";
+import PartnerSidebar from "./components/PartnerSidebar";
 
 function AppContent() {
     const location = useLocation();
@@ -57,13 +58,13 @@ function AppContent() {
                     <Route path="/trending" element={<Trending />} />
                     <Route path="/post/new" element={<PostPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />
-                    <Route path="/chat" element={<ChatPage />} />
 
                     {/* Routes không có sidebar */}
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
                 </Routes>
             </div>
+            {!isAuthPage && <PartnerSidebar />}
         </div>
     );
 }

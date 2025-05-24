@@ -26,9 +26,9 @@ export default function ChatPage() {
     const fetchChatBoxes = async () => {
       const response = await axiosInstance.get("http://localhost:3000/chatBox");
       const chatBoxesData = response.data.data.map((item) => {
-        const partner = item.users.find((user) => user.id != userId);
+        const partner = item.users.find((u) => u.userId != userId);
         return {
-          id: item.id,
+          id: item._id,
           partner,
           messages: item.messages,
         };
@@ -125,8 +125,30 @@ export default function ChatPage() {
   }, [userKeyWord]);
 
   const handleChat = async (partnerId) => {
-    await axiosInstance.post('http://localhost:3000/chatBox/create', {partnerId});
-  }
+    const response = await axiosInstance.post(
+      "http://localhost:3000/chatBox/create",
+      { partnerId }
+    );
+    const newChatBox = response.data.data;
+
+    const partner = newChatBox.users.find((u) => u.id !== userId);
+    const formattedChatBox = {
+      id: newChatBox.id,
+      partner,
+      messages: newChatBox.messages || [],
+    };
+
+    const existing = chatBoxes.find(
+      (chatBox) => chatBox.id === formattedChatBox.id
+    );
+    if (!existing) {
+      setChatBoxes([formattedChatBox, ...chatBoxes]);
+    }
+
+    setSelectedChat(formattedChatBox);
+    setUserKeyWord('');
+    socket.emit("join", { chatBoxId: formattedChatBox.id });
+  };
 
   return (
     <div className="chat-container">
@@ -149,7 +171,11 @@ export default function ChatPage() {
               key={item.id}
               className={`chat-item ${item.read ? "read" : "unread"}`}
             >
-              <img src={`${API_BASE_URL}${item.partner.avatar}`} alt="Avatar" className="avatar" />
+              <img
+                src={`${API_BASE_URL}${item.partner.avatar}`}
+                alt="Avatar"
+                className="avatar"
+              />
               <div
                 className="chat-content"
                 onClick={() => {

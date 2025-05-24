@@ -12,7 +12,7 @@
 .profile-header {
     display: flex;
     align-items: flex-start;
-    gap: 30px;
+    gap: 200px;
     margin-bottom: 20px;
     padding: 20px 250px;
     border-bottom: 1px solid #262626;

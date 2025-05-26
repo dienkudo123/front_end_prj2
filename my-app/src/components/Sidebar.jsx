@@ -5,6 +5,7 @@ import { useUser } from "../context/UserContext";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
+const API_BASE_URL = "http://localhost:3000";
 import { useState, useRef, useEffect } from "react";
 
 export default function Sidebar() {

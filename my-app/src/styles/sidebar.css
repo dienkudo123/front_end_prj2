@@ -90,5 +90,39 @@
     filter: grayscale(100%); /* nếu muốn icon màu xám */
 }
 
-  
+.notification-wrapper {
+    position: relative;
+}
+
+.notification-dropdown {
+    position: fixed;
+    top: 0;
+    left: 250px; /* hoặc left: 0 nếu muốn bên trái */
+    width: 300px; /* hoặc 100% nếu bạn muốn chiếm toàn bộ chiều ngang */
+    height: 100vh; /* 100% chiều cao của viewport */
+    background-color: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* Bóng bên trái nếu panel bên phải */
+    z-index: 9999;
+    padding: 16px;
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+
+
+    transition: opacity 1s ease-in-out;
+}
+
+
+.notification-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background-color: #f5f5f5;
+}
+
 

@@ -43,6 +43,7 @@ export default function PostDetail() {
       return response;
     } catch (error) {
       console.error("Error fetching user:", error);
+      return null;
     }
   };
 
@@ -55,12 +56,12 @@ export default function PostDetail() {
         const formattedComments = await Promise.all(
             data.map(async (comment) => {
               const userRes = await getUser(comment.userId);
-              const userData = userRes.data.data;
+              const userData = userRes?.data?.data || {};
               return {
                 id: comment.id,
                 userId: comment.userId,
-                displayName: userData.displayName,
-                avatar: userData.avatar,
+                displayName: userData.displayName || "Người dùng",
+                avatar: userData.avatar || "/default-avatar.png",
                 text: comment.content,
               };
             })
@@ -73,33 +74,39 @@ export default function PostDetail() {
     fetchComments();
   }, [id]);
 
-  const uploadComment = async (comment) => {
+  // Gửi bình luận lên backend, backend lấy userId từ token
+  const uploadComment = async (commentContent) => {
     try {
-      await axiosInstance.post(`${API_BASE_URL}/comment/create`, {
+      const response = await axiosInstance.post(`${API_BASE_URL}/comment/create`, {
+        content: commentContent,
         postId: id,
-        userId: user.id,
-        content: comment,
-        status: "Published",
       });
+      return response.data.data; // bình luận vừa tạo
     } catch (error) {
       console.error("Error uploading comment:", error);
+      return null;
     }
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      const newCommentObj = {
-        id: comments.length + 1,
-        displayName: user.displayName,
-        userId: user.id,
-        avatar: `${user.avatar}`,
-        text: newComment,
-      };
-      setComments([...comments, newCommentObj]);
-      setNewComment("");
-      uploadComment(newComment);
+      const createdComment = await uploadComment(newComment);
+      if (createdComment) {
+        const newCommentObj = {
+          id: createdComment.id,
+          displayName: user.displayName,
+          userId: user.id,
+          avatar: user.avatar,
+          text: createdComment.content,
+        };
+        setComments([...comments, newCommentObj]);
+        setNewComment("");
+      } else {
+        alert("Không thể thêm bình luận. Vui lòng thử lại.");
+      }
     }
   };
+  console.log(id);
 
   if (loading) {
     return <h2 style={{ color: "white", textAlign: "center" }}>Đang tải...</h2>;
@@ -118,8 +125,12 @@ export default function PostDetail() {
         <div className="post-detail-comments">
           <ul className="comment-list">
             {comments.map((comment, index) => (
-                <li key={comment.id} className="comment" ref={index === comments.length - 1 ? lastCommentRef : null}>
-                  <img src={`http://localhost:3000${comment.avatar}`} alt="Avatar" className="comment-avatar"/>
+                <li
+                    key={comment.id}
+                    className="comment"
+                    ref={index === comments.length - 1 ? lastCommentRef : null}
+                >
+                  <img src={`${API_BASE_URL}${comment.avatar}`} alt="Avatar" className="comment-avatar" />
                   <div className="comment-content">
                     <p className="comment-username">{comment.displayName}</p>
                     <p className="comment-text">{comment.text}</p>
@@ -138,7 +149,7 @@ export default function PostDetail() {
                 }}
             />
             <span className="send-icon" onClick={handleAddComment}>
-            <AiOutlineMessage/>
+            <AiOutlineMessage />
           </span>
           </div>
         </div>

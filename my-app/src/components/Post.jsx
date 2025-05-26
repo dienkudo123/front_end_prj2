@@ -8,6 +8,12 @@ const API_BASE_URL = "http://localhost:3000"; // Cần đồng bộ với backen
 export default function Post({ post, hideUser = false }) {
     const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
+    const goToUserProfile = () => {
+        if (post.user?.id) {
+            navigate(`/user/${post.user.id}`);
+        }
+    };
+
 
     return (
         <div className="post">
@@ -23,7 +29,13 @@ export default function Post({ post, hideUser = false }) {
                         alt="Avatar"
                         className="avatar"
                     />
-                    <p className="username">{post.user.displayName}</p>
+                    <p
+                        className="username"
+                        onClick={goToUserProfile}
+                        style={{cursor: "pointer", fontWeight: "bold"}}
+                    >
+                        {post.user.displayName}
+                    </p>
                     {/* Trend Topic Title */}
                     {post.trendTopic?.title && (
                         <div className="post-trend-topic">

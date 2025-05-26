@@ -5,6 +5,7 @@ import { useUser } from "../context/UserContext";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
+const API_BASE_URL = "http://localhost:3000";
 
 export default function Sidebar() {
     const { user } = useUser();
@@ -44,9 +45,6 @@ export default function Sidebar() {
                 </Link>
                 <Link to="/search" className="sidebar-link">
                     <FaSearch className="sidebar-icon" /> Search
-                </Link>
-                <Link to="/chat" className="sidebar-link">
-                    <FaComments className="sidebar-icon" /> Chat
                 </Link>
                 <Link to="/notifications" className="sidebar-link">
                     <FaBell className="sidebar-icon" /> Notifications

@@ -21,6 +21,7 @@ export default function ChatPage() {
   const [users, setUsers] = useState([]);
   const emojiPickerRef = useRef(null);
   const userId = getUserId();
+  console.log("User ID:", userId);
 
   useEffect(() => {
     const fetchChatBoxes = async () => {

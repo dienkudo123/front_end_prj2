@@ -6,6 +6,7 @@
   height: 100vh;
   box-sizing: border-box;
   overflow-y: auto;
+  border-left: 1px solid #ccd0d5;
 }
 
 .partner-sidebar-tile {

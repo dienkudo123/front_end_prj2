@@ -12,6 +12,13 @@ export default function Sidebar() {
     const navigate = useNavigate();
     const [showNotifications, setShowNotifications] = useState(false);
     const notificationRef = useRef(null);
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        if (showNotifications) {
+            fetchNotifications(); // Gọi API khi mở dropdown
+        }
+    }, [showNotifications]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -24,6 +31,19 @@ export default function Sidebar() {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const fetchNotifications = async () => {
+        try {
+            const res = await axiosInstance.get("/notification/user", {
+                withCredentials: true, // Nếu API dùng cookie để xác thực
+            });
+            if (res.data?.data) {
+                setNotifications(res.data.data); // Lưu data nhận được vào state notifications
+            }
+        } catch (error) {
+            console.error("Failed to fetch notifications", error);
+        }
+    };
 
     const handleLogout = async () => {
         try {
@@ -43,6 +63,8 @@ export default function Sidebar() {
             navigate("/login");
         }
     };
+
+    console.log(notifications);
     return (
         <div className="sidebar">
             <h3 className="sidebar-title">Webgidodo</h3>
@@ -93,10 +115,26 @@ export default function Sidebar() {
 
                     {showNotifications && (
                         <div className="notification-dropdown">
-                            <div className="notification-item">📢 New comment on your post</div>
-                            <div className="notification-item">👤 Someone followed you</div>
-                            <div className="notification-item">🔥 Trending topic update</div>
-                            <div className="notification-item">💬 New message received</div>
+                            {notifications.length === 0 && (
+                                <div className="notification-item">No new notifications</div>
+                            )}
+                            {notifications.map((noti) => (
+                                <div key={noti.id} className="notification-item"
+                                     style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                                    {/* Avatar người gửi */}
+                                    <img
+                                        src={noti.actorUser.avatar ? `http://localhost:3000${noti.actorUser.avatar}` : "http://localhost:3000/uploads/user-images/default.png/30"}
+                                        alt={noti.actorUser.displayName || "User avatar"}
+                                        style={{width: 30, height: 30, borderRadius: "50%"}}
+                                    />
+                                    <div>
+                                        {/* Tên người gửi */}
+                                        <strong>{noti.actorUser.displayName || "Unknown User"}</strong>{" "}
+                                        {/* Nội dung notification */}
+                                        {noti.content}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

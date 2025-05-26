@@ -249,7 +249,6 @@
 
 .follow-button {
     padding: 8px 16px;
-    border: none;
     border-radius: 20px;
     font-weight: 600;
     cursor: pointer;
@@ -258,6 +257,7 @@
     font-size: 14px;
     user-select: none;
     color:black;
+    border: 1px solid rgba(0, 0, 0, .15);
 }
 
 /* Nút Follow */

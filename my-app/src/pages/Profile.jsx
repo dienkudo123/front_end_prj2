@@ -4,12 +4,8 @@ import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
 import { useUser } from "../context/UserContext";
+import { FiHome, FiAward } from "react-icons/fi";
 
-// const API_BASE_URL = "http://localhost:3000";
-// const axiosInstance = axios.create({
-//     baseURL: API_BASE_URL,
-//     withCredentials: true,
-// });
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -26,16 +22,23 @@ export default function Profile() {
     const [avatarFile, setAvatarFile] = useState(null);
     const paramUsername = "User";
     const { user, setUser } = useUser();
+    const [bio, setBio] = useState("");
+    const [hometown, setHometown] = useState("");
+    const [school, setSchool] = useState("");
+    const [activeTab, setActiveTab] = useState("posts");
+
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             const response = await axiosInstance.get(`${API_BASE_URL}/user/me`);
-            // console.log('User profile data:', response.data.data);
             const userData = response.data.data;
             setDisplayName(userData.user.displayName || paramUsername);
             setEmail(userData.user.email || "");
             setFollowers(userData.followers.length || 0);
             setFollowing(userData.followings.length || 0);
+            setBio(userData.user.bio || "");
+            setHometown(userData.user.hometown || "");  // set quê quán
+            setSchool(userData.user.school || "");      // set trường học
             if (userData.user.avatar) {
                 setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
             }
@@ -61,6 +64,10 @@ export default function Profile() {
             const formData = new FormData();
             formData.append("displayName", displayName);
             formData.append("email", email);
+            formData.append("bio", bio);
+            formData.append("hometown", hometown);  // thêm quê quán
+            formData.append("school", school);      // thêm trường học
+
             if (avatarFile) {
                 formData.append("avatar", avatarFile);
             }
@@ -75,47 +82,26 @@ export default function Profile() {
                     },
                 }
             );
-            console.log("User updated:", response.data.data.avatar);
+
             const updatedUserData = response.data.data;
-            // setDisplayName(updatedUserData.displayName);
-            // setEmail(updatedUserData.email);
-            // setAvatarUrl(`${API_BASE_URL}${updatedUserData.avatar}`);
 
             const updatedUser = {
-            ...user,
-            displayName: updatedUserData.displayName,
-            avatar: updatedUserData.avatar,
+                ...user,
+                displayName: updatedUserData.displayName,
+                avatar: updatedUserData.avatar,
+                bio: updatedUserData.bio,
+                hometown: updatedUserData.hometown,  // cập nhật quê quán
+                school: updatedUserData.school,      // cập nhật trường học
             };
-            
+
             setUser(updatedUser);
 
-            console.log("User updated:", response.data);
             alert("Profile updated successfully!");
             setIsEditing(false);
-            
         } catch (error) {
             console.error("Update failed:", error);
         }
     };
-
-    // const handleLogout = async () => {
-    //     try {
-    //         await axiosInstance.post(
-    //             `${API_BASE_URL}/auth/logout`,
-    //             {},
-    //             {
-    //                 withCredentials: true,
-    //             }
-    //         );
-    //     } catch (err) {
-    //         console.warn("Logout API failed:", err);
-    //     } finally {
-    //         localStorage.removeItem("accessToken");
-    //         localStorage.removeItem("refreshToken");
-    //         localStorage.removeItem("user");
-    //         navigate("/login");
-    //     }
-    // };
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -173,7 +159,7 @@ export default function Profile() {
                     {isEditing ? (
                         <div className="edit-profile-form">
                             <div className="avatar-edit">
-                                <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
+                                <img src={avatarUrl} alt="Avatar" className="profile-avatar"/>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -200,11 +186,32 @@ export default function Profile() {
                                     placeholder="Email"
                                     className="profile-input"
                                 />
+                                <input
+                                    type="text"
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                    placeholder="Bio"
+                                    className="profile-input"
+                                />
+                                <input
+                                    type="text"
+                                    value={hometown}
+                                    onChange={(e) => setHometown(e.target.value)}
+                                    placeholder="Quê quán"
+                                    className="profile-input"
+                                />
+                                <input
+                                    type="text"
+                                    value={school}
+                                    onChange={(e) => setSchool(e.target.value)}
+                                    placeholder="Trường học"
+                                    className="profile-input"
+                                />
                             </div>
                         </div>
                     ) : (
                         <>
-                            <img src={avatarUrl} alt="Avatar" className="profile-avatar" />
+                            <img src={avatarUrl} alt="Avatar" className="profile-avatar"/>
                             <div className="profile-stats">
                                 <h2>{displayName}</h2>
                                 <div className="stats-container">
@@ -221,6 +228,7 @@ export default function Profile() {
                                         <span className="stat-label">following</span>
                                     </div>
                                 </div>
+                                {bio && <p className="profile-bio">{bio}</p>}
                             </div>
                         </>
                     )}
@@ -233,34 +241,131 @@ export default function Profile() {
                     >
                         {isEditing ? "Save" : "Edit Profile"}
                     </button>
-                    {/* <button onClick={handleLogout} className="logout-button">
-                        <FiLogOut /> Log out
-                    </button> */}
                 </div>
             </div>
-
-            <div className="profile-posts">
-                {posts.length === 0 && <p>Không có bài đăng nào.</p>}
-                {posts.map((post) => (
-                    <div key={post.id} className="profile-post">
-                        {post.imageUrl && (
-                            <img
-                                src={fullUrl(post.imageUrl)}
-                                alt="Post"
-                                className="profile-post-image"
-                            />
-                        )}
-                        {post.videoUrl && (
-                            <video controls className="profile-post-video">
-                                <source src={fullUrl(post.videoUrl)} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                        )}
-                        <h3>{post.title}</h3>
-                        <p>{post.content}</p>
-                    </div>
-                ))}
+            <div className="profile-extra-info">
+                {hometown && (
+                    <p>
+                        <img
+                            src="https://static.xx.fbcdn.net/rsrc.php/v4/yc/r/-e1Al38ZrZL.png"
+                            alt="Hometown Icon"
+                            className="info-icon"
+                        />
+                        {hometown}
+                    </p>
+                )}
+                {school && (
+                    <p>
+                        <img
+                            src="https://static.xx.fbcdn.net/rsrc.php/v4/yS/r/jV4o8nAgIEh.png"
+                            alt="School Icon"
+                            className="info-icon"
+                        />
+                        {school}
+                    </p>
+                )}
             </div>
+
+
+            <div className="profile-tabs">
+                <button
+                    className={activeTab === "posts" ? "tab-button active" : "tab-button"}
+                    onClick={() => setActiveTab("posts")}
+                >
+                    <svg
+                        aria-label=""
+                        className="icon-svg"
+                        fill="currentColor"
+                        height="12"
+                        role="img"
+                        viewBox="0 0 24 24"
+                        width="12"
+                    >
+                        <title></title>
+                        <rect fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                              strokeWidth="2" width="18" x="3" y="3"></rect>
+                        <line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                              strokeWidth="2" x1="9.015" x2="9.015" y1="3" y2="21"></line>
+                        <line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                              strokeWidth="2" x1="14.985" x2="14.985" y1="3" y2="21"></line>
+                        <line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                              strokeWidth="2" x1="21" x2="3" y1="9.015" y2="9.015"></line>
+                        <line fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                              strokeWidth="2" x1="21" x2="3" y1="14.985" y2="14.985"></line>
+                    </svg>
+                    POSTS
+                </button>
+                <button
+                    className={activeTab === "info" ? "tab-button active" : "tab-button"}
+                    onClick={() => setActiveTab("info")}
+                >
+                    <svg aria-label="" className="x1lliihq x1n2onr6 x1roi4f4" fill="currentColor" height="12" role="img"
+                         viewBox="0 0 24 24" width="12"><title></title>
+                        <path
+                            d="M10.201 3.797 12 1.997l1.799 1.8a1.59 1.59 0 0 0 1.124.465h5.259A1.818 1.818 0 0 1 22 6.08v14.104a1.818 1.818 0 0 1-1.818 1.818H3.818A1.818 1.818 0 0 1 2 20.184V6.08a1.818 1.818 0 0 1 1.818-1.818h5.26a1.59 1.59 0 0 0 1.123-.465Z"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></path>
+                        <path
+                            d="M18.598 22.002V21.4a3.949 3.949 0 0 0-3.948-3.949H9.495A3.949 3.949 0 0 0 5.546 21.4v.603"
+                            fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"></path>
+                        <circle cx="12.072" cy="11.075" fill="none" r="3.556" stroke="currentColor"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle>
+                    </svg>
+                    IMFORMATION
+                </button>
+            </div>
+            {activeTab === "info" && (
+                <div className="profile-extra-info">
+                    {bio && <p><strong>Bio:</strong> {bio}</p>}
+                    {hometown && (
+                        <p>
+                            <img
+                                src="https://static.xx.fbcdn.net/rsrc.php/v4/yc/r/-e1Al38ZrZL.png"
+                                alt="Hometown Icon"
+                                className="info-icon"
+                            />
+                            {hometown}
+                        </p>
+                    )}
+                    {school && (
+                        <p>
+                            <img
+                                src="https://static.xx.fbcdn.net/rsrc.php/v4/yS/r/jV4o8nAgIEh.png"
+                                alt="School Icon"
+                                className="info-icon"
+                            />
+                            {school}
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {activeTab === "posts" && (
+                <div className="profile-posts">
+                    {posts.length === 0 && <p>Không có bài đăng nào.</p>}
+                    {posts.map((post) => (
+                        <div key={post.id} className="profile-post">
+                            {post.imageUrl && (
+                                <img
+                                    src={fullUrl(post.imageUrl)}
+                                    alt="Post"
+                                    className="profile-post-image"
+                                />
+                            )}
+                            {post.videoUrl && (
+                                <video controls className="profile-post-video">
+                                    <source src={fullUrl(post.videoUrl)} type="video/mp4"/>
+                                    Your browser does not support the video tag.
+                                </video>
+                            )}
+                            <h3>{post.title}</h3>
+                            <p>{post.content}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
         </div>
     );
 }

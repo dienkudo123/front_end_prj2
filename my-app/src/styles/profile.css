@@ -2,8 +2,8 @@
     width: auto;
     margin: auto;
     padding: 20px;
-    background-color: #000; /* Nền đen */
-    color: white;
+    background-color: white;
+    color: black;
     border-radius: 10px;
     margin-left: 23px;
     margin-right: 23px;
@@ -12,10 +12,9 @@
 .profile-header {
     display: flex;
     align-items: flex-start;
-    gap: 200px;
+    gap: 30px;
     margin-bottom: 20px;
     padding: 20px 250px;
-    border-bottom: 1px solid #262626;
 }
 
 .profile-info {
@@ -29,7 +28,25 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid white;
+    border: 2px solid black;
+}
+
+.profile-extra-info {
+    padding: 0px 250px;
+    white-space: nowrap;
+    border-bottom: 1px solid #262626;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+}
+
+.info-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.5; /* Tùy chọn: làm màu nhẹ hơn */
+    margin-right: 4px; /* Khoảng cách giữa icon và chữ */
+    vertical-align: middle;
 }
 
 .profile-stats {
@@ -58,10 +75,11 @@
 .stat-value {
     font-weight: bold;
     font-size: 18px;
+    color: black;
 }
 
 .stat-label {
-    color: #8e8e8e;
+    color: black;
     font-size: 14px;
 }
 
@@ -83,8 +101,9 @@
 }
 
 .avatar-upload-label {
-    background-color: #0095f6;
-    color: white;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -92,9 +111,6 @@
     transition: background-color 0.3s;
 }
 
-.avatar-upload-label:hover {
-    background-color: #0081d6;
-}
 
 .profile-fields {
     display: flex;
@@ -107,8 +123,8 @@
     font-size: 14px;
     border: 1px solid #262626;
     border-radius: 4px;
-    background-color: #000;
-    color: white;
+    background-color: #fff;
+    color: black;
     width: 250px;
 }
 
@@ -124,24 +140,22 @@
 }
 
 .edit-profile-button {
-    background-color: #0095f6;
-    color: white;
-    border: none;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     transition: background-color 0.3s;
 }
 
-.edit-profile-button:hover {
-    background-color: #0081d6;
-}
+
 
 .logout-button {
     background-color: transparent;
-    color: white;
+    color: black;
     border: 1px solid #262626;
     padding: 8px 16px;
     border-radius: 4px;
@@ -155,18 +169,20 @@
 
 .logout-button:hover {
     background-color: #262626;
+    color: white;
 }
 
 .profile-posts {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    padding: 20px 250px;
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    gap: 5px;
+    padding: 20px 200px;
 }
 
 .profile-post {
     aspect-ratio: 1;
     overflow: hidden;
+    aspect-ratio: 2 / 3;
     border-radius: 4px;
     background-color: #262626;
 }
@@ -184,21 +200,47 @@
 
 .profile-username {
     font-size: 22px;
-    margin-top: 10px; /* Đẩy tên xuống dưới avatar */
+    margin-top: 10px;
+    color: black;
 }
 
 .profile-username-input {
-  padding: 8px 12px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  outline: none;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    background-color: #f0f0f0;
+    color: black;
+    border: 1px solid #444;
+    width: 150px;
 }
 
-.profile-username-input {
-  background-color: #1a1a1a;
-  color: white;
-  border: 1px solid #444;
-  width: 150px;
+.profile-tabs {
+    display: flex;
+    gap: 12px;
+    margin: 10px 0; /* chỉnh margin trên dưới, bỏ trái phải */
+    justify-content: center; /* căn giữa ngang */
 }
 
+.tab-button {
+    display: inline-flex;  /* hoặc flex */
+    align-items: center;   /* canh giữa icon và chữ theo chiều dọc */
+    padding: 8px 16px;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+    gap: 5px;
+    font-weight: 500;
+    color: black; /* màu xám nhạt */
+    opacity: 0.3;
+    font-weight: bold;
+
+}
+
+
+.tab-button.active {
+    color: black; /* chữ trắng đậm */
+    opacity: 1;
+    border-bottom: 1px solid black;
+}

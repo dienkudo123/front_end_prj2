@@ -1,12 +1,10 @@
 .post {
-    background-color: black;
-    color: white;
+    background-color: white;
+    color: black;
     padding: 15px;
-    border-radius: 10px;
     margin-bottom: 20px;
-    max-width: 500px;
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Viền trắng nhẹ */
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Hiệu ứng bóng mờ trắng */
+    max-width: 420px;
+    border-bottom: 1px solid #ccd0d5; /* Viền trắng nhẹ */
 }
 
 .post-header {
@@ -26,6 +24,14 @@
     font-weight: bold;
 }
 
+.post-trend-topic {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+}
+
 .post-image {
     width: 100%;
     border-radius: 10px;
@@ -34,8 +40,8 @@
 
 .post-actions {
     display: flex;
-    gap: 15px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 5px;
     align-items: center;
 }
 
@@ -43,10 +49,30 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: white;
-    font-size: 20px;
+    color: black;
+    font-size: 23px;
 }
 
 .liked {
     color: red;
 }
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.icon-img {
+    width: 26px;
+    height: 26px;
+}
+
+.post-content {
+    margin-top: -8px; /* dịch lên trên gần header */
+    font-family:Arial, sans-serif;
+    font-size: 15px;
+}
+

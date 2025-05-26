@@ -29,7 +29,7 @@ export default function Sidebar() {
     };
     return (
         <div className="sidebar">
-            <h3 className="sidebar-title">Instagram</h3>
+            <h3 className="sidebar-title">Webgidodo</h3>
             <nav className="sidebar-menu">
                 <Link to={`/profile/me`} className="sidebar-link">
                     <img

@@ -2,33 +2,85 @@
 .post-detail {
     display: flex;
     height: 100vh;
-    background-color: black;
+    background-color: white;
 }
+
+.header-post {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.8); /* Nền mờ nếu cần nổi bật trên ảnh */
+    border-radius: 16px;
+    z-index: 2;
+}
+
+.post-author-avatar {
+    display: flex;
+    align-items: center;
+}
+
+.post-author-avatar .avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    border: 2px solid white;
+}
+
+.author-name {
+    font-weight: bold;
+    font-size: 14px;
+    color: black;
+}
+
+.post-trend-topic {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.trend-label {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.trend-title {
+    font-weight: 500;
+}
+
+
 
 /* Ảnh bài viết chiếm 50% màn hình */
 .post-detail-image {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    background-color: black;
+    align-items: flex-end; /* Đẩy ảnh xuống dưới */
+    background-color: white;
     padding: 20px;
+    box-sizing: border-box;
 }
 
+
 .post-detail-image img {
-    height: 90%; /* Cố định chiều cao ảnh */
+    height: 90%;
     width: auto;
     max-width: 100%;
     object-fit: cover;
-    border-radius: 10px;
 }
 
 /* Phần bình luận chiếm 50% màn hình */
 .post-detail-comments {
     flex: 1;
     padding: 20px;
-    color: white;
-    background-color: black;
+    color: black;
+    background-color: white;
     display: flex;
     flex-direction: column;
     justify-content: flex-start; /* Đẩy bình luận lên trên */
@@ -71,7 +123,7 @@
     align-items: flex-start;
     gap: 10px;
     padding: 10px;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #ccd0d5;
 }
 
 /* Avatar bình luận */
@@ -96,8 +148,9 @@
 
 /* Nội dung bình luận */
 .comment-text {
+    margin-top: -5px;
     font-size: 14px;
-    color: #ccc;
+    color: black;
 }
 
 /* Ô nhập bình luận cố định dưới đáy */
@@ -108,7 +161,7 @@
     left: 0;
     right: 0;
     padding: 10px;
-    background-color: black;
+    background-color: white;
     align-items: center;
 }
 
@@ -116,9 +169,9 @@
 .comment-input input {
     flex: 1;
     border-radius: 5px;
-    border: 1px solid white;
-    background-color: black;
-    color: white;
+    border: 1px solid black;
+    background-color: white;
+    color: black;
     padding: 10px 40px 10px 10px;
     box-sizing: border-box;
 }
@@ -128,7 +181,7 @@
     position: absolute;
     right: 20px;
     cursor: pointer;
-    color: white;
+    color: black;
     font-size: 20px;
     transition: transform 0.2s;
 }

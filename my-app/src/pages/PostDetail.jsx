@@ -53,17 +53,17 @@ export default function PostDetail() {
         const data = response.data.data;
 
         const formattedComments = await Promise.all(
-          data.map(async (comment) => {
-            const userRes = await getUser(comment.userId);
-            const userData = userRes.data.data;
-            return {
-              id: comment.id,
-              userId: comment.userId,
-              displayName: userData.displayName,
-              avatar: userData.avatar,
-              text: comment.content,
-            };
-          })
+            data.map(async (comment) => {
+              const userRes = await getUser(comment.userId);
+              const userData = userRes.data.data;
+              return {
+                id: comment.id,
+                userId: comment.userId,
+                displayName: userData.displayName,
+                avatar: userData.avatar,
+                text: comment.content,
+              };
+            })
         );
         setComments(formattedComments);
       } catch (error) {
@@ -110,38 +110,38 @@ export default function PostDetail() {
   }
 
   return (
-    <div className="post-detail">
-      <div className="post-detail-image">
-        <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" />
-      </div>
+      <div className="post-detail">
+        <div className="post-detail-image">
+          <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" className="image" />
+        </div>
 
-      <div className="post-detail-comments">
-        <ul className="comment-list">
-          {comments.map((comment, index) => (
-            <li key={comment.id} className="comment" ref={index === comments.length - 1 ? lastCommentRef : null}>
-              <img src={`http://localhost:3000${comment.avatar}`} alt="Avatar" className="comment-avatar" />
-              <div className="comment-content">
-                <p className="comment-username">{comment.displayName}</p>
-                <p className="comment-text">{comment.text}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="comment-input">
-          <input
-            type="text"
-            placeholder="Nhập bình luận..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAddComment();
-            }}
-          />
-          <span className="send-icon" onClick={handleAddComment}>
-            <AiOutlineMessage />
+        <div className="post-detail-comments">
+          <ul className="comment-list">
+            {comments.map((comment, index) => (
+                <li key={comment.id} className="comment" ref={index === comments.length - 1 ? lastCommentRef : null}>
+                  <img src={`http://localhost:3000${comment.avatar}`} alt="Avatar" className="comment-avatar"/>
+                  <div className="comment-content">
+                    <p className="comment-username">{comment.displayName}</p>
+                    <p className="comment-text">{comment.text}</p>
+                  </div>
+                </li>
+            ))}
+          </ul>
+          <div className="comment-input">
+            <input
+                type="text"
+                placeholder="Nhập bình luận..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddComment();
+                }}
+            />
+            <span className="send-icon" onClick={handleAddComment}>
+            <AiOutlineMessage/>
           </span>
+          </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -79,6 +79,7 @@ export default function PostDetail() {
       const response = await axiosInstance.post(`${API_BASE_URL}/comment/create`, {
         content: commentContent,
         postId: id,
+        status: "Published"
       });
       return response.data.data; // bình luận vừa tạo
     } catch (error) {

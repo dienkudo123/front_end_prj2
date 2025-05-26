@@ -13,7 +13,6 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
   const lastCommentRef = useRef(null);
   const { user } = useUser();
-
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
@@ -43,6 +42,7 @@ export default function PostDetail() {
       return response;
     } catch (error) {
       console.error("Error fetching user:", error);
+      return null;
     }
   };
 
@@ -53,17 +53,17 @@ export default function PostDetail() {
         const data = response.data.data;
 
         const formattedComments = await Promise.all(
-          data.map(async (comment) => {
-            const userRes = await getUser(comment.userId);
-            const userData = userRes.data.data;
-            return {
-              id: comment.id,
-              userId: comment.userId,
-              displayName: userData.displayName,
-              avatar: userData.avatar,
-              text: comment.content,
-            };
-          })
+            data.map(async (comment) => {
+              const userRes = await getUser(comment.userId);
+              const userData = userRes?.data?.data || {};
+              return {
+                id: comment.id,
+                userId: comment.userId,
+                displayName: userData.displayName || "Người dùng",
+                avatar: userData.avatar || "/default-avatar.png",
+                text: comment.content,
+              };
+            })
         );
         setComments(formattedComments);
       } catch (error) {
@@ -73,31 +73,37 @@ export default function PostDetail() {
     fetchComments();
   }, [id]);
 
-  const uploadComment = async (comment) => {
+  // Gửi bình luận lên backend, backend lấy userId từ token
+  const uploadComment = async (commentContent) => {
     try {
-      await axiosInstance.post(`${API_BASE_URL}/comment/create`, {
+      const response = await axiosInstance.post(`${API_BASE_URL}/comment/create`, {
+        content: commentContent,
         postId: id,
-        userId: user.id,
-        content: comment,
-        status: "Published",
+        status: "Published"
       });
+      return response.data.data; // bình luận vừa tạo
     } catch (error) {
       console.error("Error uploading comment:", error);
+      return null;
     }
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      const newCommentObj = {
-        id: comments.length + 1,
-        displayName: user.displayName,
-        userId: user.id,
-        avatar: `${user.avatar}`,
-        text: newComment,
-      };
-      setComments([...comments, newCommentObj]);
-      setNewComment("");
-      uploadComment(newComment);
+      const createdComment = await uploadComment(newComment);
+      if (createdComment) {
+        const newCommentObj = {
+          id: createdComment.id,
+          displayName: user.displayName,
+          userId: user.id,
+          avatar: user.avatar,
+          text: createdComment.content,
+        };
+        setComments([...comments, newCommentObj]);
+        setNewComment("");
+      } else {
+        alert("Không thể thêm bình luận. Vui lòng thử lại.");
+      }
     }
   };
 
@@ -109,39 +115,68 @@ export default function PostDetail() {
     return <h2 style={{ color: "white", textAlign: "center" }}>Bài viết không tồn tại</h2>;
   }
 
+  console.log(post);
   return (
-    <div className="post-detail">
-      <div className="post-detail-image">
-        <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" />
-      </div>
+      <div className="post-detail">
+        <div className="post-detail-image">
+          <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" className="image"/>
+        </div>
 
-      <div className="post-detail-comments">
-        <ul className="comment-list">
-          {comments.map((comment, index) => (
-            <li key={comment.id} className="comment" ref={index === comments.length - 1 ? lastCommentRef : null}>
-              <img src={`http://localhost:3000${comment.avatar}`} alt="Avatar" className="comment-avatar" />
-              <div className="comment-content">
-                <p className="comment-username">{comment.displayName}</p>
-                <p className="comment-text">{comment.text}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="comment-input">
-          <input
-            type="text"
-            placeholder="Nhập bình luận..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleAddComment();
-            }}
-          />
-          <span className="send-icon" onClick={handleAddComment}>
-            <AiOutlineMessage />
+        <div className="post-detail-comments">
+          <div className="post-header">
+            <img
+                src={
+                  post.user.avatar
+                      ? `${API_BASE_URL}${post.user.avatar}`
+                      : "/default-avatar.png"
+                }
+                alt="Avatar"
+                className="avatar"
+            />
+            <p
+                className="username"
+                style={{cursor: "pointer", fontWeight: "bold"}}
+            >
+              {post.user.displayName}
+            </p>
+            {/* Trend Topic Title */}
+            {post.trendTopic?.title && (
+                <div className="post-trend-topic">
+                  <span className="trend-title">{post.trendTopic.title}</span>
+                </div>
+            )}
+          </div>
+          <div className="content">{post.content}</div>
+          <ul className="comment-list">
+            {comments.map((comment, index) => (
+                <li
+                    key={comment.id}
+                    className="comment"
+                    ref={index === comments.length - 1 ? lastCommentRef : null}
+                >
+                  <img src={`${API_BASE_URL}${comment.avatar}`} alt="Avatar" className="comment-avatar"/>
+                  <div className="comment-content">
+                    <p className="comment-username">{comment.displayName}</p>
+                    <p className="comment-text">{comment.text}</p>
+                  </div>
+                </li>
+            ))}
+          </ul>
+          <div className="comment-input">
+            <input
+                type="text"
+                placeholder="Nhập bình luận..."
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddComment();
+                }}
+            />
+            <span className="send-icon" onClick={handleAddComment}>
+            <AiOutlineMessage/>
           </span>
+          </div>
         </div>
       </div>
-    </div>
   );
 }

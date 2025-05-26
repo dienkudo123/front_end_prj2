@@ -1,18 +1,25 @@
 .sidebar {
-    width: 300px;
-    background: #000;
+    width: 250px;
+    background: white;
     height: 100vh;
     padding: 20px;
     position: fixed;
     left: 0;
     top: 0;
-    border-right: 1px solid #262626;
+    border-right: 1px solid #ccd0d5;
     box-sizing: border-box;
+    color: black;
+}
+
+.sidebar-link:hover {
+    width: calc(100% - 20px);
+    background: rgba(0,0,0,.05); /* nền đậm hơn khi hover */
+    color: black; /* chữ trắng nổi bật */
 }
 
 .sidebar-title {
     font-size: 24px;
-    color: white;
+    color: black;
     margin-bottom: 20px;
 }
 
@@ -22,18 +29,16 @@
     gap: 15px;
 }
 
-.sidebar-link:hover {
-    background: #262626;
-}
 
 .sidebar-link {
     display: flex;
     align-items: center; /* Căn giữa icon và chữ theo chiều dọc */
     gap: 12px; /* Tạo khoảng cách giữa icon và chữ */
     text-decoration: none;
-    color: white;
-    font-size: 18px;
+    color: black;
+    font-size: 15px;
     padding: 10px 15px;
+    font-family: Arial, sans-serif;
     border-radius: 8px;
     transition: 0.3s;
     width: 100%; /* Đảm bảo phần tử full chiều ngang */
@@ -70,5 +75,54 @@
     bottom: 40px;
     left: 40px;
   }
-  
+
+.sidebar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; /* khoảng cách giữa icon và chữ */
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar-icon {
+    width: 26px;  /* chỉnh kích thước icon */
+    height: 26px;
+    filter: grayscale(100%); /* nếu muốn icon màu xám */
+}
+
+.notification-wrapper {
+    position: relative;
+}
+
+.notification-dropdown {
+    position: fixed;
+    top: 0;
+    left: 250px; /* hoặc left: 0 nếu muốn bên trái */
+    width: 300px; /* hoặc 100% nếu bạn muốn chiếm toàn bộ chiều ngang */
+    height: 100vh; /* 100% chiều cao của viewport */
+    background-color: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* Bóng bên trái nếu panel bên phải */
+    z-index: 9999;
+    padding: 16px;
+    overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+
+
+    transition: opacity 1s ease-in-out;
+}
+
+
+.notification-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item:hover {
+    background-color: #f5f5f5;
+}
+
 

@@ -8,6 +8,12 @@ const API_BASE_URL = "http://localhost:3000"; // Cần đồng bộ với backen
 export default function Post({ post, hideUser = false }) {
     const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
+    const goToUserProfile = () => {
+        if (post.user?.id) {
+            navigate(`/user/${post.user.id}`);
+        }
+    };
+
 
     return (
         <div className="post">
@@ -23,7 +29,19 @@ export default function Post({ post, hideUser = false }) {
                         alt="Avatar"
                         className="avatar"
                     />
-                    <p className="username">{post.user.displayName}</p>
+                    <p
+                        className="username"
+                        onClick={goToUserProfile}
+                        style={{cursor: "pointer", fontWeight: "bold"}}
+                    >
+                        {post.user.displayName}
+                    </p>
+                    {/* Trend Topic Title */}
+                    {post.trendTopic?.title && (
+                        <div className="post-trend-topic">
+                            <span className="trend-title">{post.trendTopic.title}</span>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -40,23 +58,25 @@ export default function Post({ post, hideUser = false }) {
             {/* Actions */}
             <div className="post-actions">
                 <button onClick={() => setLiked(!liked)} className="icon-button">
-                    {liked ? <FaHeart className="liked" /> : <FaRegHeart />}
+                    {liked ? <FaHeart className="liked"/> : <FaRegHeart/>}
                 </button>
                 <button className="icon-button" onClick={() => navigate(`/post/${post.id}`)}>
-                    <FaComment />
+                    <svg aria-label="Comment" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor" height="24"
+                         role="img" viewBox="0 0 24 24" width="24"><title>Comment</title>
+                        <path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z" fill="none" stroke="currentColor"
+                              stroke-linejoin="round" stroke-width="2"></path>
+                    </svg>
                 </button>
                 <button className="icon-button">
-                    <FaShare />
+                    <img
+                        src="https://www.svgrepo.com/show/522661/share.svg"
+                        alt="Share Icon"
+                        className="icon-img"
+                    />
                 </button>
+
             </div>
 
-            {/* Trend Topic Title */}
-            {post.trendTopic?.title && (
-                <div className="post-trend-topic">
-                    <span className="trend-label">#</span>
-                    <span className="trend-title">{post.trendTopic.title}</span>
-                </div>
-            )}
 
             {/* Content */}
             <div className="post-content">

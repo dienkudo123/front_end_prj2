@@ -9,6 +9,7 @@ import PostPage from "./pages/PostPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import UserProfile from "./pages/UserProfile";
 import ChatPage from "./pages/ChatPage";
 import { useEffect, useState } from "react";
 import axiosInstance from "./utils/api";
@@ -58,6 +59,7 @@ function AppContent() {
                     <Route path="/trending" element={<Trending />} />
                     <Route path="/post/new" element={<PostPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />
+                    <Route path="/user/:id" element={<UserProfile />} />
 
                     {/* Routes không có sidebar */}
                     <Route path="/login" element={<LoginPage />} />

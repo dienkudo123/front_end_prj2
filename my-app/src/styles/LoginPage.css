@@ -2,7 +2,7 @@ body {
     margin: 0;
     background-color: black;
     font-family: Arial, sans-serif;
-    color: white;
+    color: black;
   }
   
   .login-container {
@@ -11,7 +11,7 @@ body {
     align-items: center;
     height: 100vh;         
     width: 75vw;          
-    background-color: black;
+    background-color: white;
   }
   
   
@@ -40,14 +40,16 @@ body {
   }
   
   .login-box {
-    background-color: #121212;
+    background-color: #FFFFFF;
     padding: 2rem;
     border-radius: 1rem;
     width: 350px;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    border: 1px solid black;
   }
   
   .login-title {
+    color: black;
     font-size: 2rem;
     text-align: center;
     margin-bottom: 1rem;
@@ -64,18 +66,18 @@ body {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #444;
-    background-color: #1e1e1e;
-    color: white;
+    background-color: white;
+    color: black;
   }
   
   .login-form input:focus {
     outline: none;
-    border-color: #3897f0;
+    border-color: black;
   }
   
   .login-form button {
     background-color: #3897f0;
-    color: white;
+    color: black;
     padding: 10px;
     border-radius: 5px;
     border: none;
@@ -100,7 +102,7 @@ body {
   .login-facebook {
     background: none;
     border: none;
-    color: #1877f2;
+    color: black;
     font-weight: bold;
     cursor: pointer;
   }
@@ -111,7 +113,7 @@ body {
   }
   
   .login-forgot a {
-    color: #ccc;
+    color: black;
     text-decoration: none;
   }
   
@@ -120,13 +122,14 @@ body {
   }
   
   .login-register {
+    color: black;
     text-align: center;
     margin-top: 1.5rem;
     font-size: 0.9rem;
   }
   
   .login-register a {
-    color: #3897f0;
+    color: black;
     text-decoration: none;
   }
   

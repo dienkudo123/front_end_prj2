@@ -351,6 +351,7 @@ export default function Profile() {
                                     src={fullUrl(post.imageUrl)}
                                     alt="Post"
                                     className="profile-post-image"
+                                    onClick={() => navigate(`/post/${post.id}`)}
                                 />
                             )}
                             {post.videoUrl && (

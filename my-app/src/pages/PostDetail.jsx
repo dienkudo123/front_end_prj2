@@ -13,7 +13,6 @@ export default function PostDetail() {
   const [loading, setLoading] = useState(true);
   const lastCommentRef = useRef(null);
   const { user } = useUser();
-
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
@@ -106,7 +105,6 @@ export default function PostDetail() {
       }
     }
   };
-  console.log(id);
 
   if (loading) {
     return <h2 style={{ color: "white", textAlign: "center" }}>Đang tải...</h2>;
@@ -116,13 +114,38 @@ export default function PostDetail() {
     return <h2 style={{ color: "white", textAlign: "center" }}>Bài viết không tồn tại</h2>;
   }
 
+  console.log(post);
   return (
       <div className="post-detail">
         <div className="post-detail-image">
-          <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" className="image" />
+          <img src={`${API_BASE_URL}${post.imageUrl}`} alt="Post" className="image"/>
         </div>
 
         <div className="post-detail-comments">
+          <div className="post-header">
+            <img
+                src={
+                  post.user.avatar
+                      ? `${API_BASE_URL}${post.user.avatar}`
+                      : "/default-avatar.png"
+                }
+                alt="Avatar"
+                className="avatar"
+            />
+            <p
+                className="username"
+                style={{cursor: "pointer", fontWeight: "bold"}}
+            >
+              {post.user.displayName}
+            </p>
+            {/* Trend Topic Title */}
+            {post.trendTopic?.title && (
+                <div className="post-trend-topic">
+                  <span className="trend-title">{post.trendTopic.title}</span>
+                </div>
+            )}
+          </div>
+          <div className="content">{post.content}</div>
           <ul className="comment-list">
             {comments.map((comment, index) => (
                 <li
@@ -130,7 +153,7 @@ export default function PostDetail() {
                     className="comment"
                     ref={index === comments.length - 1 ? lastCommentRef : null}
                 >
-                  <img src={`${API_BASE_URL}${comment.avatar}`} alt="Avatar" className="comment-avatar" />
+                  <img src={`${API_BASE_URL}${comment.avatar}`} alt="Avatar" className="comment-avatar"/>
                   <div className="comment-content">
                     <p className="comment-username">{comment.displayName}</p>
                     <p className="comment-text">{comment.text}</p>
@@ -149,7 +172,7 @@ export default function PostDetail() {
                 }}
             />
             <span className="send-icon" onClick={handleAddComment}>
-            <AiOutlineMessage />
+            <AiOutlineMessage/>
           </span>
           </div>
         </div>

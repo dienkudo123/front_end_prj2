@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+// bỏ useNavigate, chỉ dùng useSearchParams nếu muốn sync URL query
+// import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import PostForm from "../components/PostForm";
 import "../styles/TrendingPage.css";
 
 export default function TrendingPage() {
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const currentTag = searchParams.get("tag");
+    // const navigate = useNavigate();
+    // const [searchParams] = useSearchParams();
+    // const currentTag = searchParams.get("tag");
+
+    // Quản lý currentTag bằng state
+    const [currentTag, setCurrentTag] = useState(null);
 
     const [trends, setTrends] = useState([]);
     const [showPostForm, setShowPostForm] = useState(false);
@@ -26,11 +30,11 @@ export default function TrendingPage() {
             .catch((err) => console.error("Lỗi khi lấy trends:", err));
     }, []);
 
-    // Lấy danh sách bài viết theo trendTopic
+    // Lấy danh sách bài viết theo trendTopic khi currentTag thay đổi
     useEffect(() => {
         if (!currentTag || trends.length === 0) return;
 
-        const trend = trends.find(t => `#${t.title}` === currentTag);
+        const trend = trends.find(t => `${t.title}` === currentTag);
         if (!trend) return;
 
         axios
@@ -43,19 +47,24 @@ export default function TrendingPage() {
 
     return (
         <div className="trending-page">
-            <h2>Khám phá</h2>
-
             <div className="button-group">
-                <button onClick={() => {
-                    setShowPostForm(true);
-                    setShowTrends(false);
-                }}>
+                <button
+                    className={showPostForm ? "active" : ""}
+                    onClick={() => {
+                        setShowPostForm(true);
+                        setShowTrends(false);
+                        setCurrentTag(null);  // reset tag khi đăng bài
+                    }}
+                >
                     Đăng bài
                 </button>
-                <button onClick={() => {
-                    setShowTrends(true);
-                    setShowPostForm(false);
-                }}>
+                <button
+                    className={showTrends ? "active" : ""}
+                    onClick={() => {
+                        setShowTrends(true);
+                        setShowPostForm(false);
+                    }}
+                >
                     Chủ đề phổ biến
                 </button>
             </div>
@@ -63,12 +72,16 @@ export default function TrendingPage() {
             {showTrends && (
                 <div className="trending-tags">
                     {trends.map((trend) => {
-                        const tag = `#${trend.title}`;
+                        const tag = `${trend.title}`;
                         return (
                             <button
                                 key={trend.id}
                                 className={`trending-tag ${tag === currentTag ? "active" : ""}`}
-                                onClick={() => navigate(`/trending?tag=${encodeURIComponent(tag)}`)}
+                                onClick={() => {
+                                    setShowTrends(true);
+                                    setShowPostForm(false);
+                                    setCurrentTag(tag);  // chỉ set state, không navigate
+                                }}
                             >
                                 {tag}
                             </button>

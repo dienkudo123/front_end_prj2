@@ -1,7 +1,9 @@
 .trending-page {
+    height: 100vh;
+    overflow-y: auto;
     text-align: center;
     padding: 20px;
-    color: white;
+    color: black;
 }
 
 .trending-tags {
@@ -14,7 +16,7 @@
 
 .trending-tag {
     background: white;
-    color: gray;
+    color: black;
     padding: 10px 15px;
     border: none;
     cursor: pointer;
@@ -55,4 +57,10 @@
     border-bottom: 1px solid black;
 }
 
+.posts-by-trend {
+    display: flex;
+    align-items: center;     /* căn giữa dọc */
+    /* chiều cao bằng viewport */
+    flex-direction: column;
+}
 

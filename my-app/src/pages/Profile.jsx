@@ -5,6 +5,8 @@ import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
 import { useUser } from "../context/UserContext";
 import { FiHome, FiAward } from "react-icons/fi";
+import FollowersModal from "../components/FollowersModal";
+import FollowingModal from "../components/FollowingModal";
 
 
 const API_BASE_URL = "http://localhost:3000";
@@ -19,6 +21,8 @@ export default function Profile() {
     const [email, setEmail] = useState("");
     const [followers, setFollowers] = useState(0);
     const [following, setFollowing] = useState(0);
+    const [followersList, setFollowersList] = useState([]);
+    const [followingList, setFollowingList] = useState([]);
     const [avatarFile, setAvatarFile] = useState(null);
     const paramUsername = "User";
     const { user, setUser } = useUser();
@@ -26,21 +30,39 @@ export default function Profile() {
     const [hometown, setHometown] = useState("");
     const [school, setSchool] = useState("");
     const [activeTab, setActiveTab] = useState("posts");
+    const [showFollowersModal, setShowFollowersModal] = useState(false);
+    const [showFollowingModal, setShowFollowingModal] = useState(false);
+
 
 
     useEffect(() => {
         const fetchUserProfile = async () => {
-            const response = await axiosInstance.get(`${API_BASE_URL}/user/me`);
-            const userData = response.data.data;
-            setDisplayName(userData.user.displayName || paramUsername);
-            setEmail(userData.user.email || "");
-            setFollowers(userData.followers.length || 0);
-            setFollowing(userData.followings.length || 0);
-            setBio(userData.user.bio || "");
-            setHometown(userData.user.hometown || "");  // set quê quán
-            setSchool(userData.user.school || "");      // set trường học
-            if (userData.user.avatar) {
-                setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
+            try {
+                const response = await axiosInstance.get(`${API_BASE_URL}/user/me`);
+                const userData = response.data.data;
+                setDisplayName(userData.user.displayName || paramUsername);
+                setEmail(userData.user.email || "");
+                setFollowers(userData.followers.length || 0);
+                setFollowing(userData.followings.length || 0);
+                setBio(userData.user.bio || "");
+                setHometown(userData.user.hometown || "");
+                setSchool(userData.user.school || "");
+                if (userData.user.avatar) {
+                    setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
+                }
+
+                const userId = userData.user.id;
+
+                // Lấy danh sách followers
+                const followersRes = await axiosInstance.get(`${API_BASE_URL}/user/followers/${userId}`);
+                setFollowersList(followersRes.data.data || []);
+
+                // Lấy danh sách following
+                const followingRes = await axiosInstance.get(`${API_BASE_URL}/user/following/${userId}`);
+                setFollowingList(followingRes.data.data || []);
+
+            } catch (error) {
+                console.error("Error fetching profile:", error);
             }
         };
 
@@ -219,20 +241,28 @@ export default function Profile() {
                                         <span className="stat-value">{posts.length}</span>
                                         <span className="stat-label">posts</span>
                                     </div>
-                                    <div className="stat-item">
+                                    <div className="stat-item" onClick={() => setShowFollowersModal(true)}>
                                         <span className="stat-value">{followers}</span>
                                         <span className="stat-label">followers</span>
                                     </div>
-                                    <div className="stat-item">
+                                    {showFollowersModal && (
+                                        <FollowersModal userId={user?.id} onClose={() => setShowFollowersModal(false)} />
+                                    )}
+                                    <div className="stat-item"  onClick={() => setShowFollowingModal(true)}>
                                         <span className="stat-value">{following}</span>
                                         <span className="stat-label">following</span>
                                     </div>
+                                    {showFollowingModal && (
+                                        <FollowingModal userId={user?.id} onClose={() => setShowFollowingModal(false)} />
+                                    )}
                                 </div>
                                 {bio && <p className="profile-bio">{bio}</p>}
                             </div>
                         </>
                     )}
                 </div>
+
+
 
                 <div className="profile-actions">
                     <button

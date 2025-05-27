@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../utils/api";
 import "../styles/Profile.css";
+import FollowersModal from "../components/FollowersModal.jsx";
+import FollowingModal from "../components/FollowingModal.jsx";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -12,9 +14,15 @@ export default function UserProfile() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("posts");
+    const [followers, setFollowers] = useState(0);
+    const [following, setFollowing] = useState(0);
+    const [followersList, setFollowersList] = useState([]);
+    const [followingList, setFollowingList] = useState([]);
+    const [showFollowersModal, setShowFollowersModal] = useState(false);
+    const [showFollowingModal, setShowFollowingModal] = useState(false);
 
     // State quản lý nút follow/unfollow
-    const [isFollowing, setIsFollowing] = useState(false);
+    const [isFollowing, setIsFollowing] = useState();
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
@@ -31,18 +39,21 @@ export default function UserProfile() {
                 const res = await axiosInstance.get(`${API_BASE_URL}/user/${id}`);
                 setUserData(res.data.data);
 
-                // Kiểm tra xem có đang follow người này không, giả lập
+
+                // Kiểm tra xem có đang follow người này không
                 if (currentUserId && res.data.data.followers) {
                     setIsFollowing(res.data.data.followers.includes(currentUserId));
                 }
+
             } catch (err) {
                 console.error("Failed to fetch user:", err);
             }
         };
 
+
         const fetchUserPosts = async () => {
             try {
-                const token = localStorage.getItem("token"); // lấy token từ localStorage hoặc nơi bạn lưu token
+                const token = localStorage.getItem("token");
                 const res = await axiosInstance.get(`${API_BASE_URL}/post/user-posts/${id}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -56,18 +67,67 @@ export default function UserProfile() {
             }
         };
 
+        const fetchIsFollowing = async () => {
+            try {
+                const token = localStorage.getItem("accessToken");
+                if (!token || !currentUserId || currentUserId === id) {
+                    setIsFollowing(false);
+                    return;
+                }
+
+                // Lấy danh sách followers
+                const followersRes = await axiosInstance.get(`${API_BASE_URL}/user/followers/${id}`);
+                setFollowersList(followersRes.data.data || []);
+                // Lấy danh sách following
+                const followingRes = await axiosInstance.get(`${API_BASE_URL}/user/following/${id}`);
+                setFollowingList(followingRes.data.data || []);
+                setFollowers(followersRes.data.data.length || 0);
+                setFollowing(followingRes.data.data.length || 0);
+
+                const res = await axiosInstance.get(`${API_BASE_URL}/user/is-following/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setIsFollowing(res.data.data.isFollowing);
+            } catch (err) {
+                console.error("Failed to check following status:", err);
+            }
+        };
+
         fetchUser();
         fetchUserPosts();
+        fetchIsFollowing();
     }, [id, currentUserId]);
+
+    console.log(followingList);
+
 
     const fullUrl = (url) => {
         if (!url) return "";
         return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
     };
 
-    const handleFollowToggle = () => {
-        // Chỉ toggle trạng thái local, chưa gọi API
-        setIsFollowing(!isFollowing);
+    const handleFollowToggle = async () => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                alert("Bạn cần đăng nhập để thực hiện hành động này.");
+                return;
+            }
+            await axiosInstance.post(
+                `${API_BASE_URL}/user/follow/${id}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            setIsFollowing((prev) => !prev);
+
+        } catch (err) {
+            console.error("Follow/unfollow failed", err);
+            alert("Thao tác thất bại, vui lòng thử lại.");
+        }
     };
 
     if (loading) return <div>Loading...</div>;
@@ -99,14 +159,20 @@ export default function UserProfile() {
                             <span className="stat-value">{posts.length}</span>
                             <span className="stat-label">posts</span>
                         </div>
-                        <div className="stat-item">
-                            <span className="stat-value">{userData.followers?.length || 0}</span>
+                        <div className="stat-item" onClick={() => setShowFollowersModal(true)}>
+                            <span className="stat-value">{followers}</span>
                             <span className="stat-label">followers</span>
                         </div>
-                        <div className="stat-item">
-                            <span className="stat-value">{userData.followings?.length || 0}</span>
+                        {showFollowersModal && (
+                            <FollowersModal userId={id} onClose={() => setShowFollowersModal(false)}/>
+                        )}
+                        <div className="stat-item" onClick={() => setShowFollowingModal(true)}>
+                            <span className="stat-value">{following}</span>
                             <span className="stat-label">following</span>
                         </div>
+                        {showFollowingModal && (
+                            <FollowingModal userId={id} onClose={() => setShowFollowingModal(false)}/>
+                        )}
                     </div>
                     {userData.bio && <p className="profile-bio">{userData.bio}</p>}
                 </div>

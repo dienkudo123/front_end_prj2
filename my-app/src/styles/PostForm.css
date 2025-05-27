@@ -26,7 +26,7 @@
     border: 1px solid #ccc;
     font-size: 15px;
     background-color: white;
-    color: white;
+    color: black;
 }
 
 .post-form input[type="file"] {

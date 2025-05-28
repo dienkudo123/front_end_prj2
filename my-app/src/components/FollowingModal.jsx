@@ -33,7 +33,7 @@ export default function FollowingModal({userId, onClose}) {
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <h3>following</h3>
+                <h3>Following</h3>
                 {following.length === 0 ? (
                     <p>No following yet.</p>
                 ) : (

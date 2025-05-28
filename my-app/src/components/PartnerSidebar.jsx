@@ -15,7 +15,7 @@ export default function PartnerSidebar() {
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const response = await axiosInstance.get(`/user`);
+        const response = await axiosInstance.get(`/user/friend`);
         const users = response.data.data;
         const partnerList = users.filter((partner) => {
           return partner.id !== user.id;

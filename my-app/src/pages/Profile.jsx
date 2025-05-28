@@ -30,6 +30,10 @@ export default function Profile() {
     const [hometown, setHometown] = useState("");
     const [school, setSchool] = useState("");
     const [activeTab, setActiveTab] = useState("posts");
+    const [birthday, setBirthday] = useState("");
+    const [gender, setGender] = useState("");
+    const [relationship, setRelationship] = useState("");
+    const [address, setAddress] = useState("");
     const [showFollowersModal, setShowFollowersModal] = useState(false);
     const [showFollowingModal, setShowFollowingModal] = useState(false);
 
@@ -47,6 +51,11 @@ export default function Profile() {
                 setBio(userData.user.bio || "");
                 setHometown(userData.user.hometown || "");
                 setSchool(userData.user.school || "");
+                setBirthday(userData.user.birthday || "");
+                setGender(userData.user.gender || "");
+                setRelationship(userData.user.relationship || "");
+                setAddress(userData.user.address || "");
+
                 if (userData.user.avatar) {
                     setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
                 }
@@ -87,8 +96,12 @@ export default function Profile() {
             formData.append("displayName", displayName);
             formData.append("email", email);
             formData.append("bio", bio);
-            formData.append("hometown", hometown);  // thêm quê quán
-            formData.append("school", school);      // thêm trường học
+            formData.append("hometown", hometown);
+            formData.append("school", school);
+            formData.append("birthday", birthday);
+            formData.append("gender", gender);
+            formData.append("relationship", relationship);
+            formData.append("address", address);
 
             if (avatarFile) {
                 formData.append("avatar", avatarFile);
@@ -112,8 +125,12 @@ export default function Profile() {
                 displayName: updatedUserData.displayName,
                 avatar: updatedUserData.avatar,
                 bio: updatedUserData.bio,
-                hometown: updatedUserData.hometown,  // cập nhật quê quán
-                school: updatedUserData.school,      // cập nhật trường học
+                hometown: updatedUserData.hometown,
+                school: updatedUserData.school,
+                birthday: updatedUserData.birthday,
+                gender: updatedUserData.gender,
+                relationship: updatedUserData.relationship,
+                address: updatedUserData.address,
             };
 
             setUser(updatedUser);
@@ -173,6 +190,7 @@ export default function Profile() {
     };
 
     if (loading) return <div>Loading...</div>;
+    console.log(hometown);
 
     return (
         <div className="profile-page">
@@ -229,6 +247,35 @@ export default function Profile() {
                                     placeholder="Trường học"
                                     className="profile-input"
                                 />
+                                <input
+                                    type="date"
+                                    value={birthday?.substring(0, 10)}
+                                    onChange={(e) => setBirthday(e.target.value)}
+                                    placeholder="Birthday"
+                                    className="profile-input"
+                                />
+                                <input
+                                    type="text"
+                                    value={gender}
+                                    onChange={(e) => setGender(e.target.value)}
+                                    placeholder="Gender"
+                                    className="profile-input"
+                                />
+                                <input
+                                    type="text"
+                                    value={relationship}
+                                    onChange={(e) => setRelationship(e.target.value)}
+                                    placeholder="Relationship Status"
+                                    className="profile-input"
+                                />
+                                <input
+                                    type="text"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    placeholder="Address"
+                                    className="profile-input"
+                                />
+
                             </div>
                         </div>
                     ) : (
@@ -346,28 +393,11 @@ export default function Profile() {
                 </button>
             </div>
             {activeTab === "info" && (
-                <div className="profile-extra-info">
-                    {bio && <p><strong>Bio:</strong> {bio}</p>}
-                    {hometown && (
-                        <p>
-                            <img
-                                src="https://static.xx.fbcdn.net/rsrc.php/v4/yc/r/-e1Al38ZrZL.png"
-                                alt="Hometown Icon"
-                                className="info-icon"
-                            />
-                            {hometown}
-                        </p>
-                    )}
-                    {school && (
-                        <p>
-                            <img
-                                src="https://static.xx.fbcdn.net/rsrc.php/v4/yS/r/jV4o8nAgIEh.png"
-                                alt="School Icon"
-                                className="info-icon"
-                            />
-                            {school}
-                        </p>
-                    )}
+                <div className="info">
+                    {birthday && <p><strong>Birthday:</strong> {birthday.substring(0, 10)}</p>}
+                    {gender && <p><strong>Gender:</strong> {gender}</p>}
+                    {relationship && <p><strong>Relationship:</strong> {relationship}</p>}
+                    {address && <p><strong>Address:</strong> {address}</p>}
                 </div>
             )}
 

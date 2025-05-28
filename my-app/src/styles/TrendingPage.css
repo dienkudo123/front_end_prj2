@@ -1,7 +1,6 @@
 .trending-page {
     height: 100vh;
     overflow-y: auto;
-    text-align: center;
     padding: 20px;
     color: black;
 }
@@ -16,7 +15,7 @@
 
 .trending-tag {
     background: white;
-    color: black;
+    color: gray;
     padding: 10px 15px;
     border: none;
     cursor: pointer;

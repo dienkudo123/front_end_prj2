@@ -42,6 +42,13 @@
     font-size: 15px;
 }
 
+.info {
+    padding: 0px 250px;
+    white-space: nowrap;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+}
+
 .info-icon {
     width: 18px;
     height: 18px;

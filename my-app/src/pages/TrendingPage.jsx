@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PostForm from "../components/PostForm";
+import TrendingForm from "../components/TrendingForm";
 import Post from "../components/Post"; // Bạn cần có component Post.jsx
 import "../styles/TrendingPage.css";
+import {useUser} from "../context/UserContext.jsx";
 
 export default function TrendingPage() {
+    const { user, setUser } = useUser();
     const [currentTag, setCurrentTag] = useState(null);
     const [trends, setTrends] = useState([]);
     const [showPostForm, setShowPostForm] = useState(false);
@@ -38,6 +41,7 @@ export default function TrendingPage() {
             .catch((err) => console.error("Lỗi khi lấy bài viết theo trend:", err));
     }, [currentTag, trends]);
 
+    console.log(user);
     return (
         <div className="trending-page">
             <div className="button-group">
@@ -83,7 +87,10 @@ export default function TrendingPage() {
                 </div>
             )}
 
-            {showPostForm && <PostForm initialTrendName={currentTag} />}
+            {showPostForm &&
+                <div><PostForm initialTrendName={currentTag} />
+                    {user.role !== '' && <TrendingForm/>}
+                </div>}
 
             {currentTag && (
                 <div className="posts-by-trend">

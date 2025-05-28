@@ -8,7 +8,7 @@ import Trending from "./pages/TrendingPage";
 import PostPage from "./pages/PostPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+// import RegisterPage from "./pages/RegisterPage";
 import UserProfile from "./pages/UserProfile";
 import ChatPage from "./pages/ChatPage";
 import { useEffect, useState } from "react";
@@ -65,7 +65,7 @@ function AppContent() {
 
                     {/* Routes không có sidebar */}
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
+                    {/* <Route path="/register" element={<RegisterPage />} /> */}
                 </Routes>
             </div>
             {!isAuthPage && <PartnerSidebar />}

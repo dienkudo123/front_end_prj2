@@ -26,6 +26,7 @@ import "./styles/PostPage.css";
 import "./styles/NotificationsPage.css";
 import "./styles/Auth.css";
 import PartnerSidebar from "./components/PartnerSidebar";
+import NewNavbar from "./components/newNavbar";
 
 function AppContent() {
     const location = useLocation();
@@ -50,15 +51,16 @@ function AppContent() {
         <div className="app-container">
             {!isAuthPage && <Sidebar avatarUrl={avatarUrl}/>}
             <div className="main-content">
+                {!isAuthPage && <NewNavbar />}
                 <Routes>
                     {/* Routes có sidebar */}
                     <Route path="/" element={<Feed />} />
-                    <Route path="/search" element={<SearchPage />} />
+                    {/* <Route path="/search" element={<SearchPage />} /> */}
                     <Route path="/profile/:username" element={<Profile />} />
                     <Route path="/post/:id" element={<PostDetail />} />
                     <Route path="/trending" element={<Trending />} />
                     <Route path="/post/new" element={<PostPage />} />
-                    <Route path="/notifications" element={<NotificationsPage />} />
+                    {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
                     <Route path="/user/:id" element={<UserProfile />} />
 
                     {/* Routes không có sidebar */}

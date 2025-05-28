@@ -87,14 +87,22 @@ export default function Sidebar() {
                     </svg>
                     Home
                 </Link>
-                <Link to="/search" className="sidebar-link">
+                <Link to="/trending" className="sidebar-link">
+                    <img src="https://www.svgrepo.com/show/461457/fire-left.svg" alt="Trending Icon"
+                         className="sidebar-icon"/>
+                    Trending
+                </Link>
+                <button onClick={handleLogout} className="logout-button">
+                    <FiLogOut/> Log out
+                </button>
+                {/* <Link to="/search" className="sidebar-link">
                     <img
                         src="https://www.svgrepo.com/show/532551/search-alt-1.svg"
                         alt="Search Icon"
                         className="sidebar-icon"
                     />
                     Search
-                </Link>
+                </Link> */}
                 {/*<Link to="/chat" className="sidebar-link">*/}
                 {/*    <img*/}
                 {/*        src="https://www.svgrepo.com/show/390893/chat-round.svg"*/}
@@ -103,7 +111,7 @@ export default function Sidebar() {
                 {/*    />{" "}*/}
                 {/*    Chat*/}
                 {/*</Link>*/}
-                <div className="sidebar-link notification-wrapper" ref={notificationRef}>
+                {/* <div className="sidebar-link notification-wrapper" ref={notificationRef}>
                     <div onClick={() => setShowNotifications((prev) => !prev)}
                          style={{cursor: "pointer", display: "flex", alignItems: "center", gap: "8px"}}>
                         <svg aria-label="Notifications" className="x1lliihq x1n2onr6 x5n08af" fill="currentColor"
@@ -122,35 +130,20 @@ export default function Sidebar() {
                             {notifications.map((noti) => (
                                 <div key={noti.id} className="notification-item"
                                      style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                                    {/* Avatar người gửi */}
                                     <img
                                         src={noti.actorUser.avatar ? `http://localhost:3000${noti.actorUser.avatar}` : "http://localhost:3000/uploads/user-images/default.png/30"}
                                         alt={noti.actorUser.displayName || "User avatar"}
                                         style={{width: 30, height: 30, borderRadius: "50%"}}
                                     />
                                     <div>
-                                        {/* Tên người gửi */}
                                         <strong>{noti.actorUser.displayName || "Unknown User"}</strong>{" "}
-                                        {/* Nội dung notification */}
                                         {noti.content}
                                     </div>
                                 </div>
                             ))}
                         </div>
                     )}
-                </div>
-
-                <Link to="/trending" className="sidebar-link">
-                    <img src="https://www.svgrepo.com/show/461457/fire-left.svg" alt="Trending Icon"
-                         className="sidebar-icon"/>
-                    Trending
-                </Link>
-
-
-                <button onClick={handleLogout} className="logout-button">
-                    <FiLogOut/> Log out
-                </button>
-
+                </div> */}
             </nav>
         </div>
     );

@@ -7,7 +7,7 @@ html, body {
 }
 
 .app-container {
-    margin-left: 300px;
+    margin-left: 250px;
     min-height: 100vh; /* Đảm bảo toàn bộ trang chiếm đủ chiều cao */
     background-color: white;
     display: flex;

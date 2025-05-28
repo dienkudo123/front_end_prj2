@@ -1,7 +1,7 @@
 .message-dialog {
   position: fixed;
   bottom: 5px;
-  right: 320px; /* Đặt cạnh partner sidebar */
+  right: 305px; /* Đặt cạnh partner sidebar */
   width: 380px;
   min-height: 420px;
   max-height: 70vh;

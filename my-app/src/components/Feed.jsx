@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "./Post";
 import "../styles/feed.css";
+import NewNavbar from "./newNavbar";
 
 export default function Feed() {
     const [posts, setPosts] = useState([]);

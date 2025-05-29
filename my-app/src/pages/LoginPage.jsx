@@ -111,13 +111,11 @@ export default function AuthPage() {
   return (
     <div className="login-container">
       <div className="login-content">
-        {/* Hình ảnh - chỉ hiển thị khi đăng nhập */}
-        {isLogin && (
-          <div className="login-images">
-            <img src="https://i.pinimg.com/736x/33/cf/84/33cf842a8a22eb379cfde730df7bef8a.jpg" alt="post1" className="login-img" />
-            <img src="https://i.pinimg.com/736x/58/ee/95/58ee95b701690e743c8d624aef4f2dab.jpg" alt="post2" className="login-img" />
-          </div>
-        )}
+        {/* Hình ảnh - hiển thị cho cả đăng nhập và đăng ký */}
+        <div className="login-images">
+          <img src="https://i.pinimg.com/736x/33/cf/84/33cf842a8a22eb379cfde730df7bef8a.jpg" alt="post1" className="login-img" />
+          <img src="https://i.pinimg.com/736x/58/ee/95/58ee95b701690e743c8d624aef4f2dab.jpg" alt="post2" className="login-img" />
+        </div>
 
         {/* Form */}
         <div className="login-box">

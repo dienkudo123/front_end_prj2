@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import "../styles/Post.css";
 import axios from "axios";
+import CommentModal from "./CommentModal";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -12,6 +13,7 @@ export default function Post({ post, hideUser = false }) {
     const navigate = useNavigate();
     const [reactions, setReactions] = useState([]);
     const [likeCount, setLikeCount] = useState(0);
+    const [isShowingComments, setIsShowingComments] = useState(false);
 
     const goToUserProfile = () => {
         if (post.user?.id) {
@@ -56,9 +58,6 @@ export default function Post({ post, hideUser = false }) {
         });
     }, [liked,post.id]);
 
-    console.log(post);
-
-
     const handleLikeToggle = async () => {
         const token = localStorage.getItem("accessToken");
         if (!token) {
@@ -102,7 +101,6 @@ export default function Post({ post, hideUser = false }) {
             console.error("Lỗi khi xử lý reaction:", err);
         }
     };
-    console.log(post);
 
     return (
         <div className="post">
@@ -154,13 +152,14 @@ export default function Post({ post, hideUser = false }) {
 
                 </button>
 
-                <button className="icon-button" onClick={() => navigate(`/post/${post.id}`)}>
+                <button className="icon-button" onClick={() => setIsShowingComments(true)}>
                     <svg aria-label="Comment" fill="currentColor" height="24" viewBox="0 0 24 24" width="24">
                         <title>Comment</title>
                         <path d="M20.656 17.008a9.993 9.993 0 1 0-3.59 3.615L22 22Z"
                               fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="2"/>
                     </svg>
                 </button>
+                { isShowingComments && (<CommentModal postId={post.id} onClose={() => setIsShowingComments(false)}/>)}
                 <button className="icon-button">
                     <img
                         src="https://www.svgrepo.com/show/522661/share.svg"

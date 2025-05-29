@@ -9,7 +9,7 @@ const API_BASE_URL = "http://localhost:3000";
 export default function FollowingModal({userId, onClose}) {
     const [following, setFollowing] = useState([]);
     const navigate = useNavigate();
-    const {user, setUser} = useUser();
+    const {user} = useUser();
 
     useEffect(() => {
         const fetchFollowing = async () => {

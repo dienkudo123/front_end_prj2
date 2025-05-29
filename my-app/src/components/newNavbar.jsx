@@ -10,10 +10,10 @@ export default function NewNavbar({ onSearch }) {
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    if (showNotifications) {
+    // if (showNotifications) {
       fetchNotifications(); // Gọi API khi mở dropdown
-    }
-  }, [showNotifications]);
+    // }
+  }, [notifications]);
 
   const fetchNotifications = async () => {
     try {
@@ -28,8 +28,11 @@ export default function NewNavbar({ onSearch }) {
     }
   };
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => n.status === "UNREAD").length;
 
+  useEffect(() => {
+    const unreadCount = notifications.filter((n) => n.status === "UNREAD").length;
+  }, [notifications]);
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchValue(value);
@@ -42,14 +45,28 @@ export default function NewNavbar({ onSearch }) {
     setShowNotifications(!showNotifications);
   };
 
-  const markAsRead = (id) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isRead: true } : n))
-    );
+  const markAsRead = async (id) => {
+    try {
+      await axiosInstance.patch("/notification/read", {
+        ids: [id],
+      }, {});
+      await fetchNotifications();
+    } catch (error) {
+      console.error("Failed to mark all notifications as read", error);
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, isRead: true })));
+  const markAllAsRead = async () => {
+    try {
+      await axiosInstance.patch("/notification/read", {
+        ids: notifications
+          .filter((n) => !n.isRead)
+          .map((n) => n.id),
+      }, {});
+      await fetchNotifications();
+    } catch (error) {
+      console.error("Failed to mark all notifications as read", error);
+    }
   };
 
   console.log("Notifications:", notifications);
@@ -126,12 +143,12 @@ export default function NewNavbar({ onSearch }) {
                   key={notification.id}
                   onClick={() => markAsRead(notification.id)}
                   className={`notification-item ${
-                    !notification.isRead ? "unread" : ""
+                    notification.status === "UNREAD" ? "unread" : ""
                   }`}
                 >
                   <div
                     className={`notification-dot ${
-                      !notification.isRead ? "unread" : "read"
+                      notification.status === "UNREAD" ? "unread" : "read"
                     }`}
                   ></div>
                   <div className="notification-content">

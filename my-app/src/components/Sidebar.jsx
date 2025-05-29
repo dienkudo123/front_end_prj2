@@ -7,6 +7,7 @@ import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
 const API_BASE_URL = "http://localhost:3000";
 import { useState, useRef, useEffect } from "react";
+import logo from "../assets/Logo.jpg";
 
 export default function Sidebar() {
     const { user } = useUser();
@@ -68,7 +69,7 @@ export default function Sidebar() {
     console.log(notifications);
     return (
         <div className="sidebar">
-            <h3 className="sidebar-title">Webgidodo</h3>
+            <img className="sidebar-logo" src={logo} alt="Logo"/>
             <nav className="sidebar-menu">
                 <Link to={`/profile/me`} className="sidebar-link">
                     <img

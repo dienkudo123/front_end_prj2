@@ -74,7 +74,7 @@
   overflow-y: auto;
   margin: 0 0 12px 0;
   min-height: 40px;
-  padding: 0;
+  padding: 0 0 30px 0;
 }
 
 .comment-item {

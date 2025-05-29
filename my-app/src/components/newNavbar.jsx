@@ -8,12 +8,11 @@ export default function NewNavbar({ onSearch }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    // if (showNotifications) {
-      fetchNotifications(); // Gọi API khi mở dropdown
-    // }
-  }, [notifications]);
+    fetchNotifications();
+  }, []);
 
   const fetchNotifications = async () => {
     try {
@@ -22,17 +21,16 @@ export default function NewNavbar({ onSearch }) {
       });
       if (res.data?.data) {
         setNotifications(res.data.data); // Lưu data nhận được vào state notifications
+        const unreadNotifications = res.data.data.filter(
+          (n) => n.status === "UNREAD"
+        ).length;
+        setUnreadCount(unreadNotifications);
       }
     } catch (error) {
       console.error("Failed to fetch notifications", error);
     }
   };
 
-  const unreadCount = notifications.filter((n) => n.status === "UNREAD").length;
-
-  useEffect(() => {
-    const unreadCount = notifications.filter((n) => n.status === "UNREAD").length;
-  }, [notifications]);
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearchValue(value);
@@ -47,9 +45,13 @@ export default function NewNavbar({ onSearch }) {
 
   const markAsRead = async (id) => {
     try {
-      await axiosInstance.patch("/notification/read", {
-        ids: [id],
-      }, {});
+      await axiosInstance.patch(
+        "/notification/read",
+        {
+          ids: [id],
+        },
+        {}
+      );
       await fetchNotifications();
     } catch (error) {
       console.error("Failed to mark all notifications as read", error);
@@ -58,12 +60,13 @@ export default function NewNavbar({ onSearch }) {
 
   const markAllAsRead = async () => {
     try {
-      await axiosInstance.patch("/notification/read", {
-        ids: notifications
-          .filter((n) => !n.isRead)
-          .map((n) => n.id),
-      }, {});
-      await fetchNotifications();
+      await axiosInstance.patch(
+        "/notification/read",
+        {
+          ids: notifications.filter((n) => !n.isRead).map((n) => n.id),
+        },
+        {}
+      );
     } catch (error) {
       console.error("Failed to mark all notifications as read", error);
     }
@@ -77,7 +80,7 @@ export default function NewNavbar({ onSearch }) {
         <div className="navbar-container">
           <div className="navbar-content">
             {/* Logo */}
-            <div className="navbar-logo">MyApp</div>
+            {/* <div className="navbar-logo">MyApp</div> */}
 
             {/* Search Bar */}
             <div className="navbar-search-container">
@@ -107,9 +110,9 @@ export default function NewNavbar({ onSearch }) {
               </button>
 
               {/* User Avatar */}
-              <button className="user-button">
+              {/* <button className="user-button">
                 <IoPerson size={24} />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -160,17 +163,16 @@ export default function NewNavbar({ onSearch }) {
                       }
                       alt="Avatar"
                       className="notification-avatar"
-                      />
-                    <p
-                      className={`notification-item-title ${
-                        !notification.isRead ? "unread" : "read"
-                      }`}
-                    >
-                      {notification.actorUser.displayName}
-                    </p>
-                    <p className="notification-item-message">
-                      {notification.content}
-                    </p>
+                    />
+                    <div className="notification-content-text">
+                      <p className="notification-item-combined">
+                        <span className="notification-item-title">
+                          {notification.actorUser.displayName}
+                          {" "}
+                        </span>
+                        {notification.content}
+                      </p>
+                    </div>
                     <p className="notification-item-time">
                       {formatTimeAgo(notification.createdAt)}
                     </p>

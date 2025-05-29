@@ -32,23 +32,23 @@
 }
 
 
-    .button-group {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        justify-content: center;
-        top: 0;
-    }
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+    top: 0;
+}
 
-    .button-group button {
-        padding: 10px 16px;
-        border: none;
-        background-color: white;
-        color: gray;
-        cursor: pointer;
-        font-weight: 500;
+.button-group button {
+    padding: 10px 16px;
+    border: none;
+    background-color: white;
+    color: gray;
+    cursor: pointer;
+    font-weight: 500;
 
-    }
+}
 
 .button-group button.active {
     color: black; /* chữ trắng đậm */
@@ -61,5 +61,48 @@
     align-items: center;     /* căn giữa dọc */
     /* chiều cao bằng viewport */
     flex-direction: column;
+}
+
+
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.trend-item {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    padding: 10px;
+    color: black;
+    border: black solid 1px;
+}
+
+.trend-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.trend-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid gray;
+}
+
+.no-image {
+    width: 100%;
+    height: 200px;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    border-radius: 8px;
 }
 

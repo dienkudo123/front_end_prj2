@@ -6,7 +6,7 @@ import { formatTimeAgo } from "../utils/auth";
 
 const API_BASE_URL = "http://localhost:3000";
 
-export default function CommentModal({ postId, onClose }) {
+export default function CommentModal({ postId, postImg, onClose }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
@@ -74,101 +74,109 @@ export default function CommentModal({ postId, onClose }) {
     }
   };
 
-  console.log("Comments:", comments);
-
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="comments-header">
-          <h3>Bình luận của bài viết</h3>
-        </div>
-        {loading ? (
-          <div className="comment-loading-spinner"></div>
-        ) : (
-          <>
-            {comments.length === 0 ? (
-              <p className="no-comments-text">Không có bình luận nào.</p>
+    <div className="modal-comment-backdrop" onClick={onClose}>
+      <div className="modal-comment-backdrop" onClick={onClose}>
+        <div className="modal-wrapper" onClick={(e) => e.stopPropagation()}>
+          <div className="post-image-container">
+            <img src={`${API_BASE_URL}${postImg}`} alt="Post" />
+          </div>
+          <div
+            className="modal-comment-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="comments-header">
+              <h3>Bình luận của bài viết</h3>
+            </div>
+            {loading ? (
+              <div className="comment-loading-spinner"></div>
             ) : (
-              <ul className="comments-list">
-                {comments.map((comment) => (
-                  <li key={comment.id} className="comment-item">
-                    <img
-                      src={`${API_BASE_URL}${comment.user.avatar}`}
-                      alt="avatar"
-                    />
-                    <div
-                      className={`comment-body ${
-                        comment.isOwner ? "owner" : ""
-                      }`}
-                    >
-                      <div className="comment-detail-header">
-                        <span className="comment-username">
-                          {comment.user.displayName || "Unnamed User"}
-                        </span>
+              <>
+                {comments.length === 0 ? (
+                  <p className="no-comments-text">Không có bình luận nào.</p>
+                ) : (
+                  <ul className="comments-list">
+                    {comments.map((comment) => (
+                      <li key={comment.id} className="comment-item">
+                        <img
+                          src={`${API_BASE_URL}${comment.user.avatar}`}
+                          alt="avatar"
+                        />
                         <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
+                          className={`comment-body ${
+                            comment.isOwner ? "owner" : ""
+                          }`}
                         >
-                          <p className="comment-date">
-                            {formatTimeAgo(comment.createdAt)}
-                          </p>
-                          {comment.isOwner && (
-                            <>
-                              <span
-                                className="comment-menu-btn"
-                                title="Tùy chọn"
-                                onClick={() =>
-                                  setOpenMenuId(
-                                    openMenuId === comment.id
-                                      ? null
-                                      : comment.id
-                                  )
-                                }
-                              >
-                                ⋮
-                              </span>
-                              {openMenuId === comment.id && (
-                                <div className="comment-menu-dropdown">
-                                  <button
-                                    className="comment-delete-btn"
+                          <div className="comment-detail-header">
+                            <span className="comment-username">
+                              {comment.user.displayName || "Unnamed User"}
+                            </span>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 8,
+                              }}
+                            >
+                              <p className="comment-date">
+                                {formatTimeAgo(comment.createdAt)}
+                              </p>
+                              {comment.isOwner && (
+                                <>
+                                  <span
+                                    className="comment-menu-btn"
+                                    title="Tùy chọn"
                                     onClick={() =>
-                                      handleDeleteComment(comment.id)
+                                      setOpenMenuId(
+                                        openMenuId === comment.id
+                                          ? null
+                                          : comment.id
+                                      )
                                     }
                                   >
-                                    Xóa bình luận
-                                  </button>
-                                </div>
+                                    ⋮
+                                  </span>
+                                  {openMenuId === comment.id && (
+                                    <div className="comment-menu-dropdown">
+                                      <button
+                                        className="comment-delete-btn"
+                                        onClick={() =>
+                                          handleDeleteComment(comment.id)
+                                        }
+                                      >
+                                        Xóa bình luận
+                                      </button>
+                                    </div>
+                                  )}
+                                </>
                               )}
-                            </>
-                          )}
+                            </div>
+                          </div>
+                          <p className="comment-content">{comment.content}</p>
                         </div>
-                      </div>
-                      <p className="comment-content">{comment.content}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
             )}
-          </>
-        )}
-        <input
-          className="comment-input"
-          type="text"
-          placeholder="Nhập bình luận"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleAddComment();
-            }
-          }}
-        />
-        <button onClick={onClose} className="close-button">
-          &times;
-        </button>
+            <input
+              className="comment-input"
+              type="text"
+              placeholder="Nhập bình luận"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleAddComment();
+                }
+              }}
+            />
+            <button onClick={onClose} className="close-button">
+              &times;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

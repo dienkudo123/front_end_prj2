@@ -81,7 +81,7 @@ export default function TrendingPage() {
         if (!url) return "";
         return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
     };
-
+    console.log("Preview Posts by Trend:", previewPostsByTrend);
     return (
         <div className="trending-page">
             <div className="button-group">

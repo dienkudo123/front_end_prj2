@@ -17,10 +17,12 @@
     color: black; /* chữ trắng nổi bật */
 }
 
-.sidebar-title {
-    font-size: 24px;
-    color: black;
-    margin-bottom: 20px;
+.sidebar-logo {
+    display: block;
+    margin: 0 auto 0 auto;
+    width: 100px;
+    height: auto;
+    object-fit: contain;
 }
 
 .sidebar-menu {

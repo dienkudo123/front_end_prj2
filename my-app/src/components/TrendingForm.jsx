@@ -1,37 +1,55 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../styles/PostForm.css"; // tái sử dụng style của PostForm
+import "../styles/PostForm.css";
 
 const TrendForm = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [note, setNote] = useState("");
+    const [image, setImage] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null); // <== ảnh xem trước
 
     const token = localStorage.getItem("accessToken");
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
+        } else {
+            setPreviewUrl(null);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!token) {
-            alert("Bạn cần đăng nhập để tạo trending.");
-            return;
-        }
+        const token = localStorage.getItem('accessToken'); // hoặc từ cookie, tuỳ hệ thống
 
         try {
-            const res = await axios.post(
-                "http://localhost:3000/trendTopic/create",
-                { title, description, note },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("description", description);
+            formData.append("note", note);
+            if (image) {
+                formData.append("file", image);
+            }
+
+            await axios.post("http://localhost:3000/trendTopic/create", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
             alert("Tạo trending thành công!");
             setTitle("");
             setDescription("");
             setNote("");
+            setImage(null);
+            setPreviewUrl(null);
         } catch (err) {
             console.error(err);
             alert("Tạo trending thất bại.");
@@ -67,6 +85,21 @@ const TrendForm = () => {
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Ghi chú nếu có"
                 />
+
+                <label htmlFor="image">Chọn ảnh:</label>
+                <input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                />
+
+                {previewUrl && (
+                    <div style={{ margin: "10px 0" }}>
+                        <p>Ảnh xem trước:</p>
+                        <img src={previewUrl} alt="Xem trước" style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }} />
+                    </div>
+                )}
 
                 <button type="submit">Tạo Trending</button>
             </form>

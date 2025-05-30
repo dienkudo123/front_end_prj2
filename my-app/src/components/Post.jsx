@@ -159,7 +159,7 @@ export default function Post({ post, hideUser = false }) {
                               fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="2"/>
                     </svg>
                 </button>
-                { isShowingComments && (<CommentModal postId={post.id} onClose={() => setIsShowingComments(false)}/>)}
+                { isShowingComments && (<CommentModal postId={post.id} postImg={post.imageUrl} onClose={() => setIsShowingComments(false)}/>)}
                 <button className="icon-button">
                     <img
                         src="https://www.svgrepo.com/show/522661/share.svg"

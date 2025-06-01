@@ -11,8 +11,6 @@ const Shop = () => {
   const [purchasing, setPurchasing] = useState({});
   const [userItem, setUserItem] = useState(null);
 
-  // userItem = getUserItem();
-
   const fetchShopItems = async () => {
     try {
       setLoading(true);
@@ -50,20 +48,6 @@ const Shop = () => {
     fetchShopItems();
   }, []);
 
-  // const formatPrice = (price) => {
-  //   return new Intl.NumberFormat('vi-VN', {
-  //     style: 'currency',
-  //     currency: 'VND'
-  //   }).format(price);
-  // };
-
-  const calculateDiscountedPrice = (price, discount) => {
-    if (discount && discount > 0) {
-      return price - (price * discount / 100);
-    }
-    return price;
-  };
-
   const getUserItem = async () => {
     try {
       const response = await axiosInstance.get(`http://localhost:3000/shop/user-items`);
@@ -75,10 +59,19 @@ const Shop = () => {
   }
 
   const handlePurchase = async (item) => {
+    setPurchasing(prev => ({ ...prev, [item.id]: true }));
     try {
       await axiosInstance.post(`http://localhost:3000/shop/buy-item/${item.id}`);
       alert('Mua sản phẩm thành công!');
-      getUserItem();
+      
+      setUserItem(prevUserItems => {
+        if (prevUserItems) {
+          return [...prevUserItems, { itemId: item.id }];
+        } else {
+          return [{ itemId: item.id }];
+        }
+      });
+      
     } catch (err) {
       console.error('Purchase error:', err);
       alert('Lỗi khi mua sản phẩm');
@@ -157,8 +150,8 @@ const Shop = () => {
         ) : (
           <div className="grid">
             {items.map((item) => {
-              const discountedPrice = calculateDiscountedPrice(item.price, item.discount);
               const hasDiscount = item.discount && item.discount > 0;
+              const isOwned = userItem && userItem.some(owned => owned.itemId === item.id);
 
               return (
                 <div key={item.id} className="card card-hover">
@@ -172,12 +165,6 @@ const Shop = () => {
                       {getTypeIcon(item.type)}
                       {item.type}
                     </div>
-                    {hasDiscount && (
-                      <div className="discount-badge">
-                        <FaTag className="icon-xs" />
-                        -{item.discount}%
-                      </div>
-                    )}
                   </div>
                   <div className="card-content">
                     <div className="card-title-price">
@@ -187,12 +174,17 @@ const Shop = () => {
                       </p>
                     </div>
 
-                    {userItem && userItem.some(owned => owned.itemId === item.id) ? (
+                    {isOwned ? (
                       <button
                         className={`purchase-button ${purchasing[item.id] ? 'purchase-button-disabled' : ''}`}
-                        style={{ backgroundColor: 'green !important', color: 'white' }}
+                        style={{ 
+                          backgroundColor: '#4CAF50', 
+                          color: 'white',
+                          cursor: 'default',
+                          opacity: '0.8'
+                        }}
+                        disabled
                       >
-                        {/* <FaShoppingCart className="icon-md"/> */}
                         <span>Bạn đã sở hữu nó!!!</span>
                       </button>
                     ) : (
@@ -201,12 +193,20 @@ const Shop = () => {
                         disabled={purchasing[item.id]}
                         className={`purchase-button ${purchasing[item.id] ? 'purchase-button-disabled' : ''}`}
                       >
-                        <FaShoppingCart className="icon-md" />
-                        <span>Mua</span>
+                        {purchasing[item.id] ? (
+                          <>
+                            <FaSpinner className="icon-md icon-spin" />
+                            <span>Đang mua...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FaShoppingCart className="icon-md" />
+                            <span>Mua</span>
+                          </>
+                        )}
                       </button>
                     )}
                   </div>
-
                 </div>
               );
             })}

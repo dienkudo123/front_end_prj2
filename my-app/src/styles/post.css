@@ -14,17 +14,17 @@
   border: 3px solid #cbd5e1; /* Xanh xám nhạt */
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
-  background-color: #fefefe;
+  background-color: #fbf9f9;
 }
 
 .post-trend-topic {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(90deg, #130220, #8804a9, #130220);
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
   padding: 4px 12px;
   border-radius: 20px;
-  color: white;
+  color: rgb(0, 0, 0);
   font-weight: bold;
   font-size: 14px;
   width: fit-content;

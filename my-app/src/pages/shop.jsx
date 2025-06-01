@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaShoppingCart, FaTag, FaImage, FaRegSquare, FaSpinner, FaExclamationCircle } from 'react-icons/fa';
+import { FaShoppingCart, FaTag, FaImage, FaRegSquare, FaSpinner, FaExclamationCircle, FaPlus, FaTimes } from 'react-icons/fa';
 import '../styles/shop.css';
 import axiosInstance from '../utils/api';
 import { IoColorFill } from 'react-icons/io5';
@@ -10,6 +10,15 @@ const Shop = () => {
   const [error, setError] = useState(null);
   const [purchasing, setPurchasing] = useState({});
   const [userItem, setUserItem] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadForm, setUploadForm] = useState({
+    name: '',
+    price: '',
+    type: 'FRAME',
+    image: null
+  });
+  const [uploading, setUploading] = useState(false);
 
   const fetchShopItems = async () => {
     try {
@@ -19,6 +28,8 @@ const Shop = () => {
       setUserItem(userItemData.data);
       console.log('User items fetched:', userItemData.data);
 
+      // Fetch user role
+      await fetchUserRole();
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -43,6 +54,27 @@ const Shop = () => {
       setLoading(false);
     }
   };
+
+  const fetchUserRole = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        console.error("No access token found");
+        return;
+      }
+
+      const payloadBase64 = token.split(".")[1];
+      const payloadJson = atob(payloadBase64); 
+      const payload = JSON.parse(payloadJson);
+      const role = payload.role; 
+      setUserRole(role); 
+
+      console.log("User role:", role);
+    } catch (err) {
+      console.error("Error decoding access token:", err);
+    }
+  };
+
 
   useEffect(() => {
     fetchShopItems();
@@ -77,6 +109,41 @@ const Shop = () => {
       alert('Lỗi khi mua sản phẩm');
     } finally {
       setPurchasing(prev => ({ ...prev, [item.id]: false }));
+    }
+  };
+
+  const handleUploadSubmit = async (e) => {
+    e.preventDefault();
+    if (!uploadForm.name || !uploadForm.price || !uploadForm.image) {
+      alert('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', uploadForm.name);
+      formData.append('price', uploadForm.price);
+      formData.append('type', uploadForm.type);
+      formData.append('imageUrl', `/uploads/items/${uploadForm.image.name}`);
+      formData.append('description', "");
+      formData.append('image', uploadForm.image);
+
+      await axiosInstance.post('http://localhost:3000/shop', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      alert('Upload thành công!');
+      setShowUploadModal(false);
+      setUploadForm({ name: '', price: '', type: 'FRAME', image: null });
+      fetchShopItems(); // Refresh the items list
+    } catch (err) {
+      console.error('Upload error:', err);
+      alert('Lỗi khi upload item');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -210,6 +277,105 @@ const Shop = () => {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Admin Upload Button */}
+        {userRole === 'Admin' && (
+          <button 
+            className="admin-upload-btn"
+            onClick={() => setShowUploadModal(true)}
+          >
+            <FaPlus className="icon-md" />
+          </button>
+        )}
+
+        {/* Upload Modal */}
+        {showUploadModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h2>Upload Item</h2>
+                <button 
+                  className="modal-close-btn"
+                  onClick={() => setShowUploadModal(false)}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+              
+              <form onSubmit={handleUploadSubmit} className="upload-form">
+                <div className="form-group">
+                  <label>Tên sản phẩm:</label>
+                  <input
+                    type="text"
+                    value={uploadForm.name}
+                    onChange={(e) => setUploadForm({...uploadForm, name: e.target.value})}
+                    className="form-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Giá (points):</label>
+                  <input
+                    type="number"
+                    value={uploadForm.price}
+                    onChange={(e) => setUploadForm({...uploadForm, price: e.target.value})}
+                    className="form-input"
+                    min="1"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Loại:</label>
+                  <select
+                    value={uploadForm.type}
+                    onChange={(e) => setUploadForm({...uploadForm, type: e.target.value})}
+                    className="form-select"
+                  >
+                    <option value="FRAME">Frame</option>
+                    <option value="BGR">Background</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Hình ảnh:</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setUploadForm({...uploadForm, image: e.target.files[0]})}
+                    className="form-file-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    onClick={() => setShowUploadModal(false)}
+                    className="cancel-btn"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={uploading}
+                    className={`submit-btn ${uploading ? 'submit-btn-disabled' : ''}`}
+                  >
+                    {uploading ? (
+                      <>
+                        <FaSpinner className="icon-sm icon-spin" />
+                        Đang upload...
+                      </>
+                    ) : (
+                      'Upload'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </div>

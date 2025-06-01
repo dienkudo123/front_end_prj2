@@ -59,7 +59,7 @@ function AppContent() {
                     {/* Routes có sidebar */}
                     <Route path="/" element={<Feed />} />
                     {/* <Route path="/search" element={<SearchPage />} /> */}
-                    <Route path="/profile/:username" element={<Profile />} />
+                    <Route path="/profile/:id" element={<Profile />} />
                     <Route path="/post/:id" element={<PostDetail />} />
                     <Route path="/trending" element={<Trending />} />
                     <Route path="/post/new" element={<PostPage />} />

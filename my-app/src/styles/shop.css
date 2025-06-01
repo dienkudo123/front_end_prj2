@@ -206,6 +206,33 @@
   color: #dc2626;
 }
 
+.use-button {
+  width: 100%;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: default;
+  opacity: 0.9;
+  transition: background 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Đang dùng */
+.use-button.used {
+  background: linear-gradient(to right, #3ceb25, #20d67b); /* xanh lá sáng */
+  color: white;
+}
+
+/* Đã mua nhưng chưa dùng */
+.use-button.not-used {
+  background: linear-gradient(to right, #eb9225, #ed6d3a); /* cam nhạt */
+  color: white;
+}
 /* Purchase button */
 .purchase-button {
   width: 100%;

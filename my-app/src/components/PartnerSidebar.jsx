@@ -6,7 +6,6 @@ import "../styles/PartnerSidebar.css"; // Import file CSS riêng
 import { io } from "socket.io-client";
 import MessageDialog from "./MessageDialog";
 import {useNavigate} from "react-router-dom";
-import rankingAnimation from "../assets/beaee5e90d93bfafa5f5f55acb23abfd28ad180c.png";
 
 const socket = io("http://localhost:3000");
 
@@ -74,7 +73,7 @@ export default function PartnerSidebar() {
       
       {/* First section - Always show friends */}
       <div className="partner-section">
-        <div className="partner-sidebar-tile">
+        <div className="partner-sidebar-title">
           Bạn Bè
         </div>
         <div className="partner-list">

@@ -11,120 +11,17 @@
     color: black;
 }
 
-.sidebar-link:hover {
-    width: calc(100% - 20px);
-    background: rgba(0,0,0,.05); /* nền đậm hơn khi hover */
-    color: black; /* chữ trắng nổi bật */
-}
-
-.sidebar-logo {
-    display: block;
-    margin: 0 auto 0 auto;
-    width: 100px;
-    height: auto;
-    object-fit: contain;
-}
-
-.sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-
-.sidebar-link {
-    display: flex;
-    align-items: center; /* Căn giữa icon và chữ theo chiều dọc */
-    gap: 12px; /* Tạo khoảng cách giữa icon và chữ */
-    text-decoration: none;
-    color: black;
-    font-size: 15px;
-    padding: 10px 15px;
-    font-family: Arial, sans-serif;
-    border-radius: 8px;
-    transition: 0.3s;
-    width: 100%; /* Đảm bảo phần tử full chiều ngang */
-}
-
-.sidebar-icon {
-    font-size: 25px; /* Giữ icon lớn hơn chữ một chút */
-    display: flex;
-    align-items: center; /* Đảm bảo icon nằm giữa theo chiều dọc */
-}
-
-.sidebar-text {
-    flex: 1; /* Đảm bảo chữ căn chỉnh đều với icon */
-}
-
-.sidebar-avatar-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    object-fit: cover;
-    /* margin-right: 8px; */
-    border: 1px solid #fff;
-  }
-
-  .logout-button {
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: 0.3s;
-    position: absolute;
-    bottom: 40px;
-    left: 40px;
-  }
-
-.sidebar-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px; /* khoảng cách giữa icon và chữ */
-    text-decoration: none;
-    color: inherit;
-}
-
-.sidebar-icon {
-    width: 26px;  /* chỉnh kích thước icon */
-    height: 26px;
-    filter: grayscale(100%); /* nếu muốn icon màu xám */
-}
-
-.notification-wrapper {
-    position: relative;
-}
-
-.notification-dropdown {
-    position: fixed;
-    top: 0;
-    left: 250px; /* hoặc left: 0 nếu muốn bên trái */
-    width: 300px; /* hoặc 100% nếu bạn muốn chiếm toàn bộ chiều ngang */
-    height: 100vh; /* 100% chiều cao của viewport */
-    background-color: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* Bóng bên trái nếu panel bên phải */
-    z-index: 9999;
-    padding: 16px;
-    overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
-
-
-    transition: opacity 1s ease-in-out;
-}
-
-
-.notification-item {
-    padding: 8px 12px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-}
-
-.notification-item:last-child {
-    border-bottom: none;
-}
-
-.notification-item:hover {
-    background-color: #f5f5f5;
+.sidebar-title {
+  font-size: 18px;          /* nhỏ hơn chút */
+  font-weight: 600;         /* đỡ dày */
+  color: #333;
+  margin-bottom: 12px;      /* giảm khoảng cách */
+  text-align: center;
+  border-bottom: 2px solid #ffd700;
+  padding-bottom: 4px;      /* giảm padding */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;    /* giảm khoảng cách chữ */
+  line-height: 1.2;         /* tăng độ thoáng */
 }
 
 
@@ -136,7 +33,6 @@
   padding: 0 16px;
   flex: 1;
   overflow-y: auto;
-  border-image: url('../assets/ranking.png') 20 repeat;
 }
 
 .ranking-item {
@@ -148,6 +44,7 @@
   background: #f8f9fa;
   border: 1px solid #e9ecef;
   transition: all 0.2s;
+  overflow: hidden;
 }
 
 .ranking-item:hover {
@@ -207,25 +104,23 @@
 /* ===== THÊM PHẦN KHUNG ẢNH ĐỘNG CHO RANK 1 ===== */
 
 /* Container cho avatar rank 1 */
+/* ============ CƠ BẢN ============ */
 .ranking-avatar-container {
   position: relative;
   display: inline-block;
 }
 
-/* Hiệu ứng cho rank 1 */
-.rank-1-avatar {
-  position: relative;
-}
-
-.rank-1-avatar .ranking-avatar-icon {
-  border: 3px solid #ffd700;
+.ranking-avatar-icon {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  animation: goldenGlow 2s ease-in-out infinite alternate;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  display: block;
 }
 
-/* Khung vàng xoay quanh avatar */
-.golden-frame {
+/* ============ VIỀN XUNG QUANH AVATAR ============ */
+.golden-frame,
+.silver-frame,
+.bronze-frame {
   position: absolute;
   top: -6px;
   left: -6px;
@@ -233,36 +128,41 @@
   bottom: -6px;
   border: 2px solid transparent;
   border-radius: 50%;
-  background: linear-gradient(45deg, #ffd700, #ffed4a, #ffd700, #ffed4a);
   background-size: 300% 300%;
-  animation: rotateFrame 3s linear infinite, shimmer 2s ease-in-out infinite;
   z-index: -1;
+  animation: shimmer 2s ease-in-out infinite;
 }
 
-/* Icon vương miện */
+.golden-frame {
+  background: linear-gradient(45deg, #ffd700, #ffed4a, #ffd700);
+  animation: rotateFrame 3s linear infinite, shimmer 2s ease-in-out infinite;
+}
+
+.silver-frame {
+  background: linear-gradient(45deg, #c0c0c0, #f0f0f0, #c0c0c0);
+  animation: rotateFrame 3s linear infinite, shimmer 2s ease-in-out infinite;
+}
+
+.bronze-frame {
+  background: linear-gradient(45deg, #cd7f32, #ffb366, #cd7f32);
+  animation: rotateFrame 3s linear infinite, shimmer 2s ease-in-out infinite;
+}
+
+/* ============ BIỂU TƯỢNG TRÊN/DƯỚI AVATAR ============ */
+
+/* Rank 1: Vương miện trên đầu */
 .crown-icon {
   position: absolute;
-  top: -12px;
-  right: -2px;
+  top: -5px;
+  left: 16px;
+  transform: translateX(-50%);
   font-size: 16px;
+  z-index: 10;
   animation: bounce 1.5s ease-in-out infinite;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-  z-index: 10;
 }
 
-/* Animation cho hiệu ứng phát sáng */
-@keyframes goldenGlow {
-  0% {
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-    transform: scale(1);
-  }
-  100% {
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9);
-    transform: scale(1.05);
-  }
-}
-
-/* Animation xoay khung vàng */
+/* ============ ANIMATION ============ */
 @keyframes rotateFrame {
   0% {
     transform: rotate(0deg);
@@ -272,7 +172,6 @@
   }
 }
 
-/* Animation hiệu ứng lấp lánh */
 @keyframes shimmer {
   0%, 100% {
     background-position: 0% 50%;
@@ -282,20 +181,19 @@
   }
 }
 
-/* Animation nhảy cho vương miện */
 @keyframes bounce {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
   50% {
     transform: translateY(-6px);
   }
 }
 
-/* Thêm hiệu ứng hover cho rank 1 */
+/* ============ HOVER HIỆU ỨNG CHO RANK 1 ============ */
 .rank-1-avatar:hover .ranking-avatar-icon {
-  animation-duration: 1s;
   transform: scale(1.1);
+  transition: transform 0.3s ease;
 }
 
 .rank-1-avatar:hover .golden-frame {
@@ -303,23 +201,78 @@
 }
 
 .rank-1-avatar:hover .crown-icon {
-  animation-duration: 0.8s;
   font-size: 18px;
+  animation-duration: 0.8s;
 }
 
-/* Đảm bảo container có đủ không gian cho hiệu ứng */
-.ranking-item .rank-1-avatar {
-  margin: 3px;
-}
-
-/* Thêm hiệu ứng đặc biệt cho toàn bộ ranking item rank 1 */
+/* ============ THIẾT KẾ ĐẶC BIỆT CHO RANK 1 ============ */
 .ranking-item:nth-child(1) {
   background: linear-gradient(135deg, #fff9c4, #f8f9fa);
   border: 2px solid #ffd700;
   box-shadow: 0 4px 8px rgba(255, 215, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .ranking-item:nth-child(1):hover {
   background: linear-gradient(135deg, #fff59d, #e9ecef);
   box-shadow: 0 6px 12px rgba(255, 215, 0, 0.3);
+}
+
+/* ============ ĐẢM BẢO KHÔNG GÂY ĐÈ HIỆU ỨNG ============ */
+.ranking-item .rank-1-avatar {
+  margin: 3px;
+}
+
+/* ==== HIỆU ỨNG ĐẶC BIỆT CHO RANK 2 ==== */
+.ranking-item:nth-child(2) {
+  background: linear-gradient(135deg, #e0e0e0, #f8f9fa);
+  border: 2px solid #c0c0c0;
+  box-shadow: 0 4px 8px rgba(192, 192, 192, 0.2);
+  transition: all 0.3s ease;
+}
+
+.ranking-item:nth-child(2):hover {
+  background: linear-gradient(135deg, #bfc0c0, #e9ecef);
+  box-shadow: 0 6px 12px rgba(192, 192, 192, 0.3);
+}
+
+.rank-2-avatar:hover .ranking-avatar-icon {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.rank-2-avatar:hover .silver-frame {
+  animation-duration: 1.5s;
+}
+
+.rank-2-avatar:hover .crown-icon-silver {
+  font-size: 16px;
+  animation-duration: 0.8s;
+}
+
+/* ==== HIỆU ỨNG ĐẶC BIỆT CHO RANK 3 ==== */
+.ranking-item:nth-child(3) {
+  background: linear-gradient(135deg, #d9b38c, #f8f9fa);
+  border: 2px solid #cd7f32;
+  box-shadow: 0 4px 8px rgba(205, 127, 50, 0.2);
+  transition: all 0.3s ease;
+}
+
+.ranking-item:nth-child(3):hover {
+  background: linear-gradient(135deg, #bb834d, #e9ecef);
+  box-shadow: 0 6px 12px rgba(205, 127, 50, 0.3);
+}
+
+.rank-3-avatar:hover .ranking-avatar-icon {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.rank-3-avatar:hover .bronze-frame {
+  animation-duration: 1.5s;
+}
+
+.rank-3-avatar:hover .crown-icon-bronze {
+  font-size: 16px;
+  animation-duration: 0.8s;
 }

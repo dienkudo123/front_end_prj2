@@ -11,9 +11,18 @@
   flex-direction: column;
 }
 
-.partner-sidebar-tile {
-  color: #222;
+.partner-sidebar-title {
+  font-size: 18px;     
+  font-weight: 600;        
+  color: #333;
+  margin-bottom: 12px;     
+  text-align: center;
+  padding-bottom: 4px;     
+  text-transform: uppercase;
+  letter-spacing: 0.5px;    
+  line-height: 1.2;         
 }
+
 
 .partner-section {
   flex: 1;

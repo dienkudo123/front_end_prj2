@@ -286,7 +286,6 @@ export default function PostNoComment({ post, hideUser = false }) {
   const [reactions, setReactions] = useState([]);
   const [isShowingComments, setIsShowingComments] = useState(false);
   const { user } = useUser();
-  console.log(user);
 
   // const userId = localStorage.getItem("userId");
   // const userReaction = await axiosInstance.get(`${API_BASE_URL}/reaction/${post.id}/me`);

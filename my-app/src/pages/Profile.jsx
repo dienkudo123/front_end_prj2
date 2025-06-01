@@ -22,6 +22,7 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import PostNoComment from "../components/PostNoComment";
+import { Gender, Relationship } from "../utils/enum";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -34,18 +35,18 @@ export default function Profile() {
   const [email, setEmail] = useState("");
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
-  const [avatarFile, setAvatarFile] = useState(null);
   const paramUsername = "User";
   const { user, setUser } = useUser();
   const [bio, setBio] = useState("");
   const [hometown, setHometown] = useState("");
   const [school, setSchool] = useState("");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState(null);
   const [gender, setGender] = useState("");
   const [relationship, setRelationship] = useState("");
   const [address, setAddress] = useState("");
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
+  const [frameUrl, setFrameUrl] = useState("");
   const [isFollowing, setIsFollowing] = useState(false);
   const { id: profileId } = useParams();
 
@@ -54,7 +55,6 @@ export default function Profile() {
       try {
         const response = await axiosInstance.get(`/user/${profileId}`);
         const userData = response.data.data;
-        console.log("CHeck:", userData);
         setDisplayName(userData.user.displayName || paramUsername);
         setEmail(userData.user.email || "");
         setFollowers(userData.followers.length || 0);
@@ -62,10 +62,11 @@ export default function Profile() {
         setBio(userData.user.bio || "");
         setHometown(userData.user.hometown || "");
         setSchool(userData.user.school || "");
-        setBirthday(userData.user.birthday || "");
+        setBirthday(userData.user.birthday || null);
         setGender(userData.user.gender || "");
         setRelationship(userData.user.relationship || "");
         setAddress(userData.user.address || "");
+        setFrameUrl(`${API_BASE_URL}${userData.user.frameUrl}`)
         const followerIds = userData.followers.map((followers) => followers.id);
         setIsFollowing(followerIds.includes(user.id));
         if (userData.user.avatar) {
@@ -82,7 +83,6 @@ export default function Profile() {
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarUrl(reader.result);
@@ -114,7 +114,7 @@ export default function Profile() {
       formData.append("bio", bio);
       formData.append("hometown", hometown);
       formData.append("school", school);
-      formData.append("birthday", birthday);
+      formData.append("birthday", birthday || new Date());
       formData.append("gender", gender);
       formData.append("relationship", relationship);
       formData.append("address", address);
@@ -198,7 +198,7 @@ export default function Profile() {
           <div className="avatar-container">
             <img src={avatarUrl} alt="Avatar" className="avatar-profile" />
             <img
-              src="/frames/Khung lửa.webp"
+              src={frameUrl}
               alt="Avatar Frame"
               className="avatar-frame"
             />
@@ -357,7 +357,7 @@ export default function Profile() {
           </p>
 
           <p>
-            {gender === "Nam" ? (
+            {gender === Gender.Male ? (
               <FaMars style={{ marginRight: 6, color: "blue" }} />
             ) : (
               <FaVenus style={{ marginRight: 6, color: "pink" }} />
@@ -368,12 +368,14 @@ export default function Profile() {
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
               >
-                <option value="Nam">Nam</option>
-                <option value="Nữ">Nữ</option>
-                <option value="Khác">Khác</option>
+                {Object.entries(Gender).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
               </select>
             ) : (
-              gender
+              Gender[gender]  
             )}
           </p>
 
@@ -386,12 +388,14 @@ export default function Profile() {
                 onChange={(e) => setRelationship(e.target.value)}
               >
                 <option value="">-- Chọn --</option>
-                <option value="Độc thân">Độc thân</option>
-                <option value="Đang hẹn hò">Đang hẹn hò</option>
-                <option value="Đã kết hôn">Đã kết hôn</option>
+                {Object.entries(Relationship).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
               </select>
             ) : (
-              relationship
+              Relationship[relationship]
             )}
           </p>
           {user.id === profileId && (
@@ -402,9 +406,7 @@ export default function Profile() {
                   <button onClick={() => setIsEditing(false)}>Hủy</button>
                 </div>
               ) : (
-                <button
-                  onClick={() => setIsEditing(true)}
-                >
+                <button onClick={() => setIsEditing(true)}>
                   Chỉnh sửa thông tin
                 </button>
               )}

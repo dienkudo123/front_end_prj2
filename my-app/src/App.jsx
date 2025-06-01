@@ -14,6 +14,7 @@ import ChatPage from "./pages/ChatPage";
 import { useEffect, useState } from "react";
 import axiosInstance from "./utils/api";
 import { UserProvider } from "./context/UserContext";
+import Shop from "./pages/shop";
 
 // Import CSS
 import "./styles/App.css";
@@ -25,8 +26,10 @@ import "./styles/PostDetail.css";
 import "./styles/PostPage.css";
 import "./styles/NotificationsPage.css";
 import "./styles/Auth.css";
+import "./styles/shop.css"
 import PartnerSidebar from "./components/PartnerSidebar";
 import NewNavbar from "./components/newNavbar";
+
 
 function AppContent() {
     const location = useLocation();
@@ -63,9 +66,11 @@ function AppContent() {
                     {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
                     <Route path="/user/:id" element={<UserProfile />} />
 
+
                     {/* Routes không có sidebar */}
                     <Route path="/login" element={<LoginPage />} />
                     {/* <Route path="/register" element={<RegisterPage />} /> */}
+                    <Route path="/shop" element={<Shop />} />
                 </Routes>
             </div>
             {!isAuthPage && <PartnerSidebar />}

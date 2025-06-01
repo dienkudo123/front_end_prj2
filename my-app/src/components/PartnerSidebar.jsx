@@ -11,11 +11,12 @@ export default function PartnerSidebar() {
   const { user } = useUser();
   const [partners, setPartners] = useState([]);
   const [chatBox, setChatBox] = useState(null);
+  const [lastMsgMap, setLastMsgMap] = useState([]);
 
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const response = await axiosInstance.get(`/user/friend`);
+        const response = await axiosInstance.get(`/user`);
         const users = response.data.data;
         const partnerList = users.filter((partner) => {
           return partner.id !== user.id;
@@ -29,6 +30,19 @@ export default function PartnerSidebar() {
 
     fetchPartners();
   }, [user.id]);
+
+  // useEffect(() => {
+  //   const fetchChatBoxes= async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`/chatBox/user/${user.id}`);
+  //       const chatBoxes = response.data.data;
+  //     } catch (error) {
+  //       console.error("Error fetching chat boxes:", error);
+  //     }
+  //   };
+
+  //   fetchChatBox();
+  // }, []);
 
   const chooseChat = (partnerId) => {
     const fetchChat = async () => { 
@@ -63,7 +77,7 @@ export default function PartnerSidebar() {
   return (
     <div className="partner-sidebar">
       <MessageDialog chatBox={chatBox} user={user} onClose={() => setChatBox(null)}/>
-      <div className="partner-sidebar-tile">
+      <div className="partner-sidebar-title">
         Những người bạn quan tâm
       </div>
       <div className="partner-list">

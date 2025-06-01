@@ -23,3 +23,16 @@ export function formatTimeAgo(dateString) {
   // Nếu lâu hơn 30 ngày, trả về dạng dd/mm/yyyy
   return date.toLocaleDateString("vi-VN");
 }
+
+export function formatDate(dateString) {
+  if (!dateString) return "";
+
+  const date = new Date(dateString);
+  if (isNaN(date)) return "";
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`; // định dạng DD/MM/YYYY
+}

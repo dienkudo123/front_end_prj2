@@ -49,7 +49,7 @@ function AppContent() {
     , []);
     return (
         <div className="app-container">
-            {!isAuthPage && <Sidebar avatarUrl={avatarUrl}/>}
+            {!isAuthPage && <Sidebar />}
             <div className="main-content">
                 {!isAuthPage && <NewNavbar />}
                 <Routes>

@@ -15,11 +15,7 @@ export default function PartnerSidebar() {
   const location = useLocation();
   const [partners, setPartners] = useState([]);
   const [chatBox, setChatBox] = useState(null);
-  const [rankings, setRankings] = useState([]);
-  const navigate = useNavigate();
   
-
-  const isTrendingPage = location.pathname === '/trending';
 
   useEffect(() => {
     const fetchPartners = async () => {
@@ -39,21 +35,6 @@ export default function PartnerSidebar() {
     fetchPartners();
   }, [user.id]);
 
-  useEffect(() => {
-    if (isTrendingPage) {
-      const fetchRankings = async () => {
-        try {
-          const response = await axiosInstance.get(`user/ranking`);
-          setRankings(response.data.data);
-          console.log("Rankings:", response.data.data);
-        } catch (error) {
-          console.error("Error fetching rankings:", error);
-        }
-      };
-
-      fetchRankings();
-    }
-  }, [isTrendingPage]);
 
   const chooseChat = (partnerId) => {
     const fetchChat = async () => { 
@@ -67,18 +48,7 @@ export default function PartnerSidebar() {
     }
     fetchChat();
   }
-  const goToUserProfile = (userId) => {
-      const me = localStorage.getItem("user");
-      console.log("Current user:", me);
-      const currentUser = JSON.parse(me);
-      const myId = currentUser.id;
-      if (userId === myId) {
-        navigate(`/profile/me`);
-      }
-      else {
-        navigate(`/user/${userId}`);
-      }
-    };
+
 
   useEffect(() => {
     if (!chatBox) return;   
@@ -125,9 +95,9 @@ export default function PartnerSidebar() {
         </div>
       </div>
 
-      {isTrendingPage && <div className="partner-divider"></div>}
+      {/* {isTrendingPage && <div className="partner-divider"></div>} */}
 
-      <div className="partner-section">
+      {/* <div className="partner-section">
         {isTrendingPage ? (
           <>
             <div className="partner-sidebar-tile">
@@ -175,7 +145,7 @@ export default function PartnerSidebar() {
         ) : (
           <></>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

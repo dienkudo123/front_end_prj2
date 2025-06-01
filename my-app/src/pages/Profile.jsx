@@ -46,7 +46,7 @@ export default function Profile() {
   const [address, setAddress] = useState("");
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
-  const [frameUrl, setFrameUrl] = useState("");
+  const [frameUrl, setFrameUrl] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const { id: profileId } = useParams();
 
@@ -55,6 +55,7 @@ export default function Profile() {
       try {
         const response = await axiosInstance.get(`/user/${profileId}`);
         const userData = response.data.data;
+        console.log(userData);
         setDisplayName(userData.user.displayName || paramUsername);
         setEmail(userData.user.email || "");
         setFollowers(userData.followers.length || 0);
@@ -66,7 +67,11 @@ export default function Profile() {
         setGender(userData.user.gender || "");
         setRelationship(userData.user.relationship || "");
         setAddress(userData.user.address || "");
-        setFrameUrl(`${API_BASE_URL}${userData.user.frameUrl}`)
+        if (userData.user.frameUrl) {
+          setFrameUrl(`${API_BASE_URL}${userData.user.frameUrl}`);
+        } else {
+          setFrameUrl(null);
+        }
         const followerIds = userData.followers.map((followers) => followers.id);
         setIsFollowing(followerIds.includes(user.id));
         if (userData.user.avatar) {
@@ -197,11 +202,9 @@ export default function Profile() {
         <div className="avatar-wrapper">
           <div className="avatar-container">
             <img src={avatarUrl} alt="Avatar" className="avatar-profile" />
-            <img
-              src={frameUrl}
-              alt="Avatar Frame"
-              className="avatar-frame"
-            />
+            {frameUrl && (
+              <img src={frameUrl} alt="Avatar Frame" className="avatar-frame" />
+            )}
           </div>
           {user.id === profileId && (
             <>
@@ -369,13 +372,13 @@ export default function Profile() {
                 onChange={(e) => setGender(e.target.value)}
               >
                 {Object.entries(Gender).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </select>
             ) : (
-              Gender[gender]  
+              Gender[gender]
             )}
           </p>
 
@@ -389,10 +392,10 @@ export default function Profile() {
               >
                 <option value="">-- Chọn --</option>
                 {Object.entries(Relationship).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </select>
             ) : (
               Relationship[relationship]

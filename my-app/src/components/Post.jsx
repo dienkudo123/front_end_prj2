@@ -313,7 +313,7 @@ export default function Post({ post, hideUser = false }) {
   });
   const goToUserProfile = () => {
     if (post.user?.id) {
-      navigate(`/user/${post.user.id}`);
+      navigate(`/profile/${post.user.id}`);
     }
   };
 

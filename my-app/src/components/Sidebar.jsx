@@ -7,7 +7,6 @@ import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
 const API_BASE_URL = "http://localhost:3000";
 import { useState, useRef, useEffect } from "react";
-import logo from "../assets/Logo.jpg";
 
 export default function Sidebar() {
     const { user } = useUser();

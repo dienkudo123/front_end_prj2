@@ -7,14 +7,15 @@ import {
   IoTrendingUp,
   IoLogOut,
   IoFlame,
+  IoStorefront,
 } from "react-icons/io5";
 import "../styles/newNavbar.css";
 import axiosInstance from "../utils/api";
 import { formatTimeAgo } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/Logo.png";
 
-
-const API_BASE_URL = "http://localhost:3000"
+const API_BASE_URL = "http://localhost:3000";
 
 export default function NewNavbar() {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -77,23 +78,23 @@ export default function NewNavbar() {
   };
 
   const handleLogout = async () => {
-        try {
-            await axiosInstance.post(
-                `${API_BASE_URL}/auth/logout`,
-                {},
-                {
-                    withCredentials: true,
-                }
-            );
-        } catch (err) {
-            console.warn("Logout API failed:", err);
-        } finally {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("user");
-            navigate("/login");
+    try {
+      await axiosInstance.post(
+        `${API_BASE_URL}/auth/logout`,
+        {},
+        {
+          withCredentials: true,
         }
-    };
+      );
+    } catch (err) {
+      console.warn("Logout API failed:", err);
+    } finally {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  };
 
   console.log("Notifications:", notifications);
 
@@ -103,58 +104,68 @@ export default function NewNavbar() {
         <div className="navbar-container">
           <div className="navbar-content">
             <div className="navbar-actions">
-              <div className="navbar-actions-left">
-                {/* Nhóm bên trái */}
-                <div className="navbar-icon-wrapper">
-                  <Link to={"/"}>
-                    <button className="navbar-icon-button" title="Trang chủ">
-                      <IoHome size={24} />
-                      <span className="navbar-icon-label">Trang chủ</span>
-                    </button>
-                  </Link>
-                </div>
-
-                <div className="navbar-icon-wrapper">
-                  <Link to={"/trending"}>
-                    <button className="navbar-icon-button" title="Xu hướng">
-                      <IoFlame size={24} color="orangered" />
-                      <span className="navbar-icon-label">Xu hướng</span>
-                    </button>
-                  </Link>
-                </div>
-
-                <div className="navbar-icon-wrapper">
-                  <Link to={"/profile/me"}>
-                    <button className="navbar-icon-button" title="Hồ sơ">
-                      <IoPerson size={24} />
-                      <span className="navbar-icon-label">Hồ sơ</span>
-                    </button>
-                  </Link>
-                </div>
+              <div className="navbar-icon-wrapper">
+                <img src={logo} alt="Logo" className="navbar-logo"/>
+              </div>
+              <div className="navbar-icon-wrapper">
+                <Link to={"/"}>
+                  <button className="navbar-icon-button" title="Trang chủ">
+                    <IoHome size={24} />
+                    <span className="navbar-icon-label">Trang chủ</span>
+                  </button>
+                </Link>
               </div>
 
-              <div className="navbar-actions-right">
-                {/* Nhóm bên phải */}
-                <div className="navbar-icon-wrapper">
-                  <button
-                    onClick={toggleNotifications}
-                    className="navbar-icon-button"
-                    title="Thông báo"
-                  >
-                    <IoNotifications size={24} />
-                    {unreadCount > 0 && (
-                      <span className="notification-badge">{unreadCount}</span>
-                    )}
-                    <span className="navbar-icon-label">Thông báo</span>
+              <div className="navbar-icon-wrapper">
+                <Link to={"/trending"}>
+                  <button className="navbar-icon-button" title="Xu hướng">
+                    <IoFlame size={24} color="orangered" />
+                    <span className="navbar-icon-label">Xu hướng</span>
                   </button>
-                </div>
+                </Link>
+              </div>
 
-                <div className="navbar-icon-wrapper">
-                  <button className="navbar-icon-button" title="Đăng xuất" onClick={handleLogout}>
-                    <IoLogOut size={24} />
-                    <span className="navbar-icon-label">Đăng xuất</span>
+              <div className="navbar-icon-wrapper">
+                <Link to={"/profile/me"}>
+                  <button className="navbar-icon-button" title="Hồ sơ">
+                    <IoPerson size={24} />
+                    <span className="navbar-icon-label">Hồ sơ</span>
                   </button>
-                </div>
+                </Link>
+              </div>
+
+              <div className="navbar-icon-wrapper">
+                <Link to={"/shop"}>
+                  <button className="navbar-icon-button" title="Cửa hàng">
+                    <IoStorefront size={24} />
+                    <span className="navbar-icon-label">Cửa hàng</span>
+                  </button>
+                </Link>
+              </div>
+
+              <div className="navbar-icon-wrapper">
+                <button
+                  onClick={toggleNotifications}
+                  className="navbar-icon-button"
+                  title="Thông báo"
+                >
+                  <IoNotifications size={24} />
+                  {unreadCount > 0 && (
+                    <span className="notification-badge">{unreadCount}</span>
+                  )}
+                  <span className="navbar-icon-label">Thông báo</span>
+                </button>
+              </div>
+
+              <div className="navbar-icon-wrapper">
+                <button
+                  className="navbar-icon-button"
+                  title="Đăng xuất"
+                  onClick={handleLogout}
+                >
+                  <IoLogOut size={24} />
+                  <span className="navbar-icon-label">Đăng xuất</span>
+                </button>
               </div>
             </div>
           </div>

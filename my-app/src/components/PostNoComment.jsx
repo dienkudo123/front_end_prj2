@@ -6,6 +6,7 @@ import axios from "axios";
 import axiosInstance from "../utils/api";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CommentModal from "./CommentModal";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -284,6 +285,8 @@ export default function PostNoComment({ post, hideUser = false }) {
   const navigate = useNavigate();
   const [reactions, setReactions] = useState([]);
   const [isShowingComments, setIsShowingComments] = useState(false);
+  const { user } = useUser();
+  console.log(user);
 
   // const userId = localStorage.getItem("userId");
   // const userReaction = await axiosInstance.get(`${API_BASE_URL}/reaction/${post.id}/me`);
@@ -462,8 +465,8 @@ export default function PostNoComment({ post, hideUser = false }) {
           <div className="post-no-cmt-header">
             <img
               src={
-                post.user.avatar
-                  ? `${API_BASE_URL}${post.user.avatar}`
+                user.avatar
+                  ? `${API_BASE_URL}${user.avatar}`
                   : "/default-avatar.png"
               }
               alt="Avatar"

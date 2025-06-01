@@ -173,7 +173,7 @@
   top: 0px; /* khoảng cách từ top sau khi scroll */
   align-self: flex-start;
   height: fit-content;
-  flex: 1;
+  flex: 2;
   min-width: 250px;
   max-width: 320px;         
   background-color: #ffffff;
@@ -194,6 +194,48 @@
 
 .user-info p strong {
   margin-right: 6px;
+}
+
+.user-info input,
+.user-info textarea,
+.user-info select {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  margin-left: 8px;
+}
+
+.user-info textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.user-info button {
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #129501;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-right: 8px;
+}
+
+.user-info button:hover {
+  background-color: #0fb300;
+}
+
+.user-info button:last-child {
+  background-color: #03426f;
+}
+
+.user-info button:last-child:hover {
+  background-color: #032e59;
 }
 
 .user-posts {

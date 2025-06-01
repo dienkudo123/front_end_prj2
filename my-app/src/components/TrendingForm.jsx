@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../styles/PostForm.css";
 
-const TrendForm = () => {
+const TrendingForm = ({ onSuccess }) => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [note, setNote] = useState("");
     const [image, setImage] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(null); // <== ảnh xem trước
-
-    const token = localStorage.getItem("accessToken");
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -26,8 +25,7 @@ const TrendForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('accessToken'); // hoặc từ cookie, tuỳ hệ thống
-
+        setLoading(true);
         try {
             const formData = new FormData();
             formData.append("title", title);
@@ -37,6 +35,7 @@ const TrendForm = () => {
                 formData.append("file", image);
             }
 
+            const token = localStorage.getItem('accessToken');
             await axios.post("http://localhost:3000/trendTopic/create", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -45,14 +44,22 @@ const TrendForm = () => {
             });
 
             alert("Tạo trending thành công!");
+            // Reset form
             setTitle("");
             setDescription("");
             setNote("");
             setImage(null);
             setPreviewUrl(null);
+
+            // Gọi callback đóng modal nếu có
+            if (onSuccess) {
+                onSuccess();
+            }
         } catch (err) {
             console.error(err);
             alert("Tạo trending thất bại.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -60,7 +67,6 @@ const TrendForm = () => {
         <div className="post-container">
             <h2>Tạo xu hướng</h2>
             <form onSubmit={handleSubmit} className="post-form">
-                {/*<label htmlFor="title">Tiêu đề:</label>*/}
                 <textarea
                     id="title"
                     value={title}
@@ -68,8 +74,6 @@ const TrendForm = () => {
                     placeholder="Nhập tiêu đề trend"
                     required
                 />
-
-                {/*<label htmlFor="description">Mô tả:</label>*/}
                 <textarea
                     id="description"
                     value={description}
@@ -77,16 +81,12 @@ const TrendForm = () => {
                     placeholder="Mô tả ngắn gọn"
                     required
                 />
-
-                {/*<label htmlFor="note">Ghi chú:</label>*/}
                 <textarea
                     id="note"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Ghi chú nếu có"
                 />
-
-                {/*<label htmlFor="image">Chọn ảnh:</label>*/}
                 <input
                     id="image"
                     type="file"
@@ -99,14 +99,20 @@ const TrendForm = () => {
                 {previewUrl && (
                     <div style={{ margin: "10px 0" }}>
                         <p>Ảnh xem trước:</p>
-                        <img src={previewUrl} alt="Xem trước" style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }} />
+                        <img
+                            src={previewUrl}
+                            alt="Xem trước"
+                            style={{ maxHeight: "200px", borderRadius: "8px" }}
+                        />
                     </div>
                 )}
 
-                <button type="submit">Tạo Trending</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? "Đang tạo..." : "Tạo Trending"}
+                </button>
             </form>
         </div>
     );
 };
 
-export default TrendForm;
+export default TrendingForm;

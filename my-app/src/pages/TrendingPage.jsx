@@ -17,7 +17,7 @@ export default function TrendingPage() {
     const [showPostForm, setShowPostForm] = useState(false);
     const [showTrendingForm, setShowTrendingForm] = useState(false);
 
-    const navigate = useNavigate();  // <-- dùng để điều hướng
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTrends();
@@ -74,20 +74,18 @@ export default function TrendingPage() {
             });
     };
 
-    console.log(postsOfCurrentTag);
     return (
         <div className="trending-page">
-
             {/* Thanh tìm kiếm và nút Đăng bài */}
             <div className="search-container"
-                 style={{display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px"}}>
+                 style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
                 <input
                     type="text"
                     placeholder="Tìm kiếm trend..."
                     value={searchKeyword}
                     onChange={handleSearch}
                     className="search-input"
-                    style={{flexGrow: 1}}
+                    style={{ flexGrow: 1 }}
                 />
                 <button className="btn-post" onClick={() => setShowPostForm(true)}>
                     Đăng bài
@@ -96,40 +94,38 @@ export default function TrendingPage() {
                     Tạo xu hướng
                 </button>
             </div>
+
+            {/* Modal PostForm */}
             {showPostForm && (
                 <div className="modal-overlay" onClick={() => setShowPostForm(false)}>
-                <div
-                        className="modal-content"
-                        onClick={(e) => e.stopPropagation()} // tránh đóng modal khi click bên trong form
-                    >
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <button
                             className="modal-close-btn"
                             onClick={() => setShowPostForm(false)}
                         >
                             &times;
                         </button>
-                        <PostForm />
+                        <PostForm onSuccess={() => setShowPostForm(false)} />
                     </div>
                 </div>
             )}
 
+            {/* Modal TrendingForm */}
             {showTrendingForm && (
-                <div className="modal-overlay" onClick={() => setShowPostForm(false)}>
-                    <div
-                        className="modal-content"
-                        onClick={(e) => e.stopPropagation()} // tránh đóng modal khi click bên trong form
-                    >
+                <div className="modal-overlay" onClick={() => setShowTrendingForm(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <button
                             className="modal-close-btn"
                             onClick={() => setShowTrendingForm(false)}
                         >
                             &times;
                         </button>
-                        <TrendingForm />
+                        <TrendingForm onSuccess={() => setShowTrendingForm(false)} />
                     </div>
                 </div>
             )}
 
+            {/* Hiển thị danh sách trend hoặc post theo tag */}
             {!currentTag && (
                 <div className="trend-grid">
                     {trends.length === 0 && (

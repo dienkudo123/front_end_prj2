@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
@@ -19,13 +19,13 @@ import {
   FaMars,
   FaVenus,
   FaHeart,
+  FaUserCircle,
 } from "react-icons/fa";
 import PostNoComment from "../components/PostNoComment";
 
 const API_BASE_URL = "http://localhost:3000";
 
 export default function Profile() {
-  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -47,12 +47,14 @@ export default function Profile() {
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
+  const { id: profileId } = useParams();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axiosInstance.get(`${API_BASE_URL}/user/me`);
+        const response = await axiosInstance.get(`/user/${profileId}`);
         const userData = response.data.data;
+        console.log("CHeck:", userData);
         setDisplayName(userData.user.displayName || paramUsername);
         setEmail(userData.user.email || "");
         setFollowers(userData.followers.length || 0);
@@ -64,7 +66,8 @@ export default function Profile() {
         setGender(userData.user.gender || "");
         setRelationship(userData.user.relationship || "");
         setAddress(userData.user.address || "");
-
+        const followerIds = userData.followers.map((followers) => followers.id);
+        setIsFollowing(followerIds.includes(user.id));
         if (userData.user.avatar) {
           setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
         }
@@ -74,9 +77,9 @@ export default function Profile() {
     };
 
     fetchUserProfile();
-  }, [paramUsername]);
+  }, [paramUsername, profileId, user.id]);
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       setAvatarFile(file);
@@ -86,6 +89,21 @@ export default function Profile() {
       };
       reader.readAsDataURL(file);
     }
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+    const response = await axiosInstance.patch(
+      `${API_BASE_URL}/user/update`,
+      formData
+    );
+    const updatedUserData = response.data.data;
+
+    const updatedUser = {
+      ...user,
+      avatar: updatedUserData.avatar,
+    };
+
+    setUser(updatedUser);
   };
 
   const handleSave = async () => {
@@ -101,19 +119,9 @@ export default function Profile() {
       formData.append("relationship", relationship);
       formData.append("address", address);
 
-      if (avatarFile) {
-        formData.append("avatar", avatarFile);
-      }
-
       const response = await axiosInstance.patch(
         `${API_BASE_URL}/user/update`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            withCredentials: true,
-          },
-        }
+        formData
       );
 
       const updatedUserData = response.data.data;
@@ -132,8 +140,6 @@ export default function Profile() {
       };
 
       setUser(updatedUser);
-
-      alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
       console.error("Update failed:", error);
@@ -142,16 +148,10 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const user = getUserFromLocalStorage();
-      const token = getTokenFromLocalStorage();
-
-      if (user?.id && token) {
+      if (profileId) {
         try {
           const res = await axiosInstance.get(
-            `${API_BASE_URL}/post/user-posts/${user.id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
+            `${API_BASE_URL}/post/user-posts/${profileId}`
           );
           setPosts(res.data.data || []);
         } catch (err) {
@@ -166,25 +166,22 @@ export default function Profile() {
     };
 
     fetchPosts();
-  }, []);
+  }, [profileId]);
 
-  const getUserFromLocalStorage = () => {
+  const handleFollowToggle = async () => {
     try {
-      const data = localStorage.getItem("user");
-      return data ? JSON.parse(data) : null;
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        alert("Bạn cần đăng nhập để thực hiện hành động này.");
+        return;
+      }
+      await axiosInstance.post(`/user/follow/${profileId}`);
+      setFollowers((prev) => prev + (isFollowing ? -1 : 1));
+      setIsFollowing((prev) => !prev);
     } catch (err) {
-      console.error("Invalid user data in localStorage:", err);
-      return null;
+      console.error("Follow/unfollow failed", err);
+      alert("Thao tác thất bại, vui lòng thử lại.");
     }
-  };
-
-  const getTokenFromLocalStorage = () => {
-    return localStorage.getItem("accessToken");
-  };
-
-  const fullUrl = (url) => {
-    if (!url) return "";
-    return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
   };
 
   if (loading) return <div>Loading...</div>;
@@ -206,16 +203,20 @@ export default function Profile() {
               className="avatar-frame"
             />
           </div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            id="avatar-upload"
-            className="avatar-upload-input"
-          />
-          <label htmlFor="avatar-upload" className="avatar-upload-label">
-            Change Avatar
-          </label>
+          {user.id === profileId && (
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                id="avatar-upload"
+                className="avatar-upload-input"
+              />
+              <label htmlFor="avatar-upload" className="avatar-upload-label">
+                Change Avatar
+              </label>
+            </>
+          )}
         </div>
       </div>
       <div className="profile-header">
@@ -236,7 +237,7 @@ export default function Profile() {
           </div>
           {showFollowersModal && (
             <FollowersModal
-              userId={user?.id}
+              userId={profileId}
               onClose={() => setShowFollowersModal(false)}
             />
           )}
@@ -249,68 +250,173 @@ export default function Profile() {
           </div>
           {showFollowingModal && (
             <FollowingModal
-              userId={user?.id}
+              userId={profileId}
               onClose={() => setShowFollowingModal(false)}
             />
           )}
-          {/* <button
-            className={`follow-button ${isFollowing ? "following" : ""}`}
-            // onClick={handleFollowToggle}
-          >
-            {isFollowing ? "Unfollow" : "Follow"}
-          </button> */}
+          {user.id !== profileId && (
+            <button
+              className={`follow-button ${isFollowing ? "following" : ""}`}
+              onClick={handleFollowToggle}
+            >
+              {isFollowing ? "Unfollow" : "Follow"}
+            </button>
+          )}
         </div>
       </div>
       <div className="profile-main-content">
         <div className="user-info">
           <h2>
-            <FaInfoCircle style={{ marginRight: 8 }} /> Giới thiệu
+            <FaUserCircle style={{ marginRight: 8 }} /> Giới thiệu
           </h2>
+
           <p>
             <FaUser style={{ marginRight: 6 }} />
-            <strong>Tên:</strong> {displayName}
+            <strong>Tên:</strong>{" "}
+            {isEditing ? (
+              <input
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            ) : (
+              displayName
+            )}
           </p>
+
           <p>
             <FaEnvelope style={{ marginRight: 6 }} />
-            <strong>Email:</strong> {email}
+            <strong>Email:</strong>{" "}
+            {isEditing ? (
+              <input value={email} onChange={(e) => setEmail(e.target.value)} />
+            ) : (
+              email
+            )}
           </p>
+
           <p>
             <FaMapMarkerAlt style={{ marginRight: 6 }} />
-            <strong>Địa chỉ:</strong> {address}
+            <strong>Địa chỉ:</strong>{" "}
+            {isEditing ? (
+              <input
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            ) : (
+              address
+            )}
           </p>
+
           <p>
             <FaInfoCircle style={{ marginRight: 6 }} />
-            <strong>Tiểu sử:</strong> {bio}
+            <strong>Tiểu sử:</strong>{" "}
+            {isEditing ? (
+              <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
+            ) : (
+              bio
+            )}
           </p>
+
           <p>
             <FaHome style={{ marginRight: 6 }} />
-            <strong>Quê quán:</strong> {hometown}
+            <strong>Quê quán:</strong>{" "}
+            {isEditing ? (
+              <input
+                value={hometown}
+                onChange={(e) => setHometown(e.target.value)}
+              />
+            ) : (
+              hometown
+            )}
           </p>
+
           <p>
             <FaSchool style={{ marginRight: 6 }} />
-            <strong>Trường học:</strong> {school}
+            <strong>Trường học:</strong>{" "}
+            {isEditing ? (
+              <input
+                value={school}
+                onChange={(e) => setSchool(e.target.value)}
+              />
+            ) : (
+              school
+            )}
           </p>
+
           <p>
             <FaBirthdayCake style={{ marginRight: 6 }} />
-            <strong>Ngày sinh:</strong> {formatDate(birthday)}
+            <strong>Ngày sinh:</strong>{" "}
+            {isEditing ? (
+              <input
+                type="date"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+              />
+            ) : (
+              formatDate(birthday)
+            )}
           </p>
+
           <p>
             {gender === "Nam" ? (
               <FaMars style={{ marginRight: 6, color: "blue" }} />
             ) : (
               <FaVenus style={{ marginRight: 6, color: "pink" }} />
             )}
-            <strong>Giới tính:</strong> {gender}
+            <strong>Giới tính:</strong>{" "}
+            {isEditing ? (
+              <select
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+              >
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
+            ) : (
+              gender
+            )}
           </p>
+
           <p>
             <FaHeart style={{ marginRight: 6, color: "red" }} />
-            <strong>Mối quan hệ:</strong> {relationship}
+            <strong>Mối quan hệ:</strong>{" "}
+            {isEditing ? (
+              <select
+                value={relationship}
+                onChange={(e) => setRelationship(e.target.value)}
+              >
+                <option value="">-- Chọn --</option>
+                <option value="Độc thân">Độc thân</option>
+                <option value="Đang hẹn hò">Đang hẹn hò</option>
+                <option value="Đã kết hôn">Đã kết hôn</option>
+              </select>
+            ) : (
+              relationship
+            )}
           </p>
+          {user.id === profileId && (
+            <>
+              {isEditing ? (
+                <div>
+                  <button onClick={handleSave}>Lưu</button>
+                  <button onClick={() => setIsEditing(false)}>Hủy</button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                >
+                  Chỉnh sửa thông tin
+                </button>
+              )}
+            </>
+          )}
         </div>
 
         <div className="user-posts">
           <h2>Bài đăng của {displayName}</h2>
-          {posts.map((post) => <PostNoComment key={post.id} post={post}/>)}
+          {posts.map((post) => (
+            <PostNoComment key={post.id} post={post} />
+          ))}
         </div>
       </div>
     </div>

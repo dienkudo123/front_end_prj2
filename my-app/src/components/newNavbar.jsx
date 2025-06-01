@@ -14,6 +14,7 @@ import axiosInstance from "../utils/api";
 import { formatTimeAgo } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
+import { useUser } from "../context/UserContext";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -22,6 +23,7 @@ export default function NewNavbar() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
+  const { user } = useUser();
 
   useEffect(() => {
     fetchNotifications();
@@ -96,8 +98,6 @@ export default function NewNavbar() {
     }
   };
 
-  console.log("Notifications:", notifications);
-
   return (
     <div className="navbar-wrapper">
       <nav className="new-navbar">
@@ -126,7 +126,7 @@ export default function NewNavbar() {
               </div>
 
               <div className="navbar-icon-wrapper">
-                <Link to={"/profile/me"}>
+                <Link to={`/profile/${user.id}`}>
                   <button className="navbar-icon-button" title="Hồ sơ">
                     <IoPerson size={24} />
                     <span className="navbar-icon-label">Hồ sơ</span>

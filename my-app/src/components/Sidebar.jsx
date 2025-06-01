@@ -6,7 +6,6 @@ import axiosInstance from "../utils/api";
 import { useNavigate } from "react-router-dom";
 const API_BASE_URL = "http://localhost:3000";
 import { useState, useRef, useEffect } from "react";
-import logo from "../assets/Logo.jpg";
 // import { useNavigate } from "react-router-dom";
 import rankingAnimation from "../assets/beaee5e90d93bfafa5f5f55acb23abfd28ad180c.png";
 

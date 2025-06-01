@@ -61,7 +61,7 @@ const TrendForm = () => {
             <h2>Tạo Trending Topic</h2>
             <form onSubmit={handleSubmit} className="post-form">
                 <label htmlFor="title">Tiêu đề:</label>
-                <input
+                <textarea
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}

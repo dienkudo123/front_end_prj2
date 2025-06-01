@@ -2,7 +2,7 @@ html, body {
     height: 100%;
     margin: 0;
     background-color: #f2f4f7; /* Đảm bảo nền toàn trang là màu đen */
-    color: white;
+    color: black;
     overflow: hidden;
 }
 

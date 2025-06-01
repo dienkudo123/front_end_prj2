@@ -29,12 +29,14 @@
   width: 100%;
 }
 
-.navbar-actions-left,
-.navbar-actions-right {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+.navbar-logo {
+  width: 80px;        /* hoặc 48px tùy kích cỡ bạn muốn */
+  height: 80px;
+  object-fit: contain;
+  border-radius: 8px; /* bo tròn nhẹ nếu muốn */
+  transition: transform 0.2s ease;
 }
+
 
 .navbar-icon-wrapper a {
   text-decoration: none;

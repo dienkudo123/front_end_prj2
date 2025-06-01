@@ -11,6 +11,10 @@
   flex-direction: column;
 }
 
+.partner-sidebar-tile {
+  color: #222;
+}
+
 .partner-section {
   flex: 1;
   padding: 20px 0;

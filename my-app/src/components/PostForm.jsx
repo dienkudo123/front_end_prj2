@@ -8,6 +8,20 @@ const PostForm = ({ initialTrendName = "" }) => {
     const [images, setImages] = useState([]);
     const [trendID, setTrendID] = useState("");
     const [trends, setTrends] = useState([]);
+    const [previewUrl, setPreviewUrl] = useState(null);
+
+    const handleImageChange = (e) => {
+        const files = e.target.files;
+        setImages(files);
+
+        if (files && files.length > 0) {
+            const url = URL.createObjectURL(files[0]);
+            setPreviewUrl(url);
+        } else {
+            setPreviewUrl(null);
+        }
+    };
+
 
     useEffect(() => {
         axios
@@ -70,7 +84,7 @@ const PostForm = ({ initialTrendName = "" }) => {
         <div className="post-container">
             <h2>Đăng bài mới</h2>
             <form onSubmit={handleSubmit} className="post-form">
-                <label htmlFor="title">Tiêu đề:</label>
+                {/*<label htmlFor="title">Tiêu đề:</label>*/}
                 <textarea
                     id="title"
                     value={title}
@@ -79,7 +93,7 @@ const PostForm = ({ initialTrendName = "" }) => {
                     required
                 />
 
-                <label htmlFor="content">Nội dung:</label>
+                {/*<label htmlFor="content">Nội dung:</label>*/}
                 <textarea
                     id="content"
                     value={content}
@@ -88,29 +102,39 @@ const PostForm = ({ initialTrendName = "" }) => {
                     required
                 />
 
-                <label htmlFor="images">Hình ảnh:</label>
+                {/*<label htmlFor="images">Hình ảnh:</label>*/}
                 <input
                     type="file"
                     id="images"
                     accept="image/*"
                     multiple
-                    onChange={(e) => setImages(e.target.files)}
+                    onChange={handleImageChange}
+                    style={{display: "none"}}
                 />
+                <label htmlFor="images" className="custom-file-button">Chọn ảnh</label>
 
-                <label htmlFor="trendID">Trend:</label>
+                {/*<label htmlFor="trendID">Trend:</label>*/}
                 <select
                     id="trendID"
                     value={trendID}
                     onChange={(e) => setTrendID(e.target.value)}
                     required
                 >
-                    <option value="">-- Chọn trend --</option>
+                    <option value=""> Chọn trend </option>
                     {trends.map((trend) => (
                         <option key={trend.id} value={trend.id}>
                             {trend.title}
                         </option>
                     ))}
                 </select>
+
+                {previewUrl && (
+                    <div style={{ margin: "10px 0" }}>
+                        <p>Ảnh xem trước:</p>
+                        <img src={previewUrl} alt="Xem trước" style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }} />
+                    </div>
+                )}
+
 
                 <button type="submit">Đăng bài</button>
             </form>

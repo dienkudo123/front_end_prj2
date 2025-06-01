@@ -4,6 +4,7 @@ import axios from "axios";
 import "../styles/TrendingPage.css";
 import PostForm from "../components/PostForm";
 import TrendingForm from "../components/TrendingForm";
+import Post from "../components/Post";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -73,6 +74,7 @@ export default function TrendingPage() {
             });
     };
 
+    console.log(postsOfCurrentTag);
     return (
         <div className="trending-page">
 
@@ -156,27 +158,12 @@ export default function TrendingPage() {
             {currentTag && (
                 <div className="posts-section">
                     <button onClick={() => setCurrentTag(null)} className="back-button">
-                        ← Back to Trends
+                        ←
                     </button>
-                    <h3>Bài viết theo trend: {currentTag}</h3>
                     {postsOfCurrentTag.length === 0 && <p>Chưa có bài viết nào.</p>}
                     <ul className="posts-list">
                         {postsOfCurrentTag.map((post) => (
-                            <li key={post.id} className="post-item">
-                                <h4>{post.title}</h4>
-                                <p>{post.content}</p>
-                                {post.imageUrl && (
-                                    <img
-                                        src={
-                                            post.imageUrl.startsWith("http")
-                                                ? post.imageUrl
-                                                : `${API_BASE_URL}${post.imageUrl}`
-                                        }
-                                        alt={post.title}
-                                        className="post-image"
-                                    />
-                                )}
-                            </li>
+                            <Post key={post.id} post={post} />
                         ))}
                     </ul>
                 </div>

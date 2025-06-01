@@ -58,10 +58,10 @@ const TrendForm = () => {
 
     return (
         <div className="post-container">
-            <h2>Tạo Trending Topic</h2>
+            <h2>Tạo xu hướng</h2>
             <form onSubmit={handleSubmit} className="post-form">
-                <label htmlFor="title">Tiêu đề:</label>
-                <input
+                {/*<label htmlFor="title">Tiêu đề:</label>*/}
+                <textarea
                     id="title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -69,7 +69,7 @@ const TrendForm = () => {
                     required
                 />
 
-                <label htmlFor="description">Mô tả:</label>
+                {/*<label htmlFor="description">Mô tả:</label>*/}
                 <textarea
                     id="description"
                     value={description}
@@ -78,7 +78,7 @@ const TrendForm = () => {
                     required
                 />
 
-                <label htmlFor="note">Ghi chú:</label>
+                {/*<label htmlFor="note">Ghi chú:</label>*/}
                 <textarea
                     id="note"
                     value={note}
@@ -86,13 +86,15 @@ const TrendForm = () => {
                     placeholder="Ghi chú nếu có"
                 />
 
-                <label htmlFor="image">Chọn ảnh:</label>
+                {/*<label htmlFor="image">Chọn ảnh:</label>*/}
                 <input
                     id="image"
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
+                    style={{ display: "none" }}
                 />
+                <label htmlFor="image" className="custom-file-button">Chọn ảnh</label>
 
                 {previewUrl && (
                     <div style={{ margin: "10px 0" }}>

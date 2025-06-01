@@ -26,7 +26,6 @@ export default function UserProfile() {
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
-        // Giả lập lấy currentUserId từ localStorage (hoặc từ auth context)
         const currentUser = JSON.parse(localStorage.getItem("user"));
         if (currentUser && currentUser.id) {
             setCurrentUserId(currentUser.id);
@@ -37,8 +36,8 @@ export default function UserProfile() {
         const fetchUser = async () => {
             try {
                 const res = await axiosInstance.get(`${API_BASE_URL}/user/${id}`);
-                setUserData(res.data.data);
-
+                setUserData(res.data.data.user);
+                console.log("User data:", res.data.data);
 
                 // Kiểm tra xem có đang follow người này không
                 if (currentUserId && res.data.data.followers) {

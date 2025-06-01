@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
@@ -8,11 +8,11 @@ import { FiHome, FiAward } from "react-icons/fi";
 import FollowersModal from "../components/FollowersModal";
 import FollowingModal from "../components/FollowingModal";
 
-
 const API_BASE_URL = "http://localhost:3000";
 
 export default function Profile() {
     const navigate = useNavigate();
+    const { userId } = useParams(); // Lấy userId từ URL params
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +24,6 @@ export default function Profile() {
     const [followersList, setFollowersList] = useState([]);
     const [followingList, setFollowingList] = useState([]);
     const [avatarFile, setAvatarFile] = useState(null);
-    const paramUsername = "User";
     const { user, setUser } = useUser();
     const [bio, setBio] = useState("");
     const [hometown, setHometown] = useState("");
@@ -36,15 +35,36 @@ export default function Profile() {
     const [address, setAddress] = useState("");
     const [showFollowersModal, setShowFollowersModal] = useState(false);
     const [showFollowingModal, setShowFollowingModal] = useState(false);
-
-
+    const [isOwnProfile, setIsOwnProfile] = useState(false);
+    const [profileUserId, setProfileUserId] = useState(null);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
+            const me = localStorage.getItem("user");
+            const meData = me ? JSON.parse(me) : null;
+            const myId = meData?.id;
+            
             try {
-                const response = await axiosInstance.get(`${API_BASE_URL}/user/me`);
+                let response;
+                let targetUserId;
+                
+                // Kiểm tra xem có phải trang cá nhân của mình không
+                if (!userId || userId === myId) {
+                    // Trả về trang cá nhân của tôi
+                    response = await axiosInstance.get(`${API_BASE_URL}/user/me`);
+                    setIsOwnProfile(true);
+                    targetUserId = myId;
+                } else {
+                    // Trả về thông tin người khác
+                    response = await axiosInstance.get(`${API_BASE_URL}/user/${userId}`);
+                    setIsOwnProfile(false);
+                    targetUserId = userId;
+                }
+                
+                console.log("User profile response:", response.data);
                 const userData = response.data.data;
-                setDisplayName(userData.user.displayName || paramUsername);
+                setProfileUserId(userData.user.id);
+                setDisplayName(userData.user.displayName || "User");
                 setEmail(userData.user.email || "");
                 setFollowers(userData.followers.length || 0);
                 setFollowing(userData.followings.length || 0);
@@ -60,14 +80,12 @@ export default function Profile() {
                     setAvatarUrl(`${API_BASE_URL}${userData.user.avatar}`);
                 }
 
-                const userId = userData.user.id;
-
                 // Lấy danh sách followers
-                const followersRes = await axiosInstance.get(`${API_BASE_URL}/user/followers/${userId}`);
+                const followersRes = await axiosInstance.get(`${API_BASE_URL}/user/followers/${userData.user.id}`);
                 setFollowersList(followersRes.data.data || []);
 
                 // Lấy danh sách following
-                const followingRes = await axiosInstance.get(`${API_BASE_URL}/user/following/${userId}`);
+                const followingRes = await axiosInstance.get(`${API_BASE_URL}/user/following/${userData.user.id}`);
                 setFollowingList(followingRes.data.data || []);
 
             } catch (error) {
@@ -76,7 +94,7 @@ export default function Profile() {
         };
 
         fetchUserProfile();
-    }, [paramUsername]);
+    }, [userId]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];

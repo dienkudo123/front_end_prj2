@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../utils/api";
 import "../styles/FollowersModal.css";
 import {useNavigate} from "react-router-dom";
+import {useUser} from "../context/UserContext.jsx";
 
 const API_BASE_URL = "http://localhost:3000";
 
 export default function FollowersModal({ userId, onClose }) {
     const [followers, setFollowers] = useState([]);
     const navigate = useNavigate();
+    const { user } = useUser();
 
     useEffect(() => {
         const fetchFollowers = async () => {
@@ -22,7 +24,10 @@ export default function FollowersModal({ userId, onClose }) {
     }, [userId]);
 
     const goToUserProfile = (userId) => {
-        navigate(`/user/${userId}`);
+        if (user.id === userId) {
+            navigate("/profile/me");
+        } else
+            navigate(`/user/${userId}`);
     };
 
     return (

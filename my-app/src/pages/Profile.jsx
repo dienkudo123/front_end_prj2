@@ -253,12 +253,12 @@ export default function Profile() {
               onClose={() => setShowFollowingModal(false)}
             />
           )}
-          <button
+          {/* <button
             className={`follow-button ${isFollowing ? "following" : ""}`}
             // onClick={handleFollowToggle}
           >
             {isFollowing ? "Unfollow" : "Follow"}
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="profile-main-content">

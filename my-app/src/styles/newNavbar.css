@@ -1,7 +1,7 @@
 /* NewNavbar Styles */
 .navbar-wrapper {
   position: relative;
-    width: 100%;
+  width: 100%;
 }
 
 .new-navbar {
@@ -22,88 +22,80 @@
   height: 64px;
 }
 
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #2563eb;
-  flex-shrink: 0;
-}
-
-.navbar-search-container {
-  flex: 1;
-  max-width: 512px;
-  margin: 0 auto;
-  min-width: 200px;
-}
-
-.search-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  pointer-events: none;
-}
-
-.new-navbar-search {
-  width: 100%;
-  padding: 8px 12px 8px 40px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background-color: white;
-  font-size: 14px;
-  transition: all 0.2s;
-  box-sizing: border-box;
-}
-
-.navbar-search:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
-
-.navbar-search::placeholder {
-  color: #9ca3af;
-}
-
 .navbar-actions {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  flex-shrink: 0;
+  width: 100%;
 }
 
-.notification-button {
-  position: relative;
-  padding: 8px;
-  color: #4b5563;
+.navbar-actions-left,
+.navbar-actions-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.navbar-icon-wrapper a {
+  text-decoration: none;
+  color: inherit; 
+  display: flex; 
+  align-items: center;
+}
+
+
+.navbar-icon-wrapper a:hover {
+  text-decoration: none;
+  color: inherit; 
+}
+
+.navbar-actions > .navbar-icon-wrapper:nth-last-child(2) {
+  order: 1; /* thông báo */
+}
+
+.navbar-actions > .navbar-icon-wrapper:last-child {
+  order: 2; /* đăng xuất */
+}
+
+/* Icon Wrapper for icon + text label */
+.navbar-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 6px;
+}
+
+/* Unified style for all icon buttons */
+.navbar-icon-button {
   background: none;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  color: #4b5563;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 6px;
+  border-radius: 8px;
+  position: relative;
   min-width: 40px;
   min-height: 40px;
+  transition: all 0.2s;
 }
 
-.notification-button:hover {
+.navbar-icon-button:hover {
   color: #111827;
   background-color: #f3f4f6;
 }
 
-.notification-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+.navbar-icon-label {
+  font-size: 11px;
+  color: #555;
+  margin-top: 4px;
+  text-align: center;
 }
 
+/* Notification Badge */
 .notification-badge {
   position: absolute;
   top: -4px;
@@ -131,31 +123,7 @@
   }
 }
 
-.user-button {
-  padding: 8px;
-  color: #4b5563;
-  background: none;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  min-height: 40px;
-}
-
-.user-button:hover {
-  color: #111827;
-  background-color: #f3f4f6;
-}
-
-.user-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
+/* Notification popup styles */
 .notification-popup {
   position: absolute;
   right: 5px;
@@ -281,13 +249,6 @@
   color: #2563eb;
 }
 
-.notification-item-message {
-  font-size: 14px;
-  color: #374151;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .notification-item-time {
   font-size: 12px;
   color: #9ca3af;
@@ -328,33 +289,23 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .navbar-search-container {
-    margin: 0 1rem;
-    max-width: 250px;
-  }
-  
-  .notification-popup {
-    width: 320px;
-    right: 0.5rem;
-  }
-
   .navbar-container {
     padding: 0 0.5rem;
-  }
-
-  .navbar-logo {
-    font-size: 1.25rem;
   }
 
   .navbar-actions {
     gap: 0.5rem;
   }
+
+  .notification-popup {
+    width: 320px;
+    right: 0.5rem;
+  }
 }
 
 @media (max-width: 640px) {
-  .navbar-search-container {
-    max-width: 180px;
-    margin: 0 0.5rem;
+  .navbar-actions {
+    gap: 0.25rem;
   }
 
   .notification-popup {
@@ -362,14 +313,13 @@
     right: 0.25rem;
   }
 
-  .navbar-actions {
-    gap: 0.25rem;
-  }
-
-  .notification-button,
-  .user-button {
+  .navbar-icon-button {
     min-width: 36px;
     min-height: 36px;
-    padding: 6px;
+    padding: 4px;
+  }
+
+  .navbar-icon-label {
+    font-size: 10px;
   }
 }

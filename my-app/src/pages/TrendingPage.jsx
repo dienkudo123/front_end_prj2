@@ -1,35 +1,38 @@
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "../styles/TrendingPage.css";
 import PostForm from "../components/PostForm";
 import TrendingForm from "../components/TrendingForm";
-import Post from "../components/Post";
-import "../styles/TrendingPage.css";
-import { useUser } from "../context/UserContext.jsx";
 
 const API_BASE_URL = "http://localhost:3000";
 
 export default function TrendingPage() {
-    const { user } = useUser();
     const [currentTag, setCurrentTag] = useState(null);
     const [trends, setTrends] = useState([]);
-    const [showPostForm, setShowPostForm] = useState(false);
-    const [showTrends, setShowTrends] = useState(true);
-    const [previewPostsByTrend, setPreviewPostsByTrend] = useState({});
     const [postsOfCurrentTag, setPostsOfCurrentTag] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [isSearching, setIsSearching] = useState(false);
+    const [showPostForm, setShowPostForm] = useState(false);
+    const [showTrendingForm, setShowTrendingForm] = useState(false);
 
-    // Lấy danh sách trendTopic
+    const navigate = useNavigate();  // <-- dùng để điều hướng
+
     useEffect(() => {
+        fetchTrends();
+    }, []);
+
+    const fetchTrends = () => {
         axios
-            .get("http://localhost:3000/trendTopic")
+            .get(`${API_BASE_URL}/trendTopic`)
             .then((res) => {
                 if (res.data && res.data.data) {
                     setTrends(res.data.data);
                 }
             })
             .catch((err) => console.error("Lỗi khi lấy trends:", err));
-    }, []);
+    };
 
-    // Lấy bài viết theo trend hiện tại khi click vào ảnh
     useEffect(() => {
         if (!currentTag || trends.length === 0) return;
 
@@ -37,112 +40,145 @@ export default function TrendingPage() {
         if (!trend) return;
 
         axios
-            .get(`http://localhost:3000/post/trend-topic/${trend.id}`)
+            .get(`${API_BASE_URL}/post/trend-topic/${trend.id}`)
             .then((res) => {
                 if (res.data?.data) {
                     setPostsOfCurrentTag(res.data.data);
-                    setShowTrends(false);
-                    setShowPostForm(false);
                 }
             })
             .catch((err) => console.error("Lỗi khi lấy bài viết theo trend:", err));
     }, [currentTag, trends]);
 
-    // Lấy post đầu tiên của từng trend để hiển thị thumbnail
-    useEffect(() => {
-        if (trends.length === 0) return;
+    const handleSearch = (e) => {
+        const keyword = e.target.value;
+        setSearchKeyword(keyword);
 
-        const fetchPreviewPosts = async () => {
-            const postMap = {};
+        if (!keyword) {
+            fetchTrends();
+            setIsSearching(false);
+            return;
+        }
 
-            await Promise.all(
-                trends.map(async (trend) => {
-                    try {
-                        const res = await axios.get(`http://localhost:3000/post/trend-topic/${trend.id}`);
-                        if (res.data?.data?.length > 0) {
-                            postMap[trend.id] = {
-                                trend,
-                                post: res.data.data[0],
-                            };
-                        }
-                    } catch (error) {
-                        console.error(`Lỗi khi lấy post cho trend ${trend.title}:`, error);
-                    }
-                })
-            );
-
-            setPreviewPostsByTrend(postMap);
-        };
-
-        fetchPreviewPosts();
-    }, [trends]);
-
-    const fullUrl = (url) => {
-        if (!url) return "";
-        return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+        setIsSearching(true);
+        axios
+            .get(`${API_BASE_URL}/trendTopic/search/${keyword}`)
+            .then((res) => {
+                if (res.data?.data) {
+                    setTrends(res.data.data);
+                }
+            })
+            .catch((err) => {
+                console.error("Lỗi khi tìm kiếm trend:", err);
+                setTrends([]);
+            });
     };
-    console.log("Preview Posts by Trend:", previewPostsByTrend);
+
     return (
         <div className="trending-page">
-            <div className="button-group">
-                <button
-                    className={showPostForm ? "active" : ""}
-                    onClick={() => {
-                        setShowPostForm(true);
-                        setShowTrends(false);
-                        setCurrentTag(null);
-                    }}
-                >
+
+            {/* Thanh tìm kiếm và nút Đăng bài */}
+            <div className="search-container"
+                 style={{display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px"}}>
+                <input
+                    type="text"
+                    placeholder="Tìm kiếm trend..."
+                    value={searchKeyword}
+                    onChange={handleSearch}
+                    className="search-input"
+                    style={{flexGrow: 1}}
+                />
+                <button className="btn-post" onClick={() => setShowPostForm(true)}>
                     Đăng bài
                 </button>
-                <button
-                    className={showTrends ? "active" : ""}
-                    onClick={() => {
-                        setShowTrends(true);
-                        setShowPostForm(false);
-                        setCurrentTag(null);
-                    }}
-                >
-                    Chủ đề phổ biến
+                <button className="btn-post" onClick={() => setShowTrendingForm(true)}>
+                    Tạo xu hướng
                 </button>
             </div>
-
-            {showTrends && (
-                <div className="trend-grid">
-                    {Object.values(previewPostsByTrend).map(({ trend, post }) => (
-                        <div key={trend.id} className="trend-item">
-                            <div className="trend-title">{trend.title}</div>
-                            {post?.imageUrl ? (
-                                <img
-                                    src={fullUrl(post.imageUrl)}
-                                    alt={trend.title}
-                                    className="trend-image"
-                                    onClick={() => setCurrentTag(trend.title)}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            ) : (
-                                <div className="no-image">Không có ảnh</div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            {currentTag && postsOfCurrentTag.length > 0 && (
-                <div className="posts-by-trend">
-                    <h3 style={{ color: "white", textAlign: "center" }}>
-                        Bài viết trong chủ đề "{currentTag}"
-                    </h3>
-                    {postsOfCurrentTag.map((post) => (
-                        <Post key={post.id} post={post} />
-                    ))}
-                </div>
-            )}
-
             {showPostForm && (
-                <div>
-                    <PostForm initialTrendName={currentTag} />
-                    {user.role !== "" && <TrendingForm />}
+                <div className="modal-overlay" onClick={() => setShowPostForm(false)}>
+                <div
+                        className="modal-content"
+                        onClick={(e) => e.stopPropagation()} // tránh đóng modal khi click bên trong form
+                    >
+                        <button
+                            className="modal-close-btn"
+                            onClick={() => setShowPostForm(false)}
+                        >
+                            &times;
+                        </button>
+                        <PostForm />
+                    </div>
+                </div>
+            )}
+
+            {showTrendingForm && (
+                <div className="modal-overlay" onClick={() => setShowPostForm(false)}>
+                    <div
+                        className="modal-content"
+                        onClick={(e) => e.stopPropagation()} // tránh đóng modal khi click bên trong form
+                    >
+                        <button
+                            className="modal-close-btn"
+                            onClick={() => setShowTrendingForm(false)}
+                        >
+                            &times;
+                        </button>
+                        <TrendingForm />
+                    </div>
+                </div>
+            )}
+
+            {!currentTag && (
+                <div className="trend-grid">
+                    {trends.length === 0 && (
+                        <p>{isSearching ? "Không tìm thấy trend phù hợp." : "Không có trend nào."}</p>
+                    )}
+                    {trends.map((trend) => {
+                        const imgUrl = trend.imageUrl?.startsWith("http")
+                            ? trend.imageUrl
+                            : `${API_BASE_URL}${trend.imageUrl}`;
+                        return (
+                            <div
+                                key={trend.id}
+                                className="trend-item"
+                                onClick={() => setCurrentTag(trend.title)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <img src={imgUrl} alt={trend.title} />
+                                <p className="title">{trend.title}</p>
+                                <p className="description">{trend.description}</p>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            {currentTag && (
+                <div className="posts-section">
+                    <button onClick={() => setCurrentTag(null)} className="back-button">
+                        ← Back to Trends
+                    </button>
+                    <h3>Bài viết theo trend: {currentTag}</h3>
+                    {postsOfCurrentTag.length === 0 && <p>Chưa có bài viết nào.</p>}
+                    <ul className="posts-list">
+                        {postsOfCurrentTag.map((post) => (
+                            <li key={post.id} className="post-item">
+                                <h4>{post.title}</h4>
+                                <p>{post.content}</p>
+                                {post.imageUrl && (
+                                    <img
+                                        src={
+                                            post.imageUrl.startsWith("http")
+                                                ? post.imageUrl
+                                                : `${API_BASE_URL}${post.imageUrl}`
+                                        }
+                                        alt={post.title}
+                                        className="post-image"
+                                    />
+                                )}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
         </div>

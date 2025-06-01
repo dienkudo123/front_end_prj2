@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { IoNotifications, IoSearch, IoPerson } from "react-icons/io5";
+import {
+  IoNotifications,
+  IoSearch,
+  IoPerson,
+  IoHome,
+  IoTrendingUp,
+  IoLogOut,
+  IoFlame,
+} from "react-icons/io5";
 import "../styles/newNavbar.css";
 import axiosInstance from "../utils/api";
 import { formatTimeAgo } from "../utils/auth";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function NewNavbar({ onSearch }) {
+
+const API_BASE_URL = "http://localhost:3000"
+
+export default function NewNavbar() {
   const [showNotifications, setShowNotifications] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNotifications();
@@ -28,14 +40,6 @@ export default function NewNavbar({ onSearch }) {
       }
     } catch (error) {
       console.error("Failed to fetch notifications", error);
-    }
-  };
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    if (onSearch) {
-      onSearch(value);
     }
   };
 
@@ -72,6 +76,25 @@ export default function NewNavbar({ onSearch }) {
     }
   };
 
+  const handleLogout = async () => {
+        try {
+            await axiosInstance.post(
+                `${API_BASE_URL}/auth/logout`,
+                {},
+                {
+                    withCredentials: true,
+                }
+            );
+        } catch (err) {
+            console.warn("Logout API failed:", err);
+        } finally {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("user");
+            navigate("/login");
+        }
+    };
+
   console.log("Notifications:", notifications);
 
   return (
@@ -79,40 +102,60 @@ export default function NewNavbar({ onSearch }) {
       <nav className="new-navbar">
         <div className="navbar-container">
           <div className="navbar-content">
-            {/* Logo */}
-            {/* <div className="navbar-logo">MyApp</div> */}
-
-            {/* Search Bar */}
-            <div className="navbar-search-container">
-              <div className="search-wrapper">
-                <IoSearch className="search-icon" size={20} />
-                <input
-                  type="text"
-                  value={searchValue}
-                  onChange={handleSearchChange}
-                  placeholder="Tìm kiếm..."
-                  className="new-navbar-search"
-                />
-              </div>
-            </div>
-
-            {/* Right side - Notifications & User */}
             <div className="navbar-actions">
-              {/* Notification Bell */}
-              <button
-                onClick={toggleNotifications}
-                className="notification-button"
-              >
-                <IoNotifications size={24} />
-                {unreadCount > 0 && (
-                  <span className="notification-badge">{unreadCount}</span>
-                )}
-              </button>
+              <div className="navbar-actions-left">
+                {/* Nhóm bên trái */}
+                <div className="navbar-icon-wrapper">
+                  <Link to={"/"}>
+                    <button className="navbar-icon-button" title="Trang chủ">
+                      <IoHome size={24} />
+                      <span className="navbar-icon-label">Trang chủ</span>
+                    </button>
+                  </Link>
+                </div>
 
-              {/* User Avatar */}
-              {/* <button className="user-button">
-                <IoPerson size={24} />
-              </button> */}
+                <div className="navbar-icon-wrapper">
+                  <Link to={"/trending"}>
+                    <button className="navbar-icon-button" title="Xu hướng">
+                      <IoFlame size={24} color="orangered" />
+                      <span className="navbar-icon-label">Xu hướng</span>
+                    </button>
+                  </Link>
+                </div>
+
+                <div className="navbar-icon-wrapper">
+                  <Link to={"/profile/me"}>
+                    <button className="navbar-icon-button" title="Hồ sơ">
+                      <IoPerson size={24} />
+                      <span className="navbar-icon-label">Hồ sơ</span>
+                    </button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="navbar-actions-right">
+                {/* Nhóm bên phải */}
+                <div className="navbar-icon-wrapper">
+                  <button
+                    onClick={toggleNotifications}
+                    className="navbar-icon-button"
+                    title="Thông báo"
+                  >
+                    <IoNotifications size={24} />
+                    {unreadCount > 0 && (
+                      <span className="notification-badge">{unreadCount}</span>
+                    )}
+                    <span className="navbar-icon-label">Thông báo</span>
+                  </button>
+                </div>
+
+                <div className="navbar-icon-wrapper">
+                  <button className="navbar-icon-button" title="Đăng xuất" onClick={handleLogout}>
+                    <IoLogOut size={24} />
+                    <span className="navbar-icon-label">Đăng xuất</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -167,8 +210,7 @@ export default function NewNavbar({ onSearch }) {
                     <div className="notification-content-text">
                       <p className="notification-item-combined">
                         <span className="notification-item-title">
-                          {notification.actorUser.displayName}
-                          {" "}
+                          {notification.actorUser.displayName}{" "}
                         </span>
                         {notification.content}
                       </p>

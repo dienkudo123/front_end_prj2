@@ -120,7 +120,7 @@ export default function AuthPage() {
         {/* Form */}
         <div className="login-box">
           <h1 className="login-title">
-            {isLogin ? "web gi dodo" : "Tạo tài khoản"}
+            {isLogin ? "TRENDJ" : "Tạo tài khoản"}
           </h1>
           
           <form onSubmit={isLogin ? handleLogin : handleRegister} className="login-form">

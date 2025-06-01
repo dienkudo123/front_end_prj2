@@ -32,6 +32,8 @@ export default function Feed() {
     if (loading) return <p style={{color: "white", textAlign: "center"}}>Đang tải bài đăng...</p>;
     if (error) return <p style={{color: "red", textAlign: "center"}}>{error}</p>;
 
+    console.log("Post:", posts);
+
     return (
         <div className="feed">
             {posts.length === 0 ? (

@@ -61,7 +61,7 @@ export default function TrendingPage() {
 
         setIsSearching(true);
         axios
-            .get(`${API_BASE_URL}/trendTopic/search`, { params: { keyword } })
+            .get(`${API_BASE_URL}/trendTopic/search/${keyword}`)
             .then((res) => {
                 if (res.data?.data) {
                     setTrends(res.data.data);

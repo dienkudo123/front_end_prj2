@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaShareSquare, FaRegHeart } from "react-icons/fa";
+import { FaShareSquare, FaRegHeart, FaHashtag } from "react-icons/fa";
 import "../styles/Post.css";
 import axios from "axios";
 import axiosInstance from "../utils/api";
 import { useUser } from "../context/UserContext";
 import { formatTimeAgo } from "../utils/auth";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { IoPricetagOutline } from 'react-icons/io5';
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -288,10 +289,8 @@ export default function Post({ post, hideUser = false }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
-  const [openMenuId, setOpenMenuId] = useState(null);
-
-  // const userId = localStorage.getItem("userId");
-  // const userReaction = await axiosInstance.get(`${API_BASE_URL}/reaction/${post.id}/me`);
+  const [commentMenuId, setCommentMenuId] = useState(null);
+  const [postMenuId, setPostMenuId] = useState(null);
 
   useEffect(() => {
     const fetchUserReaction = async () => {
@@ -501,9 +500,19 @@ export default function Post({ post, hideUser = false }) {
     try {
       await axiosInstance.delete(`/comment/${commentId}`);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
-      setOpenMenuId(null);
+      setCommentMenuId(null);
     } catch (error) {
       console.error("Error deleting comment:", error);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      await axiosInstance.delete(`/post/${postId}`);
+      setPostMenuId(null);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
   };
 
@@ -540,12 +549,39 @@ export default function Post({ post, hideUser = false }) {
             >
               {post.user.displayName}
             </p>
+            {post.user.id === user.id && (
+              <>
+                <span
+                  className="post-menu-btn"
+                  title="Tùy chọn"
+                  onClick={() =>
+                    setPostMenuId(post.id === postMenuId ? null : post.id)
+                  }
+                >
+                  ⋮
+                </span>
+                {postMenuId === post.id && (
+                  <div className="post-menu-dropdown">
+                    <button
+                      className="post-delete-btn"
+                      onClick={() => handleDeletePost(post.id)}
+                    >
+                      Xóa bài đăng
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
 
         {/* Content */}
         <div className="post-content">
-          <p>{post.content}</p>
+          <p className="post-title">
+  <IoPricetagOutline className="post-title-icon" />
+  {post.title}
+</p>
+          <p className="post-body">{post.content}</p>
         </div>
 
         {/* Post Image */}
@@ -579,7 +615,7 @@ export default function Post({ post, hideUser = false }) {
           </div>
 
           <button className="icon-button">
-            <FaShareSquare/>
+            <FaShareSquare />
           </button>
         </div>
 
@@ -637,8 +673,8 @@ export default function Post({ post, hideUser = false }) {
                                 className="comment-menu-btn"
                                 title="Tùy chọn"
                                 onClick={() =>
-                                  setOpenMenuId(
-                                    openMenuId === comment.id
+                                  setCommentMenuId(
+                                    commentMenuId === comment.id
                                       ? null
                                       : comment.id
                                   )
@@ -646,7 +682,7 @@ export default function Post({ post, hideUser = false }) {
                               >
                                 ⋮
                               </span>
-                              {openMenuId === comment.id && (
+                              {commentMenuId === comment.id && (
                                 <div className="comment-menu-dropdown">
                                   <button
                                     className="comment-delete-btn"

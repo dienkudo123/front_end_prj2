@@ -29,7 +29,7 @@ const Shop = () => {
     image: null,
   });
   const [uploading, setUploading] = useState(false);
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const [frameUrlUsed, setFrameUrlUsed] = useState("");
   const [userRole, setUserRole] = useState("User");
 
@@ -83,9 +83,7 @@ const Shop = () => {
       }
     };
     firstFetch();
-  }, [user]);
-
-  console.log(frameUrlUsed);
+  }, [user.frameUrl, user.role]);
 
   const getUserItem = async () => {
     try {
@@ -148,7 +146,7 @@ const Shop = () => {
     }
   };
 
-  const handleUseClick = (item) => {
+  const handleUseClick = async (item) => {
     setSelectedItem(item);
     setShowUseModal(true);
   };

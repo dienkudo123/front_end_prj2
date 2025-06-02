@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaShareSquare, FaRegHeart, FaHashtag } from "react-icons/fa";
 import "../styles/Post.css";
@@ -7,7 +7,7 @@ import axiosInstance from "../utils/api";
 import { useUser } from "../context/UserContext";
 import { formatTimeAgo } from "../utils/auth";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { IoPricetagOutline } from 'react-icons/io5';
+import { IoPricetagOutline } from "react-icons/io5";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -291,6 +291,20 @@ export default function Post({ post, hideUser = false }) {
   const [loading, setLoading] = useState(true);
   const [commentMenuId, setCommentMenuId] = useState(null);
   const [postMenuId, setPostMenuId] = useState(null);
+  const postRef = useRef(null);
+  const [commentHeight, setCommentHeight] = useState(0);
+
+  useEffect(() => {
+  if (!postRef.current) return;
+
+  const observer = new ResizeObserver(([entry]) => {
+    setCommentHeight(entry.contentRect.height + 35);
+  });
+
+  observer.observe(postRef.current);
+
+  return () => observer.disconnect();
+}, []);
 
   useEffect(() => {
     const fetchUserReaction = async () => {
@@ -518,7 +532,7 @@ export default function Post({ post, hideUser = false }) {
 
   return (
     <div className="post">
-      <div className="post-info">
+      <div className="post-info" ref={postRef}>
         {post.trendTopic?.title && (
           <div className="post-trend-topic">
             <span className="post-trend-icon">
@@ -542,13 +556,17 @@ export default function Post({ post, hideUser = false }) {
               alt="Avatar"
               className="avatar"
             />
-            <p
-              className="username"
-              onClick={goToUserProfile}
-              style={{ cursor: "pointer", fontWeight: "bold" }}
-            >
-              {post.user.displayName}
-            </p>
+            <div className="post-name-date">
+              {" "}
+              <p
+                className="username"
+                onClick={goToUserProfile}
+                style={{ cursor: "pointer", fontWeight: "bold" }}
+              >
+                {post.user.displayName}
+              </p>
+              <span className="create-at">{formatTimeAgo(post.createdAt)}</span>
+            </div>
             {post.user.id === user.id && (
               <>
                 <span
@@ -578,9 +596,9 @@ export default function Post({ post, hideUser = false }) {
         {/* Content */}
         <div className="post-content">
           <p className="post-title">
-  <IoPricetagOutline className="post-title-icon" />
-  {post.title}
-</p>
+            <IoPricetagOutline className="post-title-icon" />
+            {post.title}
+          </p>
           <p className="post-body">{post.content}</p>
         </div>
 
@@ -630,6 +648,7 @@ export default function Post({ post, hideUser = false }) {
       <div
         className="modal-comment-content"
         onClick={(e) => e.stopPropagation()}
+        style={{ maxHeight: `${commentHeight}px`, overflowY: "auto" }}
       >
         <div className="comments-header">
           <h3>Bình luận của bài viết</h3>

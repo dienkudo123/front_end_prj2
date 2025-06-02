@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;600&display=swap');
+
 /* Existing styles */
 .post {
   display: flex;
@@ -46,6 +48,7 @@
 }
 
 .post-header {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px; /* tăng chút khoảng cách để thoáng hơn */
@@ -66,6 +69,47 @@
     white-space: nowrap;
     user-select: none;
   }
+}
+
+.post-menu-btn {
+  cursor: pointer;
+  font-size: 18px;
+  color: #2d2f32;
+  margin-left: auto;
+  transition: color 0.2s;
+  user-select: none;
+}
+
+.post-menu-btn:hover {
+  color: #2563eb;
+}
+
+.post-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background: #fcd3d3;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+  min-width: 120px;
+}
+
+.post-delete-btn {
+  background: none;
+  border: none;
+  color: #f30404;
+  padding: 8px 16px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.post-delete-btn:hover {
+  background: #f4b8b8;
 }
 
 .post-image {
@@ -107,7 +151,40 @@
 
 .post-content {
   font-family: Arial, sans-serif;
+  margin-top: 8px;
+}
+
+.post-title {
+  font-size: 17px;
+  font-weight: bold;
+  color: #012e90; /* đậm và rõ ràng */
+  margin-bottom: 4px;
+}
+.post-title-icon {
+  font-size: 18px;
+  margin-right: 6px;
+  color: #2563eb;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+@keyframes pulseTag {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+.post-body {
   font-size: 15px;
+  color: #374151; /* nhẹ hơn một chút */
+  line-height: 1.6;
+  white-space: pre-wrap; /* giữ xuống dòng nếu người dùng nhập Enter */
 }
 
 /* New Reaction Styles */

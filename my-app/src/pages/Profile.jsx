@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FiSettings, FiLogOut } from "react-icons/fi";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
 import { useUser } from "../context/UserContext";
-import { FiHome, FiAward } from "react-icons/fi";
 import FollowersModal from "../components/FollowersModal";
 import FollowingModal from "../components/FollowingModal";
 import { formatDate } from "../utils/auth";
@@ -20,6 +18,7 @@ import {
   FaVenus,
   FaHeart,
   FaUserCircle,
+  FaCoins,
 } from "react-icons/fa";
 import PostNoComment from "../components/PostNoComment";
 import { Gender, Relationship } from "../utils/enum";
@@ -48,6 +47,7 @@ export default function Profile() {
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [frameUrl, setFrameUrl] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [point, setPoint] = useState(0);
   const { id: profileId } = useParams();
 
   useEffect(() => {
@@ -67,6 +67,7 @@ export default function Profile() {
         setGender(userData.user.gender || "");
         setRelationship(userData.user.relationship || "");
         setAddress(userData.user.address || "");
+        setPoint(userData.user.point || 0);
         if (userData.user.frameUrl) {
           setFrameUrl(`${API_BASE_URL}${userData.user.frameUrl}`);
         } else {
@@ -257,6 +258,14 @@ export default function Profile() {
               onClose={() => setShowFollowingModal(false)}
             />
           )}
+          <div className="follow-point">
+            <div className="point-inline">
+              <strong className="point-number">{point}</strong>
+              <FaCoins className="point-icon" />
+            </div>
+            <span className="point-label">Points</span>
+          </div>
+
           {user.id !== profileId && (
             <button
               className={`follow-button ${isFollowing ? "following" : ""}`}

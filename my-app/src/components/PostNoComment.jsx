@@ -286,6 +286,7 @@ export default function PostNoComment({ post, hideUser = false }) {
   const [reactions, setReactions] = useState([]);
   const [isShowingComments, setIsShowingComments] = useState(false);
   const { user } = useUser();
+  const [postMenuId, setPostMenuId] = useState(null);
 
   // const userId = localStorage.getItem("userId");
   // const userReaction = await axiosInstance.get(`${API_BASE_URL}/reaction/${post.id}/me`);
@@ -443,6 +444,16 @@ export default function PostNoComment({ post, hideUser = false }) {
     setShowReactionDetails(true);
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      await axiosInstance.delete(`/post/${postId}`);
+      setPostMenuId(null);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
     <div className="post-no-cmt">
       <div className="post-no-cmt-info">
@@ -478,6 +489,29 @@ export default function PostNoComment({ post, hideUser = false }) {
             >
               {post.user.displayName}
             </p>
+            {post.user.id === user.id && (
+              <>
+                <span
+                  className="post-menu-btn"
+                  title="Tùy chọn"
+                  onClick={() =>
+                    setPostMenuId(post.id === postMenuId ? null : post.id)
+                  }
+                >
+                  ⋮
+                </span>
+                {postMenuId === post.id && (
+                  <div className="post-menu-dropdown">
+                    <button
+                      className="post-delete-btn"
+                      onClick={() => handleDeletePost(post.id)}
+                    >
+                      Xóa bài đăng
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
 

@@ -47,6 +47,7 @@
   display: flex;
   align-items: center;
   gap: 12px; /* tăng chút khoảng cách để thoáng hơn */
+  position: relative;
 
   .avatar {
     width: 44px; /* hơi lớn hơn 1 chút cho nổi bật */

@@ -67,7 +67,7 @@
 }
 
 .ranking-item:nth-child(2) .ranking-position {
-  color: #c0c0c0; /* Silver */
+  color: #929292; /* Silver */
 }
 
 .ranking-item:nth-child(3) .ranking-position {
@@ -245,11 +245,6 @@
   animation-duration: 1.5s;
 }
 
-.rank-2-avatar:hover .crown-icon-silver {
-  font-size: 16px;
-  animation-duration: 0.8s;
-}
-
 /* ==== HIỆU ỨNG ĐẶC BIỆT CHO RANK 3 ==== */
 .ranking-item:nth-child(3) {
   background: linear-gradient(135deg, #d9b38c, #f8f9fa);
@@ -270,9 +265,4 @@
 
 .rank-3-avatar:hover .bronze-frame {
   animation-duration: 1.5s;
-}
-
-.rank-3-avatar:hover .crown-icon-bronze {
-  font-size: 16px;
-  animation-duration: 0.8s;
 }

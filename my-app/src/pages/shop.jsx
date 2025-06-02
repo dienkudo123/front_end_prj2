@@ -37,6 +37,10 @@ const Shop = () => {
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [showUseModal, setShowUseModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  
+  // Error popup state
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchShopItems = async () => {
     try {
@@ -122,7 +126,23 @@ const Shop = () => {
       setSelectedItem(null);
     } catch (err) {
       console.error("Purchase error:", err);
-      alert("Lỗi khi mua sản phẩm");
+      
+      // Check if error is related to insufficient points
+      if (err.response && err.response.status === 400) {
+        const errorData = err.response.data;
+        if (errorData.message && errorData.message.includes("điểm") || 
+            errorData.message && errorData.message.includes("point")) {
+          setErrorMessage("Bạn không đủ điểm để mua sản phẩm này!");
+        } else {
+          setErrorMessage(errorData.message || "Có lỗi xảy ra khi mua sản phẩm");
+        }
+      } else {
+        setErrorMessage("Có lỗi xảy ra khi mua sản phẩm");
+      }
+      
+      setShowErrorModal(true);
+      setShowPurchaseModal(false);
+      setSelectedItem(null);
     } finally {
       setPurchasing((prev) => ({ ...prev, [selectedItem.id]: false }));
     }
@@ -144,6 +164,8 @@ const Shop = () => {
     await axiosInstance.patch(`http://localhost:3000/user/update`, formData);
     if (selectedItem.type === "FRAME") {
       setFrameUrlUsed(selectedItem.imageUrl);
+      user.frameUrl = selectedItem.imageUrl;
+      localStorage.setItem("user", JSON.stringify(user));
     }
     
     setShowUseModal(false);
@@ -331,6 +353,39 @@ const Shop = () => {
           >
             <FaPlus className="icon-md" />
           </button>
+        )}
+
+        {/* Error Modal */}
+        {showErrorModal && (
+          <div className="modal-overlay">
+            <div className="modal-content confirmation-modal">
+              <div className="modal-header">
+                <h2>Thông báo</h2>
+                <button
+                  className="modal-close-btn"
+                  onClick={() => setShowErrorModal(false)}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="confirmation-content">
+                <div className="error-icon-container">
+                  <FaExclamationCircle className="icon-lg error-icon" />
+                </div>
+                <p className="error-message-text">{errorMessage}</p>
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  className="confirm-btn"
+                  onClick={() => setShowErrorModal(false)}
+                >
+                  Đã hiểu
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Purchase Confirmation Modal */}

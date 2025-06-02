@@ -8,6 +8,7 @@ import {
   FaExclamationCircle,
   FaPlus,
   FaTimes,
+  FaCheck,
 } from "react-icons/fa";
 import "../styles/shop.css";
 import axiosInstance from "../utils/api";
@@ -31,6 +32,11 @@ const Shop = () => {
   const { user } = useUser();
   const [frameUrlUsed, setFrameUrlUsed] = useState("");
   const [userRole, setUserRole] = useState("User");
+
+  // Popup states
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showUseModal, setShowUseModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const fetchShopItems = async () => {
     try {
@@ -89,27 +95,59 @@ const Shop = () => {
     }
   };
 
-  const handlePurchase = async (item) => {
-    setPurchasing((prev) => ({ ...prev, [item.id]: true }));
+  const handlePurchaseClick = (item) => {
+    setSelectedItem(item);
+    setShowPurchaseModal(true);
+  };
+
+  const handleConfirmPurchase = async () => {
+    if (!selectedItem) return;
+    
+    setPurchasing((prev) => ({ ...prev, [selectedItem.id]: true }));
     try {
       await axiosInstance.post(
-        `http://localhost:3000/shop/buy-item/${item.id}`
+        `http://localhost:3000/shop/buy-item/${selectedItem.id}`
       );
-      alert("Mua sản phẩm thành công!");
+      // alert("Mua sản phẩm thành công!");
 
       setUserItem((prevUserItems) => {
         if (prevUserItems) {
-          return [...prevUserItems, { itemId: item.id }];
+          return [...prevUserItems, { itemId: selectedItem.id }];
         } else {
-          return [{ itemId: item.id }];
+          return [{ itemId: selectedItem.id }];
         }
       });
+      
+      setShowPurchaseModal(false);
+      setSelectedItem(null);
     } catch (err) {
       console.error("Purchase error:", err);
       alert("Lỗi khi mua sản phẩm");
     } finally {
-      setPurchasing((prev) => ({ ...prev, [item.id]: false }));
+      setPurchasing((prev) => ({ ...prev, [selectedItem.id]: false }));
     }
+  };
+
+  const handleUseClick = (item) => {
+    setSelectedItem(item);
+    setShowUseModal(true);
+  };
+
+  const handleConfirmUse = async () => {
+    if (!selectedItem) return;
+
+    const formData = new FormData();
+    if (selectedItem.type === "FRAME") {
+      formData.append("frameUrl", selectedItem.imageUrl);
+    }
+
+    await axiosInstance.patch(`http://localhost:3000/user/update`, formData);
+    if (selectedItem.type === "FRAME") {
+      setFrameUrlUsed(selectedItem.imageUrl);
+    }
+    
+    setShowUseModal(false);
+    setSelectedItem(null);
   };
 
   const handleUploadSubmit = async (e) => {
@@ -138,24 +176,12 @@ const Shop = () => {
       alert("Upload thành công!");
       setShowUploadModal(false);
       setUploadForm({ name: "", price: "", type: "FRAME", image: null });
-      fetchShopItems(); // Refresh the items list
+      fetchShopItems(); 
     } catch (err) {
       console.error("Upload error:", err);
       alert("Lỗi khi upload item");
     } finally {
       setUploading(false);
-    }
-  };
-
-  const handleChangeItemForUser = async (imgUrl, type) => {
-    const formData = new FormData();
-    if (type === "FRAME") {
-      formData.append("frameUrl", imgUrl);
-    }
-
-    await axiosInstance.patch(`http://localhost:3000/user/update`, formData);
-    if (type === "FRAME") {
-      setFrameUrlUsed(imgUrl);
     }
   };
 
@@ -265,15 +291,13 @@ const Shop = () => {
                         className={`use-button ${
                           isFrameUsed ? "used" : "not-used"
                         }`}
-                        onClick={() =>
-                          handleChangeItemForUser(item.imageUrl, item.type)
-                        }
+                        onClick={() => handleUseClick(item)}
                       >
                         <span>{isFrameUsed ? "Đang dùng" : "Sử dụng"}</span>
                       </button>
                     ) : (
                       <button
-                        onClick={() => handlePurchase(item)}
+                        onClick={() => handlePurchaseClick(item)}
                         disabled={purchasing[item.id]}
                         className={`purchase-button ${
                           purchasing[item.id] ? "purchase-button-disabled" : ""
@@ -307,6 +331,163 @@ const Shop = () => {
           >
             <FaPlus className="icon-md" />
           </button>
+        )}
+
+        {/* Purchase Confirmation Modal */}
+        {showPurchaseModal && selectedItem && (
+          <div className="modal-overlay">
+            <div className="modal-content confirmation-modal">
+              <div className="modal-header">
+                <h2>Xác nhận mua sản phẩm</h2>
+                <button
+                  className="modal-close-btn"
+                  onClick={() => {
+                    setShowPurchaseModal(false);
+                    setSelectedItem(null);
+                  }}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="confirmation-content">
+                <div className="product-preview">
+                  <img
+                    src={`http://localhost:3000${selectedItem.imageUrl}`}
+                    alt={selectedItem.name}
+                    className="preview-image"
+                  />
+                  <div className="product-info">
+                    <h3>{selectedItem.name}</h3>
+                    <p className="product-type">
+                      {getTypeIcon(selectedItem.type)}
+                      {selectedItem.type}
+                    </p>
+                    <p className="product-price">{selectedItem.price} points</p>
+                  </div>
+                </div>
+                
+                <p className="confirmation-text">
+                  Bạn có chắc chắn muốn mua sản phẩm này không?
+                </p>
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  className="cancel-btn"
+                  onClick={() => {
+                    setShowPurchaseModal(false);
+                    setSelectedItem(null);
+                  }}
+                >
+                  Hủy
+                </button>
+                <button
+                  className="confirm-btn purchase-confirm"
+                  onClick={handleConfirmPurchase}
+                  disabled={purchasing[selectedItem.id]}
+                >
+                  {purchasing[selectedItem.id] ? (
+                    <>
+                      <FaSpinner className="icon-sm icon-spin" />
+                      Đang mua...
+                    </>
+                  ) : (
+                    <>
+                      <FaShoppingCart className="icon-sm" />
+                      Xác nhận mua
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Use Confirmation Modal */}
+        {showUseModal && selectedItem && (
+          <div className="modal-overlay">
+            <div className="modal-content confirmation-modal">
+              <div className="modal-header">
+                <h2>Xác nhận sử dụng</h2>
+                <button
+                  className="modal-close-btn"
+                  onClick={() => {
+                    setShowUseModal(false);
+                    setSelectedItem(null);
+                  }}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="confirmation-content">
+                <div className="product-preview">
+                  <div className="demo-container">
+                    <div className="demo-preview">
+                      {selectedItem.type === "FRAME" ? (
+                        <div className="frame-demo">
+                          <div className="demo-avatar">
+                            <img 
+                              src={`http://localhost:3000${user.avatar}` || "/default-avatar.png"} 
+                              alt="Avatar" 
+                              className="avatar-image"
+                            />
+                            <img
+                              src={`http://localhost:3000${selectedItem.imageUrl}`}
+                              alt="Frame"
+                              className="frame-overlay"
+                            />
+                          </div>
+                          <p className="demo-label">Preview với khung mới</p>
+                        </div>
+                      ) : (
+                        <div className="background-demo">
+                          <img
+                            src={`http://localhost:3000${selectedItem.imageUrl}`}
+                            alt="Background"
+                            className="background-preview"
+                          />
+                          <p className="demo-label">Preview background mới</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="product-info">
+                    <h3>{selectedItem.name}</h3>
+                    <p className="product-type">
+                      {getTypeIcon(selectedItem.type)}
+                      {selectedItem.type}
+                    </p>
+                  </div>
+                </div>
+                
+                <p className="confirmation-text">
+                  Bạn có muốn sử dụng sản phẩm này không?
+                </p>
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  className="cancel-btn"
+                  onClick={() => {
+                    setShowUseModal(false);
+                    setSelectedItem(null);
+                  }}
+                >
+                  Hủy
+                </button>
+                <button
+                  className="confirm-btn use-confirm"
+                  onClick={handleConfirmUse}
+                >
+                  <FaCheck className="icon-sm" />
+                  Sử dụng ngay
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Upload Modal */}

@@ -339,7 +339,7 @@
 .admin-upload-btn {
   position: fixed;
   bottom: 2rem;
-  right: 2rem;
+  right: 20rem;
   width: 4rem;
   height: 4rem;
   background: linear-gradient(135deg, #10b981, #059669);
@@ -560,4 +560,300 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+/* Thêm các styles này vào file shop.css */
+
+/* Confirmation Modal Styles */
+.confirmation-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+.confirmation-content {
+  padding: 20px 0;
+}
+
+.product-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.preview-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 3px solid #e1e5e9;
+  margin-bottom: 15px;
+}
+
+.product-info {
+  text-align: center;
+}
+
+.product-info h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 8px;
+}
+
+.product-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  color: #718096;
+  margin-bottom: 8px;
+}
+
+.product-price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.confirmation-text {
+  text-align: center;
+  font-size: 1rem;
+  color: #4a5568;
+  margin: 20px 0;
+  line-height: 1.5;
+}
+
+/* Modal Actions */
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.cancel-btn {
+  padding: 10px 20px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: #4a5568;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  border-color: #cbd5e0;
+  background: #f7fafc;
+}
+
+.confirm-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.purchase-confirm {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.purchase-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.use-confirm {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.use-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+}
+
+/* Demo Container Styles */
+.demo-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.demo-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.frame-demo {
+  position: relative;
+  display: inline-block;
+}
+
+.demo-avatar {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  /* border-radius: 5px;
+  border: #d1c5c5 1px solid;
+  overflow: hidden; */
+}
+
+.avatar-image {
+  width: 90% !important;
+  height: 90% !important;
+  object-fit: cover;
+  border: 4px solid white;
+  /* border-radius: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+  position: relative;
+  z-index: 1;
+}
+
+.frame-overlay {
+  position: absolute;
+  top: -17px;
+  left: -17px;
+  width: 110%;
+  height: 110%;
+  z-index: 2;
+  pointer-events: none; /* để không chặn click */
+}
+
+/* .avatar-profile {
+  width: 80% !important;
+  height: 80% !important;
+  object-fit: cover;
+  border: 4px solid white;
+  border-radius: 0; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.avatar-frame {
+  position: absolute;
+  top: -17px;
+  left: -17px;
+  width: 110%;
+  height: 110%;
+  z-index: 2;
+  pointer-events: none; 
+} */
+
+.background-demo {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.background-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.demo-label {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: #718096;
+  text-align: center;
+}
+
+/* Animation for modal appearance */
+.modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .confirmation-modal {
+    max-width: 90%;
+    margin: 20px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .cancel-btn,
+  .confirm-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .demo-avatar {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .background-demo {
+    width: 160px;
+    height: 100px;
+  }
+}
+
+/* Loading state for purchase button */
+.confirm-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.confirm-btn:disabled:hover {
+  box-shadow: none !important;
+}
+
+/* Enhanced preview styles */
+.product-preview {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.preview-image {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  transition: transform 0.2s ease;
+}
+
+.preview-image:hover {
+  transform: scale(1.05);
 }

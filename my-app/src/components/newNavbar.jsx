@@ -8,6 +8,7 @@ import {
   IoLogOut,
   IoFlame,
   IoStorefront,
+  IoSettings,
 } from "react-icons/io5";
 import "../styles/newNavbar.css";
 import axiosInstance from "../utils/api";
@@ -98,6 +99,9 @@ export default function NewNavbar() {
     }
   };
 
+  // Kiểm tra xem user có phải admin không
+  const isAdmin = user?.role === "Admin" || user?.role === "admin";
+
   return (
     <div className="navbar-wrapper">
       <nav className="new-navbar">
@@ -156,6 +160,17 @@ export default function NewNavbar() {
                   <span className="navbar-icon-label">Thông báo</span>
                 </button>
               </div>
+              {/* Icon Quản lý User - chỉ hiển thị cho admin */}
+              {isAdmin && (
+                <div className="navbar-icon-wrapper admin-only">
+                  <Link to={"/admin/users"}>
+                    <button className="navbar-icon-button admin-button" title="Quản lý User">
+                      <IoSettings size={24} />
+                      <span className="navbar-icon-label">Quản lý</span>
+                    </button>
+                  </Link>
+                </div>
+              )}
 
               <div className="navbar-icon-wrapper">
                 <button
@@ -249,6 +264,7 @@ export default function NewNavbar() {
           onClick={() => setShowNotifications(false)}
         ></div>
       )}
+      
     </div>
   );
 }

@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "./utils/api";
 import { UserProvider } from "./context/UserContext";
 import Shop from "./pages/shop";
+import AdminUsers from "./pages/adminUser"; 
 
 // Import CSS
 import "./styles/App.css";
@@ -27,6 +28,7 @@ import "./styles/PostPage.css";
 import "./styles/NotificationsPage.css";
 import "./styles/Auth.css";
 import "./styles/shop.css"
+import "./styles/adminUser.css"
 import PartnerSidebar from "./components/PartnerSidebar";
 import NewNavbar from "./components/newNavbar";
 
@@ -65,6 +67,7 @@ function AppContent() {
                     <Route path="/post/new" element={<PostPage />} />
                     {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
                     <Route path="/user/:id" element={<UserProfile />} />
+                    <Route path="/admin/users" element={<AdminUsers />} />
 
 
                     {/* Routes không có sidebar */}

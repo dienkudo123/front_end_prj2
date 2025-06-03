@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { FiSettings, FiLogOut } from "react-icons/fi";
+import { useParams } from "react-router-dom";
 import "../styles/Profile.css";
 import axiosInstance from "../utils/api";
 import { useUser } from "../context/UserContext";
-import { FiHome, FiAward } from "react-icons/fi";
 import FollowersModal from "../components/FollowersModal";
 import FollowingModal from "../components/FollowingModal";
 import { formatDate } from "../utils/auth";
@@ -20,6 +18,7 @@ import {
   FaVenus,
   FaHeart,
   FaUserCircle,
+  FaCoins,
 } from "react-icons/fa";
 import PostNoComment from "../components/PostNoComment";
 import { Gender, Relationship } from "../utils/enum";
@@ -28,6 +27,7 @@ const API_BASE_URL = "http://localhost:3000";
 
 export default function Profile() {
   const [posts, setPosts] = useState([]);
+  const [sharePosts, setSharePosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -48,6 +48,8 @@ export default function Profile() {
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [frameUrl, setFrameUrl] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [point, setPoint] = useState(0);
+  const [activeTab, setActiveTab] = useState("own");
   const { id: profileId } = useParams();
 
   useEffect(() => {
@@ -67,6 +69,7 @@ export default function Profile() {
         setGender(userData.user.gender || "");
         setRelationship(userData.user.relationship || "");
         setAddress(userData.user.address || "");
+        setPoint(userData.user.point || 0);
         if (userData.user.frameUrl) {
           setFrameUrl(`${API_BASE_URL}${userData.user.frameUrl}`);
         } else {
@@ -158,7 +161,11 @@ export default function Profile() {
           const res = await axiosInstance.get(
             `${API_BASE_URL}/post/user-posts/${profileId}`
           );
+          const resShare = await axiosInstance.get(
+            `${API_BASE_URL}/post/shared/${profileId}`
+          );
           setPosts(res.data.data || []);
+          setSharePosts(resShare.data.data || []);
         } catch (err) {
           console.error("Error fetching posts:", err);
         } finally {
@@ -187,6 +194,10 @@ export default function Profile() {
       console.error("Follow/unfollow failed", err);
       alert("Thao tác thất bại, vui lòng thử lại.");
     }
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
   };
 
   if (loading) return <div>Loading...</div>;
@@ -257,6 +268,14 @@ export default function Profile() {
               onClose={() => setShowFollowingModal(false)}
             />
           )}
+          <div className="follow-point">
+            <div className="point-inline">
+              <strong className="point-number">{point}</strong>
+              <FaCoins className="point-icon" />
+            </div>
+            <span className="point-label">Points</span>
+          </div>
+
           {user.id !== profileId && (
             <button
               className={`follow-button ${isFollowing ? "following" : ""}`}
@@ -418,7 +437,20 @@ export default function Profile() {
         </div>
 
         <div className="user-posts">
-          <h2>Bài đăng của {displayName}</h2>
+          <div className="tab-header">
+            <button
+              className={activeTab === "own" ? "active" : ""}
+              onClick={() => handleTabClick("own")}
+            >
+              Bài đăng của {displayName}
+            </button>
+            <button
+              className={activeTab === "shared" ? "active" : ""}
+              onClick={() => handleTabClick("shared")}
+            >
+              Bài đăng {displayName} chia sẻ
+            </button>
+          </div>
           {posts.map((post) => (
             <PostNoComment key={post.id} post={post} />
           ))}

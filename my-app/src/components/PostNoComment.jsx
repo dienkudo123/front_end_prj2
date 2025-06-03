@@ -7,6 +7,7 @@ import axiosInstance from "../utils/api";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CommentModal from "./CommentModal";
 import { useUser } from "../context/UserContext";
+import { formatTimeAgo } from "../utils/auth";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -286,6 +287,7 @@ export default function PostNoComment({ post, hideUser = false }) {
   const [reactions, setReactions] = useState([]);
   const [isShowingComments, setIsShowingComments] = useState(false);
   const { user } = useUser();
+  const [postMenuId, setPostMenuId] = useState(null);
 
   // const userId = localStorage.getItem("userId");
   // const userReaction = await axiosInstance.get(`${API_BASE_URL}/reaction/${post.id}/me`);
@@ -443,6 +445,16 @@ export default function PostNoComment({ post, hideUser = false }) {
     setShowReactionDetails(true);
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      await axiosInstance.delete(`/post/${postId}`);
+      setPostMenuId(null);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
     <div className="post-no-cmt">
       <div className="post-no-cmt-info">
@@ -471,13 +483,40 @@ export default function PostNoComment({ post, hideUser = false }) {
               alt="Avatar"
               className="avatar"
             />
-            <p
-              className="username"
-              onClick={goToUserProfile}
-              style={{ cursor: "pointer", fontWeight: "bold" }}
-            >
-              {post.user.displayName}
-            </p>
+            <div className="post-name-date">
+              {" "}
+              <p
+                className="username"
+                onClick={goToUserProfile}
+                style={{ cursor: "pointer", fontWeight: "bold" }}
+              >
+                {post.user.displayName}
+              </p>
+              <span className="create-at">{formatTimeAgo(post.createdAt)}</span>
+            </div>
+            {post.user.id === user.id && (
+              <>
+                <span
+                  className="post-menu-btn"
+                  title="Tùy chọn"
+                  onClick={() =>
+                    setPostMenuId(post.id === postMenuId ? null : post.id)
+                  }
+                >
+                  ⋮
+                </span>
+                {postMenuId === post.id && (
+                  <div className="post-menu-dropdown">
+                    <button
+                      className="post-delete-btn"
+                      onClick={() => handleDeletePost(post.id)}
+                    >
+                      Xóa bài đăng
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         )}
 

@@ -42,9 +42,15 @@ function AppContent() {
   const [currentTrend, setCurrentTrend] = useState(null);
   const { user } = useUser();
 
-  const backGround = (user?.bgrUrl && !isAuthPage)
+  let bgrUrl =
+    "url(https://media.istockphoto.com/id/2151855612/photo/blue-sky-yellow-pastel-light-abstract-background-texture-nature-summer-landscapte-sun-cloud.jpg?s=612x612&w=0&k=20&c=uJXwbfxX78fVdfyfdaSytIlFns2vgD35gj25Kso3s9E=)";
+
+  if (user?.bgrUrl) {
+    bgrUrl = `url(http://localhost:3000${user.bgrUrl})`;
+  }
+  const backGround = !isAuthPage
     ? {
-        backgroundImage: `url(http://localhost:3000${user.bgrUrl})`,
+        backgroundImage: bgrUrl,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

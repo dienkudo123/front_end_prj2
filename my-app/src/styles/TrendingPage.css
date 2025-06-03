@@ -144,6 +144,7 @@ h2 {
 .posts-list {
   list-style: none;
   padding: 0;
+  justify-self: center;
 }
 .post-item {
   border-bottom: 1px solid #ddd;

@@ -7,6 +7,7 @@ import axiosInstance from "../utils/api";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CommentModal from "./CommentModal";
 import { useUser } from "../context/UserContext";
+import { formatTimeAgo } from "../utils/auth";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -482,13 +483,17 @@ export default function PostNoComment({ post, hideUser = false }) {
               alt="Avatar"
               className="avatar"
             />
-            <p
-              className="username"
-              onClick={goToUserProfile}
-              style={{ cursor: "pointer", fontWeight: "bold" }}
-            >
-              {post.user.displayName}
-            </p>
+            <div className="post-name-date">
+              {" "}
+              <p
+                className="username"
+                onClick={goToUserProfile}
+                style={{ cursor: "pointer", fontWeight: "bold" }}
+              >
+                {post.user.displayName}
+              </p>
+              <span className="create-at">{formatTimeAgo(post.createdAt)}</span>
+            </div>
             {post.user.id === user.id && (
               <>
                 <span

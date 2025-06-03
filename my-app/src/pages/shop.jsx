@@ -31,6 +31,7 @@ const Shop = () => {
   const [uploading, setUploading] = useState(false);
   const { user, setUser } = useUser();
   const [frameUrlUsed, setFrameUrlUsed] = useState("");
+  const [bgrUrlUsed, setBgrUrlUsed] = useState("");
   const [userRole, setUserRole] = useState("User");
 
   // Popup states
@@ -49,6 +50,7 @@ const Shop = () => {
       const userItemData = await getUserItem();
       setUserItem(userItemData.data);
       setFrameUrlUsed(user.frameUrlUsed);
+      setBgrUrlUsed(user.bgrUrlUsed);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -79,11 +81,12 @@ const Shop = () => {
       if (user) {
         await fetchShopItems();
         setFrameUrlUsed(user.frameUrl);
+        setBgrUrlUsed(user.bgrUrl);
         setUserRole(user.role);
       }
     };
     firstFetch();
-  }, [user.frameUrl, user.role]);
+  }, [user]);
 
   const getUserItem = async () => {
     try {
@@ -122,6 +125,7 @@ const Shop = () => {
       
       setShowPurchaseModal(false);
       setSelectedItem(null);
+      window.location.reload();
     } catch (err) {
       console.error("Purchase error:", err);
       
@@ -157,6 +161,8 @@ const Shop = () => {
     const formData = new FormData();
     if (selectedItem.type === "FRAME") {
       formData.append("frameUrl", selectedItem.imageUrl);
+    } else {
+      formData.append("bgrUrl", selectedItem.imageUrl);
     }
 
     await axiosInstance.patch(`http://localhost:3000/user/update`, formData);
@@ -164,10 +170,15 @@ const Shop = () => {
       setFrameUrlUsed(selectedItem.imageUrl);
       user.frameUrl = selectedItem.imageUrl;
       localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      setBgrUrlUsed(selectedItem.imageUrl);
+      user.bgrUrl = selectedItem.imageUrl;
+      localStorage.setItem("user", JSON.stringify(user));
     }
     
     setShowUseModal(false);
     setSelectedItem(null);
+    window.location.reload();
   };
 
   const handleUploadSubmit = async (e) => {
@@ -284,6 +295,8 @@ const Shop = () => {
                 userItem && userItem.some((owned) => owned.itemId === item.id);
               const isFrameUsed =
                 frameUrlUsed === item.imageUrl && item.type === "FRAME";
+              const isBgrUsed =
+                bgrUrlUsed === item.imageUrl && item.type === "BGR";
 
               return (
                 <div key={item.id} className="card card-hover">
@@ -309,11 +322,12 @@ const Shop = () => {
                     {isOwned ? (
                       <button
                         className={`use-button ${
-                          isFrameUsed ? "used" : "not-used"
+                          (isFrameUsed || isBgrUsed) ? "used" : "not-used"
                         }`}
                         onClick={() => handleUseClick(item)}
                       >
-                        <span>{isFrameUsed ? "Đang dùng" : "Sử dụng"}</span>
+                        <span>{(isFrameUsed || isBgrUsed) ? "Đang dùng" : "Sử dụng"}</span>
+                        <span></span>
                       </button>
                     ) : (
                       <button

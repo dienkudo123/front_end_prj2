@@ -1,12 +1,12 @@
 .sidebar {
   width: 250px;
-  background: white;
+  background: transparent;
   height: 100vh;
   padding: 20px;
   position: fixed;
   left: 0;
   top: 0;
-  border-right: 1px solid #ccd0d5;
+  border-right: 2px solid #000000;
   box-sizing: border-box;
   color: black;
 }

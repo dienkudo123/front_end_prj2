@@ -200,6 +200,8 @@ export default function Profile() {
     setActiveTab(tab);
   };
 
+  const displayPosts = activeTab === "own" ? posts : sharePosts;
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -451,7 +453,7 @@ export default function Profile() {
               Bài đăng {displayName} chia sẻ
             </button>
           </div>
-          {posts.map((post) => (
+          {displayPosts.map((post) => (
             <PostNoComment key={post.id} post={post} />
           ))}
         </div>

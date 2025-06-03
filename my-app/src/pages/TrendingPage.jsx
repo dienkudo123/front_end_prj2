@@ -6,7 +6,7 @@ import PostForm from "../components/PostForm";
 import TrendingForm from "../components/TrendingForm";
 import Post from "../components/Post";
 const API_BASE_URL = "http://localhost:3000";
-export default function TrendingPage() {
+export default function TrendingPage({ setCurrentTrend }) {
   const [currentTag, setCurrentTag] = useState(null);
   const [trends, setTrends] = useState([]);
   const [postsOfCurrentTag, setPostsOfCurrentTag] = useState([]);
@@ -32,6 +32,7 @@ export default function TrendingPage() {
   useEffect(() => {
     if (!currentTag || trends.length === 0) return;
     const trend = trends.find((t) => t.title === currentTag);
+    setCurrentTrend(trend);
     if (!trend) return;
     axios
       .get(`${API_BASE_URL}/post/trend-topic/${trend.id}`)
@@ -41,7 +42,7 @@ export default function TrendingPage() {
         }
       })
       .catch((err) => console.error("Lỗi khi lấy bài viết theo trend:", err));
-  }, [currentTag, trends]);
+  }, [currentTag, trends, setCurrentTrend]);
   const handleSearch = (e) => {
     const keyword = e.target.value;
     setSearchKeyword(keyword);
@@ -78,7 +79,13 @@ export default function TrendingPage() {
       >
         {" "}
         {currentTag && (
-          <button onClick={() => setCurrentTag(null)} className="btn-post">
+          <button
+            onClick={() => {
+              setCurrentTag(null);
+              setCurrentTrend(null);
+            }}
+            className="btn-post"
+          >
             {" "}
             ←{" "}
           </button>

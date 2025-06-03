@@ -1,29 +1,64 @@
 .sidebar {
-    width: 250px;
-    background: white;
-    height: 100vh;
-    padding: 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    border-right: 1px solid #ccd0d5;
-    box-sizing: border-box;
-    color: black;
+  width: 250px;
+  background: white;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #ccd0d5;
+  box-sizing: border-box;
+  color: black;
 }
 
 .sidebar-title {
-  font-size: 18px;          /* nhỏ hơn chút */
-  font-weight: 600;         /* đỡ dày */
+  font-size: 20px; /* nhỏ hơn chút */
+  font-weight: 600; /* đỡ dày */
   color: #333;
-  margin-bottom: 12px;      /* giảm khoảng cách */
+  margin-bottom: 5px; /* giảm khoảng cách */
   text-align: center;
-  border-bottom: 2px solid #ffd700;
-  padding-bottom: 4px;      /* giảm padding */
+  padding-bottom: 4px; /* giảm padding */
   text-transform: uppercase;
-  letter-spacing: 0.5px;    /* giảm khoảng cách chữ */
-  line-height: 1.2;         /* tăng độ thoáng */
+  letter-spacing: 0.5px; /* giảm khoảng cách chữ */
+  line-height: 1.2; /* tăng độ thoáng */
 }
 
+.trend-name-wrapper {
+  text-align: center;
+}
+
+.trend-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff2b0;
+  background-color: #320259;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  margin: 0 auto 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: zoomInOut 2s ease-in-out infinite;
+}
+
+@keyframes zoomInOut {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+
+.underline {
+  height: 2px;
+  background-color: #ffd700;
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 1px;
+  margin-bottom: 10px;
+}
 
 /* Ranking styles */
 .ranking-list {
@@ -50,7 +85,7 @@
 .ranking-item:hover {
   background: #e9ecef;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
 }
 
@@ -173,7 +208,8 @@
 }
 
 @keyframes shimmer {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -182,7 +218,8 @@
 }
 
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {

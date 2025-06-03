@@ -295,16 +295,16 @@ export default function Post({ post, hideUser = false }) {
   const [commentHeight, setCommentHeight] = useState(0);
 
   useEffect(() => {
-  if (!postRef.current) return;
+    if (!postRef.current) return;
 
-  const observer = new ResizeObserver(([entry]) => {
-    setCommentHeight(entry.contentRect.height + 35);
-  });
+    const observer = new ResizeObserver(([entry]) => {
+      setCommentHeight(entry.contentRect.height + 35);
+    });
 
-  observer.observe(postRef.current);
+    observer.observe(postRef.current);
 
-  return () => observer.disconnect();
-}, []);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const fetchUserReaction = async () => {
@@ -530,6 +530,19 @@ export default function Post({ post, hideUser = false }) {
     }
   };
 
+  const handleSharePost = async () => {
+    try {
+      if (post.userId === user.id) {
+        alert("Không thể chia sẻ bài đăng của chính mình!");
+        return;
+      }
+      await axiosInstance.post(`post/share/${post.id}`);
+      alert("Chia sẻ thành công");
+    } catch (error) {
+      alert(error.response.data.message);
+    }
+  };
+
   return (
     <div className="post">
       <div className="post-info" ref={postRef}>
@@ -632,7 +645,7 @@ export default function Post({ post, hideUser = false }) {
             />
           </div>
 
-          <button className="icon-button">
+          <button className="icon-button" onClick={() => handleSharePost()}>
             <FaShareSquare />
           </button>
         </div>

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaHome,
   FaSearch,
@@ -16,17 +16,22 @@ const API_BASE_URL = "http://localhost:3000";
 import { useState, useRef, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({ currentTrend, setCurrentTrend }) {
   const [rankings, setRankings] = useState([]);
   const navigate = useNavigate();
-
-  const isTrendingPage = true;
+  const location = useLocation();
+  const isTrendingPage = location.pathname === "/trending";
+  if (!isTrendingPage) {
+    setCurrentTrend(null);
+  }
 
   useEffect(() => {
-    if (isTrendingPage) {
+    if (isTrendingPage && currentTrend) {
       const fetchRankings = async () => {
         try {
-          const response = await axiosInstance.get(`user/ranking`);
+          const response = await axiosInstance.get(
+            `trendTopic/trend-ranking/${currentTrend.id}`
+          );
           setRankings(response.data.data);
           console.log("Rankings:", response.data.data);
         } catch (error) {
@@ -36,23 +41,7 @@ export default function Sidebar() {
 
       fetchRankings();
     }
-  }, [isTrendingPage]);
-
-  useEffect(() => {
-    if (isTrendingPage) {
-      const fetchRankings = async () => {
-        try {
-          const response = await axiosInstance.get(`user/ranking`);
-          setRankings(response.data.data);
-          console.log("Rankings:", response.data.data);
-        } catch (error) {
-          console.error("Error fetching rankings:", error);
-        }
-      };
-
-      fetchRankings();
-    }
-  }, [isTrendingPage]);
+  }, [isTrendingPage, currentTrend]);
 
   const goToUserProfile = (userId) => {
     navigate(`/profile/${userId}`);
@@ -61,14 +50,19 @@ export default function Sidebar() {
   return (
     <>
       <div className="sidebar">
-        {/* {!isTrendingPage && (
-          <div className="sidebar-title">Tin hot nhất trong tháng</div>
-        )} */}
+        {(!isTrendingPage || !currentTrend) && (
+          <div className="sidebar-title">Tin tức mới nhất trong tháng</div>
+        )}
 
         <div className="sidebar-section">
-          {isTrendingPage ? (
+          {isTrendingPage && currentTrend ? (
             <>
-              <div className="sidebar-title">Bảng Xếp Hạng</div>
+              <div className="sidebar-title">Bảng Xếp Hạng Xu Hướng</div>
+              <div className="trend-name-wrapper">
+                <div className="trend-name">{currentTrend.title}</div>
+              </div>
+              <div className="underline"></div>
+
               <div className="ranking-list">
                 {rankings.map((rank, index) => (
                   <div
@@ -90,8 +84,8 @@ export default function Sidebar() {
                     >
                       <img
                         src={
-                          rank.avatar
-                            ? `http://localhost:3000${rank.avatar}`
+                          rank.user.avatar
+                            ? `http://localhost:3000${rank.user.avatar}`
                             : "https://via.placeholder.com/150"
                         }
                         alt="Avatar"
@@ -117,7 +111,7 @@ export default function Sidebar() {
 
                     <div className="ranking-info">
                       <span className="ranking-name">
-                        {rank.displayName || rank.name}
+                        {rank.user.displayName || rank.user.name}
                       </span>
                       <span className="ranking-score">{rank.point} điểm</span>
                     </div>
@@ -125,9 +119,9 @@ export default function Sidebar() {
                 ))}
               </div>
             </>
-           ) : (
+          ) : (
             <></>
-          )} 
+          )}
         </div>
       </div>
     </>

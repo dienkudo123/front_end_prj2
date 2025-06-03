@@ -18,6 +18,7 @@ import { useState, useRef, useEffect } from "react";
 
 export default function Sidebar({ currentTrend, setCurrentTrend }) {
   const [rankings, setRankings] = useState([]);
+  const [trendPoint, setTrendPoint] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const isTrendingPage = location.pathname === "/trending";
@@ -32,8 +33,11 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
           const response = await axiosInstance.get(
             `trendTopic/trend-ranking/${currentTrend.id}`
           );
+          const responsePoint = await axiosInstance.get(
+            `trendTopic/trendPoint/${currentTrend.id}`
+          );
           setRankings(response.data.data);
-          console.log("Rankings:", response.data.data);
+          setTrendPoint(responsePoint?.data?.point || 0);
         } catch (error) {
           console.error("Error fetching rankings:", error);
         }
@@ -117,6 +121,10 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
                     </div>
                   </div>
                 ))}
+              </div>
+              {/* Thêm div điểm hiện tại của bạn */}
+              <div className="my-score">
+                Điểm của bạn:  {trendPoint} điểm
               </div>
             </>
           ) : (

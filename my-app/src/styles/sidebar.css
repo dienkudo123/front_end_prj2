@@ -11,6 +11,12 @@
   color: black;
 }
 
+.sidebar-section {
+  display: flex;            
+  flex-direction: column; 
+  height: 100%;
+}
+
 .sidebar-title {
   font-size: 20px; /* nhỏ hơn chút */
   font-weight: 600; /* đỡ dày */
@@ -302,4 +308,16 @@
 
 .rank-3-avatar:hover .bronze-frame {
   animation-duration: 1.5s;
+}
+
+.my-score {
+  margin-top: auto;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  background-color: #ecf0f1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  text-align: center;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
 }

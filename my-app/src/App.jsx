@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Feed from "./components/Feed";
 import Profile from "./pages/Profile";
@@ -29,66 +34,75 @@ import "./styles/NotificationsPage.css";
 import "./styles/Auth.css";
 import "./styles/shop.css"
 import "./styles/adminUser.css"
+
 import PartnerSidebar from "./components/PartnerSidebar";
 import NewNavbar from "./components/newNavbar";
 
-
 function AppContent() {
-    const location = useLocation();
-    const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
-    const [avatarUrl, setAvatarUrl] = useState(null);
-    // const [displayName, setDisplayName] = useState(null);
-
-    useEffect(() => {
-        const featchUserProfile = async () => {
-            const response = await axiosInstance.get(`http://localhost:3000/user/me`);
-            // console.log('User profile data:', response.data.data);
-            const userData = response.data.data;
-            // setDisplayName(userData.user.displayName || paramUsername);
-            if (userData.user.avatar) {
-            setAvatarUrl(`http://localhost:3000${userData.user.avatar}`);
-            }
-        }
-        featchUserProfile();        
-    }
-    , []);
-    return (
-        <div className="app-container">
-            {!isAuthPage && <Sidebar />}
-            <div className="main-content">
-                {!isAuthPage && <NewNavbar />}
-                <Routes>
-                    {/* Routes có sidebar */}
-                    <Route path="/" element={<Feed />} />
-                    {/* <Route path="/search" element={<SearchPage />} /> */}
-                    <Route path="/profile/:id" element={<Profile />} />
-                    <Route path="/post/:id" element={<PostDetail />} />
-                    <Route path="/trending" element={<Trending />} />
-                    <Route path="/post/new" element={<PostPage />} />
-                    {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
-                    <Route path="/user/:id" element={<UserProfile />} />
-                    <Route path="/admin/users" element={<AdminUsers />} />
+  const location = useLocation();
+  const isAuthPage =
+    location.pathname === "/login" || location.pathname === "/register";
+  const [currentTrend, setCurrentTrend] = useState(null);
+  // const [avatarUrl, setAvatarUrl] = useState(null);
+  // const [displayName, setDisplayName] = useState(null);
 
 
-                    {/* Routes không có sidebar */}
-                    <Route path="/login" element={<LoginPage />} />
-                    {/* <Route path="/register" element={<RegisterPage />} /> */}
-                    <Route path="/shop" element={<Shop />} />
-                </Routes>
-            </div>
-            {!isAuthPage && <PartnerSidebar />}
-        </div>
-    );
+  // useEffect(() => {
+  //     const featchUserProfile = async () => {
+  //         const response = await axiosInstance.get(`http://localhost:3000/user/me`);
+  //         // console.log('User profile data:', response.data.data);
+  //         const userData = response.data.data;
+  //         // setDisplayName(userData.user.displayName || paramUsername);
+  //         if (userData.user.avatar) {
+  //         setAvatarUrl(`http://localhost:3000${userData.user.avatar}`);
+  //         }
+  //     }
+  //     featchUserProfile();
+  // }
+  // , []);
+  return (
+    <div className="app-container">
+      {!isAuthPage && (
+        <Sidebar
+          currentTrend={currentTrend}
+          setCurrentTrend={setCurrentTrend}
+        />
+      )}
+      <div className="main-content">
+        {!isAuthPage && <NewNavbar />}
+        <Routes>
+          {/* Routes có sidebar */}
+          <Route path="/" element={<Feed />} />
+          {/* <Route path="/search" element={<SearchPage />} /> */}
+          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/post/:id" element={<PostDetail />} />
+          <Route
+            path="/trending"
+            element={<Trending setCurrentTrend={setCurrentTrend} />}
+          />
+          <Route path="/post/new" element={<PostPage />} />
+          {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
+          <Route path="/user/:id" element={<UserProfile />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+
+
+          {/* Routes không có sidebar */}
+          <Route path="/login" element={<LoginPage />} />
+          {/* <Route path="/register" element={<RegisterPage />} /> */}
+          <Route path="/shop" element={<Shop />} />
+        </Routes>
+      </div>
+      {!isAuthPage && <PartnerSidebar />}
+    </div>
+  );
 }
 
 export default function App() {
-    return (
-        
-        <Router>
-            <UserProvider>
-            <AppContent />
-            </UserProvider>
-        </Router>
-        
-    );
+  return (
+    <Router>
+      <UserProvider>
+        <AppContent />
+      </UserProvider>
+    </Router>
+  );
 }

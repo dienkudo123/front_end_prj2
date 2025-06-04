@@ -3,7 +3,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 24px;
-  background: #f8fafc;
+  background: transparent;
   /* min-height: 100vh; */
   height: 90vh;
   overflow-y: auto;

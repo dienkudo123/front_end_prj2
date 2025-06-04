@@ -162,9 +162,9 @@ export default function NewNavbar() {
               </div>
               {/* Icon Quản lý User - chỉ hiển thị cho admin */}
               {isAdmin && (
-                <div className="navbar-icon-wrapper admin-only">
+                <div className="navbar-icon-wrapper">
                   <Link to={"/admin/users"}>
-                    <button className="navbar-icon-button admin-button" title="Quản lý User">
+                    <button className="navbar-icon-button" title="Quản lý User">
                       <IoSettings size={24} />
                       <span className="navbar-icon-label">Quản lý</span>
                     </button>

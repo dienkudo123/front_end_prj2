@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "./utils/api";
 import { UserProvider, useUser } from "./context/UserContext";
 import Shop from "./pages/shop";
-import AdminUsers from "./pages/adminUser"; 
+import AdminUsers from "./pages/adminUser";
 
 // Import CSS
 import "./styles/App.css";
@@ -32,8 +32,8 @@ import "./styles/PostDetail.css";
 import "./styles/PostPage.css";
 import "./styles/NotificationsPage.css";
 import "./styles/Auth.css";
-import "./styles/shop.css"
-import "./styles/adminUser.css"
+import "./styles/shop.css";
+import "./styles/adminUser.css";
 
 import PartnerSidebar from "./components/PartnerSidebar";
 import NewNavbar from "./components/newNavbar";
@@ -82,6 +82,7 @@ function AppContent() {
           <Route path="/user/:id" element={<UserProfile />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
         </Routes>
       </div>
       {!isAuthPage && <PartnerSidebar />}

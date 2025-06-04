@@ -116,18 +116,31 @@ h2 {
 }
 .trend-item p.title {
   font-weight: 700;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   margin: 0;
-  color: #111;
-  padding: 12px 12px 4px;
+  color: #1a1a1a;
+  padding: 10px 16px;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  text-align: center;
+  background: linear-gradient(to right, #FFEB3B, #FFD54F);
+  border: 2px solid #ddd;         
+  border-radius: 15px;           
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); 
+  margin: 12px;                   
 }
+
 .trend-item p.description {
   font-weight: 400;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   margin: 0;
-  color: #555;
+  color: #333;                 /* Đậm hơn so với #555 */
   padding: 0 12px 12px;
-} /* Phần bài viết */
+  line-height: 1.6;
+  text-align: justify;         /* Căn đều nếu có nhiều chữ */
+}
+
+/* Phần bài viết */
 .posts-section {
   margin-top: 24px;
 }

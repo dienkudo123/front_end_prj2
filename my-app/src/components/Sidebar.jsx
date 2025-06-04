@@ -25,6 +25,11 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
   if (!isTrendingPage) {
     setCurrentTrend(null);
   }
+  const newsLinks = [
+    { title: "Top 10 xu hướng Xuân Hè 2025 từ tứ đại tuần lễ thời trang", href: "https://bazaarvietnam.vn/top-xu-huong-thoi-trang-xuan-he-2025/" },
+    { title: "Dòng chảy xu hướng âm nhạc 2025", href: "https://thanhnien.vn/dong-chay-xu-huong-am-nhac-2025-18525011922402179.htm" },
+    { title: "6 xu hướng du lịch của du khách Việt và châu Á yêu thích năm 2025", href: "https://nhandan.vn/6-xu-huong-du-lich-cua-du-khach-viet-va-chau-a-yeu-thich-nam-2025-post853914.html" },
+  ];
 
   useEffect(() => {
     if (isTrendingPage && currentTrend) {
@@ -55,7 +60,20 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
     <>
       <div className="sidebar">
         {(!isTrendingPage || !currentTrend) && (
-          <div className="sidebar-title">Tin tức mới nhất trong tháng</div>
+          <>
+            <div className="sidebar-title">Tin tức mới nhất trong tháng</div>
+            <div className="underline"></div>
+            <ul className="news-list">
+              {newsLinks.map((link, index) => (
+                <li key={index}>
+                  <a href={link.href} target="_blank" rel="noopener noreferrer">
+                    <span className="news-icon">📰</span>
+                    {link.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
 
         <div className="sidebar-section">
@@ -123,9 +141,7 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
                 ))}
               </div>
               {/* Thêm div điểm hiện tại của bạn */}
-              <div className="my-score">
-                Điểm của bạn:  {trendPoint} điểm
-              </div>
+              <div className="my-score">Điểm của bạn: {trendPoint} điểm</div>
             </>
           ) : (
             <></>

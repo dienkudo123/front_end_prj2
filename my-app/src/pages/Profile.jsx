@@ -202,7 +202,7 @@ export default function Profile() {
 
   const displayPosts = activeTab === "own" ? posts : sharePosts;
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div></div>;
 
   return (
     <div className="profile-container">

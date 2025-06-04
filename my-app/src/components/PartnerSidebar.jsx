@@ -1,29 +1,35 @@
 import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
-import { useLocation } from "react-router-dom";
 import axiosInstance from "../utils/api";
 import "../styles/PartnerSidebar.css"; // Import file CSS riêng
 import { io } from "socket.io-client";
 import MessageDialog from "./MessageDialog";
-import {useNavigate} from "react-router-dom";
 
 const socket = io("http://localhost:3000");
 
 export default function PartnerSidebar() {
   const { user } = useUser();
-  const location = useLocation();
   const [partners, setPartners] = useState([]);
   const [chatBox, setChatBox] = useState(null);
-  
+  const [keyword, setKeyWord] = useState("");
 
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const response = await axiosInstance.get(`/user/friend`);
-        const users = response.data.data;
-        const partnerList = users.filter((partner) => {
-          return partner.id !== user.id;
-        });
+        let partnerList;
+        if (keyword) {
+          const response = await axiosInstance.get(
+            `/user/search?keyword=${keyword}`
+          );
+          partnerList = response.data.data;
+        } else {
+          const response = await axiosInstance.get(`/user`);
+          const users = response.data.data;
+          partnerList = users.filter((partner) => {
+            return partner.id !== user.id;
+          });
+        }
+
         setPartners(partnerList);
         console.log("Partner list:", partnerList);
       } catch (error) {
@@ -32,25 +38,25 @@ export default function PartnerSidebar() {
     };
 
     fetchPartners();
-  }, [user.id]);
-
+  }, [user.id, keyword]);
 
   const chooseChat = (partnerId) => {
-    const fetchChat = async () => { 
+    const fetchChat = async () => {
       try {
-        const response = await axiosInstance.post(`/chatBox/create`, { partnerId });
+        const response = await axiosInstance.post(`/chatBox/create`, {
+          partnerId,
+        });
         setChatBox(response.data.data);
         console.log("Selected chat:", chatBox);
       } catch (error) {
         console.error("Error fetching chat:", error);
       }
-    }
+    };
     fetchChat();
-  }
-
+  };
 
   useEffect(() => {
-    if (!chatBox) return;   
+    if (!chatBox) return;
     socket.emit("join", { chatBoxId: chatBox.id });
     const handleMessage = ({ userId, content }) => {
       const updatedMessages = [...chatBox.messages, { userId, content }];
@@ -64,21 +70,33 @@ export default function PartnerSidebar() {
     return () => {
       socket.off("message", handleMessage);
     };
-}, [chatBox])
-
+  }, [chatBox]);
 
   return (
     <div className="partner-sidebar">
-      <MessageDialog chatBox={chatBox} user={user} onClose={() => setChatBox(null)}/>
-      
-      {/* First section - Always show friends */}
+      <MessageDialog
+        chatBox={chatBox}
+        user={user}
+        onClose={() => setChatBox(null)}
+      />
       <div className="partner-section">
-        <div className="partner-sidebar-title">
-          Bạn Bè
-        </div>
+        <div className="partner-sidebar-title">Bạn bè & Gợi ý kết nối</div>
+
+        <input
+          type="text"
+          placeholder="Tìm kiếm bạn bè hoặc gợi ý..."
+          className="partner-search-input"
+          value={keyword}
+          onChange={(e) => setKeyWord(e.target.value)}
+        />
+
         <div className="partner-list">
           {partners.map((partner) => (
-            <div key={partner.id} className="partner-item" onClick={() => chooseChat(partner.id)}>
+            <div
+              key={partner.id}
+              className="partner-item"
+              onClick={() => chooseChat(partner.id)}
+            >
               <img
                 src={
                   partner.avatar
@@ -93,58 +111,6 @@ export default function PartnerSidebar() {
           ))}
         </div>
       </div>
-
-      {/* {isTrendingPage && <div className="partner-divider"></div>} */}
-
-      {/* <div className="partner-section">
-        {isTrendingPage ? (
-          <>
-            <div className="partner-sidebar-tile">
-              Bảng Xếp Hạng
-            </div>
-            <div className="ranking-list">
-              {rankings.map((rank, index) => (
-                <div 
-                  key={rank.id || index} 
-                  className="ranking-item" 
-                  onClick={() => goToUserProfile(rank.id)}
-                  style={index === 0 ? {
-                    backgroundImage: `url(${rankingAnimation})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    position: 'relative'
-                  } : {}}
-                >
-                  <div className="ranking-position">#{index + 1}</div>
-                  <div className={`ranking-avatar-container ${index === 0 ? 'rank-1-avatar' : ''}`}>
-                    <img
-                      src={
-                        rank.avatar
-                          ? `http://localhost:3000${rank.avatar}`
-                          : "https://via.placeholder.com/150"
-                      }
-                      alt="Avatar"
-                      className="ranking-avatar-icon"
-                    />
-                    {index === 0 && (
-                      <>
-                        <div className="golden-frame"></div>
-                        <div className="crown-icon">👑</div>
-                      </>
-                    )}
-                  </div>
-                  <div className="ranking-info">
-                    <span className="ranking-name">{rank.displayName || rank.name}</span>
-                    <span className="ranking-score">{rank.point} điểm</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
-      </div> */}
     </div>
   );
 }

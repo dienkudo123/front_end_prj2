@@ -167,7 +167,7 @@ export default function TrendingPage({ setCurrentTrend }) {
             <p>
               {isSearching
                 ? "Không tìm thấy trend phù hợp."
-                : "Không có trend nào."}
+                : ""}
             </p>
           )}{" "}
           {trends.map((trend) => {
@@ -187,7 +187,7 @@ export default function TrendingPage({ setCurrentTrend }) {
                 {" "}
                 <img src={imgUrl} alt={trend.title} />{" "}
                 <p className="title">{trend.title}</p>{" "}
-                <p className="description">{trend.description}</p>{" "}
+                {/* <p className="description">{trend.description}</p>{" "} */}
               </div>
             );
           })}{" "}

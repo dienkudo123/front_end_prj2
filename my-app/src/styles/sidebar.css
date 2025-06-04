@@ -29,6 +29,44 @@
   line-height: 1.2; /* tăng độ thoáng */
 }
 
+
+.news-list {
+  list-style: none;
+  padding: 0 12px;
+  margin: 0;
+  width: 90%;
+}
+
+.news-list li {
+  margin-bottom: 16px;
+}
+
+.news-list a {
+  display: flex;
+  align-items: flex-start;
+  font-size: 16px;
+  color: #860101; /* Tăng độ đậm */
+  text-decoration: none;
+  padding: 6px 6px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  line-height: 1.5;
+  text-align: start;
+  font-weight: bold;
+}
+
+.news-list a:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #003a78;
+}
+
+.news-icon {
+  margin-right: 5px;
+  font-size: 20px;
+  color: #888;
+  flex-shrink: 0;
+}
+
 .trend-name-wrapper {
   text-align: center;
 }

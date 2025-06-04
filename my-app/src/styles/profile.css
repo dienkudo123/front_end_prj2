@@ -203,30 +203,49 @@
 
 .user-info {
   position: sticky;
-  top: 0px; /* khoảng cách từ top sau khi scroll */
+  top: 0px;
   align-self: flex-start;
   height: fit-content;
   flex: 2;
   min-width: 250px;
-  max-width: 320px;         
+  max-width: 320px;
   background-color: #ffffff;
-  padding: 14px 20px;           
+  padding: 14px 20px;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
-  color: #333333;               
-  font-size: 15px;              
-  line-height: 1.6;            
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.6;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .user-info h2,
 .user-info p {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: nowrap;
+}
+
+.user-info svg {
+  flex-shrink: 0;
+  margin-right: 0;
+  margin-top: 5px;
 }
 
 .user-info p strong {
-  margin-right: 6px;
+  min-width: 90px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.user-info p span,
+.user-info p div {
+  flex: 1;
+  word-break: break-word;
+  line-height: 1.6;
 }
 
 .user-info input,
@@ -239,7 +258,9 @@
   font-size: 14px;
   font-family: inherit;
   background-color: #f9f9f9;
-  margin-left: 8px;
+  max-width: 100%;
+  margin-top: 4px;
+  word-break: break-word;
 }
 
 .user-info textarea {

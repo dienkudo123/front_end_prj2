@@ -55,9 +55,10 @@ const TrendingForm = ({ onSuccess }) => {
             if (onSuccess) {
                 onSuccess();
             }
+            window.location.reload();
         } catch (err) {
             console.error(err);
-            alert("Tạo trending thất bại.");
+            alert("Mô tả quá dài. Cần ngắn gọn hơn!");
         } finally {
             setLoading(false);
         }

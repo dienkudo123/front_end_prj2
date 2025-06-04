@@ -4,6 +4,7 @@ import axiosInstance from "../utils/api";
 import "../styles/PartnerSidebar.css"; // Import file CSS riêng
 import { io } from "socket.io-client";
 import MessageDialog from "./MessageDialog";
+import { useNavigate } from "react-router-dom";
 
 const socket = io("http://localhost:3000");
 
@@ -12,6 +13,7 @@ export default function PartnerSidebar() {
   const [partners, setPartners] = useState([]);
   const [chatBox, setChatBox] = useState(null);
   const [keyword, setKeyWord] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPartners = async () => {
@@ -72,6 +74,10 @@ export default function PartnerSidebar() {
     };
   }, [chatBox]);
 
+  const goToUserProfile = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
+
   return (
     <div className="partner-sidebar">
       <MessageDialog
@@ -105,6 +111,10 @@ export default function PartnerSidebar() {
                 }
                 alt="Avatar"
                 className="partner-avatar-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToUserProfile(partner.id);
+                }}
               />
               <span className="partner-name">{partner.displayName}</span>
             </div>

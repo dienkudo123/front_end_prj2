@@ -79,7 +79,7 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
         <div className="sidebar-section">
           {isTrendingPage && currentTrend ? (
             <>
-              <div className="sidebar-title">Bảng Xếp Hạng Xu Hướng</div>
+              <div className="sidebar-title">BXH Xu Hướng</div>
               <div className="trend-name-wrapper">
                 <div className="trend-name">{currentTrend.title}</div>
               </div>

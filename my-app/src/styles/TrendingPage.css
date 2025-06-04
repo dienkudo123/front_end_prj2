@@ -39,6 +39,10 @@ h2 {
   cursor: pointer;
   transition: background 0.3s ease;
 }
+
+.btn-post.back {
+  margin-left: 30px;
+}
 .btn-post:hover {
   background-color: #f0f0f0;
 } /* Modal */
@@ -175,9 +179,36 @@ h2 {
   max-width: 100%;
   height: auto;
   border-radius: 6px;
-} /*.tag-description-box {*/ /*    border: 1px solid #ccc;   !* Viền nhẹ *!*/ /*    padding: 10px;            !* Khoảng cách bên trong *!*/ /*    border-radius: 6px;       !* Bo góc *!*/ /*    background-color: #f9f9f9; !* Màu nền nhẹ *!*/ /*    max-width: 600px;          !* Chiều rộng tối đa, bạn điều chỉnh *!*/ /*}*/
+} 
+/*.tag-description-box {*/ /*    border: 1px solid #ccc;   !* Viền nhẹ *!*/ /*    padding: 10px;            !* Khoảng cách bên trong *!*/ /*    border-radius: 6px;       !* Bo góc *!*/ /*    background-color: #f9f9f9; !* Màu nền nhẹ *!*/ /*    max-width: 600px;          !* Chiều rộng tối đa, bạn điều chỉnh *!*/ /*}*/
+
+.tag-description-box {
+  margin: 24px auto;
+  padding: 2px 32px 14px 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 788px;
+  text-align: center;
+  background: linear-gradient(135deg, #fffbc1, #ffe3e3, #d4fcf9);
+  background-size: 400% 400%;
+  animation: gradientBG 10s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .tag-title {
-  font-weight: bold;
-  font-size: 1.2em; /* Tăng cỡ chữ một chút cho rõ hơn */
-  margin-bottom: 6px; /* Cách dưới tiêu đề */
+  font-size: 26px;
+  font-weight: 600;
+  margin-top: 16px !important;
+  margin-bottom: 8px;
+  color: #000;
+}
+
+.tag-description {
+  font-size: 14px;
+  color: #555;
 }

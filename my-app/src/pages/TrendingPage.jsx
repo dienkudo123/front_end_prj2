@@ -84,7 +84,7 @@ export default function TrendingPage({ setCurrentTrend }) {
               setCurrentTag(null);
               setCurrentTrend(null);
             }}
-            className="btn-post"
+            className="btn-post back"
           >
             {" "}
             ←{" "}
@@ -164,11 +164,7 @@ export default function TrendingPage({ setCurrentTrend }) {
         <div className="trend-grid">
           {" "}
           {trends.length === 0 && (
-            <p>
-              {isSearching
-                ? "Không tìm thấy trend phù hợp."
-                : ""}
-            </p>
+            <p>{isSearching ? "Không tìm thấy trend phù hợp." : ""}</p>
           )}{" "}
           {trends.map((trend) => {
             const imgUrl = trend.imageUrl?.startsWith("http")
@@ -197,10 +193,9 @@ export default function TrendingPage({ setCurrentTrend }) {
         <div className="posts-section">
           {" "}
           <div className="tag-description-box">
-            {" "}
-            <p className="tag-title">{currentTag}</p>{" "}
-            <p style={{ fontSize: "12px" }}>{description}</p>{" "}
-          </div>{" "}
+            <p className="tag-title">{currentTag}</p>
+            <p className="tag-description">{description}</p>
+          </div>
           {/*<button onClick={() => setCurrentTag(null)} className="back-button">*/}{" "}
           {/*    ←*/} {/*</button>*/}{" "}
           {postsOfCurrentTag.length === 0 && <p>Chưa có bài viết nào.</p>}{" "}

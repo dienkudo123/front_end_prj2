@@ -66,6 +66,34 @@
   margin: 0 6px;
 }
 
+/* Admin icon wrapper styling */
+.navbar-icon-wrapper.admin-only {
+  position: relative;
+}
+
+/* .navbar-icon-wrapper.admin-only::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+  border-radius: 50%;
+  animation: admin-pulse 2s infinite;
+} */
+
+@keyframes admin-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
 /* Unified style for all icon buttons */
 .navbar-icon-button {
   background: none;
@@ -87,6 +115,30 @@
 .navbar-icon-button:hover {
   color: #111827;
   background-color: #f3f4f6;
+}
+
+/* Admin button special styling */
+.navbar-icon-button.admin-button {
+  color: #dc2626;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+}
+
+.navbar-icon-button.admin-button:hover {
+  color: #991b1b;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border-color: #f87171;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.2);
+}
+
+.navbar-icon-button.admin-button .navbar-icon-label {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.navbar-icon-button.admin-button:hover .navbar-icon-label {
+  color: #991b1b;
 }
 
 .navbar-icon-label {
@@ -302,6 +354,16 @@
     width: 320px;
     right: 0.5rem;
   }
+
+  /* Ẩn label text trên mobile để tiết kiệm không gian */
+  .navbar-icon-label {
+    display: none;
+  }
+
+  /* .navbar-icon-wrapper.admin-only::before {
+    top: 2px;
+    right: 2px;
+  } */
 }
 
 @media (max-width: 640px) {
@@ -322,5 +384,10 @@
 
   .navbar-icon-label {
     font-size: 10px;
+    display: none; /* Ẩn hoàn toàn trên màn hình nhỏ */
+  }
+
+  .navbar-icon-wrapper {
+    margin: 0 3px;
   }
 }

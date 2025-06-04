@@ -18,7 +18,7 @@ import UserProfile from "./pages/UserProfile";
 import ChatPage from "./pages/ChatPage";
 import { useEffect, useState } from "react";
 import axiosInstance from "./utils/api";
-import { UserProvider } from "./context/UserContext";
+import { UserProvider, useUser } from "./context/UserContext";
 import Shop from "./pages/shop";
 import AdminUsers from "./pages/adminUser"; 
 
@@ -43,25 +43,25 @@ function AppContent() {
   const isAuthPage =
     location.pathname === "/login" || location.pathname === "/register";
   const [currentTrend, setCurrentTrend] = useState(null);
-  // const [avatarUrl, setAvatarUrl] = useState(null);
-  // const [displayName, setDisplayName] = useState(null);
+  const { user } = useUser();
 
+  let bgrUrl =
+    "url(https://media.istockphoto.com/id/2151855612/photo/blue-sky-yellow-pastel-light-abstract-background-texture-nature-summer-landscapte-sun-cloud.jpg?s=612x612&w=0&k=20&c=uJXwbfxX78fVdfyfdaSytIlFns2vgD35gj25Kso3s9E=)";
 
-  // useEffect(() => {
-  //     const featchUserProfile = async () => {
-  //         const response = await axiosInstance.get(`http://localhost:3000/user/me`);
-  //         // console.log('User profile data:', response.data.data);
-  //         const userData = response.data.data;
-  //         // setDisplayName(userData.user.displayName || paramUsername);
-  //         if (userData.user.avatar) {
-  //         setAvatarUrl(`http://localhost:3000${userData.user.avatar}`);
-  //         }
-  //     }
-  //     featchUserProfile();
-  // }
-  // , []);
+  if (user?.bgrUrl) {
+    bgrUrl = `url(http://localhost:3000${user.bgrUrl})`;
+  }
+  const backGround = !isAuthPage
+    ? {
+        backgroundImage: bgrUrl,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }
+    : { backgroundColor: "white" };
+
   return (
-    <div className="app-container">
+    <div className="app-container" style={backGround}>
       {!isAuthPage && (
         <Sidebar
           currentTrend={currentTrend}
@@ -71,9 +71,7 @@ function AppContent() {
       <div className="main-content">
         {!isAuthPage && <NewNavbar />}
         <Routes>
-          {/* Routes có sidebar */}
           <Route path="/" element={<Feed />} />
-          {/* <Route path="/search" element={<SearchPage />} /> */}
           <Route path="/profile/:id" element={<Profile />} />
           <Route path="/post/:id" element={<PostDetail />} />
           <Route
@@ -81,14 +79,8 @@ function AppContent() {
             element={<Trending setCurrentTrend={setCurrentTrend} />}
           />
           <Route path="/post/new" element={<PostPage />} />
-          {/* <Route path="/notifications" element={<NotificationsPage />} /> */}
           <Route path="/user/:id" element={<UserProfile />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-
-
-          {/* Routes không có sidebar */}
           <Route path="/login" element={<LoginPage />} />
-          {/* <Route path="/register" element={<RegisterPage />} /> */}
           <Route path="/shop" element={<Shop />} />
         </Routes>
       </div>

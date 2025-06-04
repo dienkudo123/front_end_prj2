@@ -1,19 +1,38 @@
 html, body {
     height: 100%;
     margin: 0;
-    background-color: #f2f4f7; /* Đảm bảo nền toàn trang là màu đen */
     color: black;
     overflow: hidden;
 }
 
 .app-container {
-    margin-left: 250px;
     min-height: 100vh; /* Đảm bảo toàn bộ trang chiếm đủ chiều cao */
-    background-color: #f2f4f7;
     display: flex;
 }
 
 .main-content {
+    margin-left: 250px;
     flex: 1; /* Phần còn lại của màn hình sau khi trừ sidebar */
     overflow-y: auto;
+}
+
+/* Toàn bộ trang */
+*::-webkit-scrollbar {
+  width: 8px;
+} */
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.main-content,
+.side-bar,
+.partner-bar,
+.new-navbar {
+    background: transparent;
 }

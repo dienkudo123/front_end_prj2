@@ -208,10 +208,10 @@ export default function Profile() {
     <div className="profile-container">
       {/* Ảnh bìa */}
       <div className="cover-photo">
-        <img
+        {/* <img
           src="https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1350&q=80"
           alt="Ảnh bìa"
-        />
+        /> */}
         <div className="avatar-wrapper">
           <div className="avatar-container">
             <img src={avatarUrl} alt="Avatar" className="avatar-profile" />

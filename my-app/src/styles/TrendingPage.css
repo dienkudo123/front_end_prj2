@@ -2,7 +2,7 @@
   margin: 0 auto;
   padding: 30px;
   font-family: Arial, sans-serif;
-  background: #f2f4f7;
+  background: transparent;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
 } /* Header */
@@ -95,7 +95,7 @@ h2 {
   gap: 15px;
 } /* Item trend */
 .trend-item {
-  border: 1px solid #ddd;
+  border: 1px solid #000000;
   border-radius: 4px;
   background: white;
   cursor: pointer;
@@ -144,6 +144,7 @@ h2 {
 .posts-list {
   list-style: none;
   padding: 0;
+  justify-self: center;
 }
 .post-item {
   border-bottom: 1px solid #ddd;

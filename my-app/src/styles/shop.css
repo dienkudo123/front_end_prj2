@@ -1,7 +1,7 @@
 /* General container styles */
 .container {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
+  background: transparent;
   padding: 1.5rem;
   position: relative;
 }
@@ -176,10 +176,17 @@
   gap: 0.25rem;
 }
 
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 /* Card content */
 .card-content {
   padding: 0.75rem;
   padding-top: 0;
+  margin-top: auto;
 }
 
 /* Title and price container */

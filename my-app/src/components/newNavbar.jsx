@@ -16,8 +16,10 @@ import { formatTimeAgo } from "../utils/auth";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
 import { useUser } from "../context/UserContext";
+import { io } from "socket.io-client";
 
 const API_BASE_URL = "http://localhost:3000";
+const socket = io("http://localhost:3000");
 
 export default function NewNavbar() {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -98,6 +100,20 @@ export default function NewNavbar() {
       navigate("/login");
     }
   };
+
+  useEffect(() => {
+    socket.emit("register", user.id);
+    const handleNotification = ({ userId, actor, actorUser, content, status, createdAt }) => {
+      const newNotification = { userId, actor, actorUser, content, status, createdAt };
+      setNotifications((prevNotifications) => ([newNotification, ...prevNotifications]));
+      setUnreadCount((unreadCount) => unreadCount + 1);
+    }
+    socket.on('notification', handleNotification);
+    
+    return () => {
+      socket.off("notification", handleNotification);
+    };
+  }, [user.id])
 
   // Kiểm tra xem user có phải admin không
   const isAdmin = user?.role === "Admin" || user?.role === "admin";

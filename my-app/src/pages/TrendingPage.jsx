@@ -5,6 +5,7 @@ import "../styles/TrendingPage.css";
 import PostForm from "../components/PostForm";
 import TrendingForm from "../components/TrendingForm";
 import Post from "../components/Post";
+import { useUser } from "../context/UserContext";
 const API_BASE_URL = "http://localhost:3000";
 export default function TrendingPage({ setCurrentTrend }) {
   const [currentTag, setCurrentTag] = useState(null);
@@ -15,7 +16,7 @@ export default function TrendingPage({ setCurrentTrend }) {
   const [showPostForm, setShowPostForm] = useState(false);
   const [showTrendingForm, setShowTrendingForm] = useState(false);
   const [description, setDescription] = useState("");
-  const navigate = useNavigate();
+  const { user } = useUser();
   useEffect(() => {
     fetchTrends();
   }, []);
@@ -111,6 +112,7 @@ export default function TrendingPage({ setCurrentTrend }) {
         {currentTag === null && (
           <div>
             {" "}
+            { user.role === "Admin" &&
             <button
               style={{}}
               className="btn-post"
@@ -118,7 +120,8 @@ export default function TrendingPage({ setCurrentTrend }) {
             >
               {" "}
               Tạo xu hướng{" "}
-            </button>{" "}
+            </button>
+            }
           </div>
         )}{" "}
       </div>{" "}
@@ -198,7 +201,7 @@ export default function TrendingPage({ setCurrentTrend }) {
           </div>
           {/*<button onClick={() => setCurrentTag(null)} className="back-button">*/}{" "}
           {/*    ←*/} {/*</button>*/}{" "}
-          {postsOfCurrentTag.length === 0 && <p>Chưa có bài viết nào.</p>}{" "}
+          {postsOfCurrentTag.length === 0 && <p style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>Chưa có bài viết nào.</p>}{" "}
           <ul className="posts-list">
             {" "}
             {postsOfCurrentTag.map((post) => (

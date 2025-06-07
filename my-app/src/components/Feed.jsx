@@ -1,48 +1,76 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useRef, useCallback } from "react";
+import axiosInstance from "../utils/api";
 import Post from "./Post";
 import "../styles/feed.css";
-import NewNavbar from "./newNavbar";
 
 export default function Feed() {
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const observer = useRef();
 
-    useEffect(() => {
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) {
-            window.location.href = '/login';
+  const lastPostRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevPage) => prevPage + 1);
         }
-    }, [])
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
 
-    useEffect(() => {
+  useEffect(() => {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
+      window.location.href = "/login";
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
         setLoading(true);
-        axios.get("http://localhost:3000/post")  // gọi API lấy tất cả bài đăng
-            .then(res => {
-                setPosts(res.data.data || []); // assuming API trả về { data: [...] }
-                setLoading(false);
-            })
-            .catch(() => {
-                setError("Không thể tải bài đăng");
-                setLoading(false);
-            });
-    }, []);
+        setError(null);
+        const res = await axiosInstance.get(
+          `http://localhost:3000/post/for-user?page=${page}&limit=5`
+        );
+        console.log(res.data.data);
+        const newPosts = res.data.data || [];
+        setPosts((prev) => [...prev, ...newPosts]);
+        setHasMore(newPosts.length > 0);
+      } catch (err) {
+        setError("Không thể tải bài đăng");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, [page]);
 
-    if (loading) return <p style={{color: "white", textAlign: "center"}}>Đang tải bài đăng...</p>;
-    if (error) return <p style={{color: "red", textAlign: "center"}}>{error}</p>;
+  if (error)
+    return <p style={{ color: "red", textAlign: "center" }}>{error}</p>;
 
-    console.log("Post:", posts);
-
-    return (
-        <div className="feed">
-            {posts.length === 0 ? (
-                <p style={{color: "white", textAlign: "center"}}>Không có bài đăng nào</p>
-            ) : (
-                posts.map(post => (
-                    <Post key={post.id} post={post} />
-                ))
-            )}
-        </div>
-    );
+  return (
+    <div className="feed">
+      {posts.map((post, index) => {
+        if (index === posts.length - 1) {
+          return (
+            <div key={post.id} ref={lastPostRef}>
+              <Post post={post} />
+            </div>
+          );
+        }
+        return <Post key={post.id} post={post} />;
+      })}
+      {loading && (
+        <p style={{ color: "white", textAlign: "center" }}>Đang tải thêm...</p>
+      )}
+    </div>
+  );
 }

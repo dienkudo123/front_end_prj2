@@ -95,6 +95,7 @@ const PostForm = ({ onSuccess, initialTrendName = "" }) => {
             if (fileInputRef.current) {
                 fileInputRef.current.value = null;
             }
+            window.location.href = "/";
         } catch (error) {
             console.error(error);
             alert("Đăng bài thất bại.");

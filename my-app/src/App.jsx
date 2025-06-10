@@ -46,7 +46,7 @@ function AppContent() {
   const { user } = useUser();
 
   let bgrUrl =
-    "url(https://media.istockphoto.com/id/183273186/vi/anh/n%E1%BB%81n-tr%E1%BB%ABu-t%C6%B0%E1%BB%A3ng-m%C3%A0u-xanh-nh%E1%BA%A1t-v%C3%A0-xanh-l%C3%A1-c%C3%A2y.jpg?b=1&s=612x612&w=0&k=20&c=sJ2JfahovtKdjNE6Y4wwdpo3iT0yZo5Hs7uSDcZMaqk=)";
+    "url(https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474081JPp/background-powerpoint-xanh-duong-sang_094944576.jpg)";
 
   if (user?.bgrUrl) {
     bgrUrl = `url(http://localhost:3000${encodeURI(user.bgrUrl)})`;

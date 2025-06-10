@@ -56,6 +56,8 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
     navigate(`/profile/${userId}`);
   };
 
+  console.log(rankings);
+
   return (
     <>
       <div className="sidebar">
@@ -90,7 +92,7 @@ export default function Sidebar({ currentTrend, setCurrentTrend }) {
                   <div
                     key={rank.id || index}
                     className="ranking-item"
-                    onClick={() => goToUserProfile(rank.id)}
+                    onClick={() => goToUserProfile(rank?.user.id)}
                   >
                     <div className="ranking-position">#{index + 1}</div>
                     <div

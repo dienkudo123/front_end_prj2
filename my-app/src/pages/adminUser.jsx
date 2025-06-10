@@ -17,6 +17,7 @@ import {
 } from 'react-icons/io5';
 import axiosInstance from '../utils/api';
 import '../styles/adminUser.css';
+import { Gender } from "../utils/enum";
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -505,7 +506,7 @@ export default function AdminUsers() {
                 </div>
                 <div className="info-item">
                   <label>Giới tính:</label>
-                  <span>{selectedUser.gender}</span>
+                  <span>{Gender[selectedUser.gender]}</span>
                 </div>
               </div>
             </div>

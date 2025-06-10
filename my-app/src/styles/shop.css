@@ -1,9 +1,10 @@
 /* General container styles */
 .container {
-  min-height: 100vh;
+  max-height: 85vh;
   background: transparent;
   padding: 1.5rem;
   position: relative;
+  overflow-y: auto !important;
 }
 
 /* Content wrapper */
@@ -28,6 +29,20 @@
 .header-subtitle {
   color: #4b5563;
   font-size: 1rem;
+}
+
+.reset-button {
+  background-color: #fa7415;
+  color: #000000;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reset-button:hover {
+  background-color: #ec1e1e;
 }
 
 /* Loading state */

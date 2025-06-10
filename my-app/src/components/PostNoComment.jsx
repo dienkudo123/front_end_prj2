@@ -312,7 +312,7 @@ export default function PostNoComment({ post, hideUser = false }) {
   });
   const goToUserProfile = () => {
     if (post.user?.id) {
-      navigate(`/user/${post.user.id}`);
+      navigate(`/profile/${post.user.id}`);
     }
   };
 
@@ -476,8 +476,8 @@ export default function PostNoComment({ post, hideUser = false }) {
           <div className="post-no-cmt-header">
             <img
               src={
-                user.avatar
-                  ? `${API_BASE_URL}${user.avatar}`
+                post.user.avatar
+                  ? `${API_BASE_URL}${post.user.avatar}`
                   : "/default-avatar.png"
               }
               alt="Avatar"

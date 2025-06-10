@@ -78,7 +78,7 @@ function AppContent() {
             element={<Trending setCurrentTrend={setCurrentTrend} />}
           />
           <Route path="/post/new" element={<PostPage />} />
-          <Route path="/user/:id" element={<UserProfile />} />
+          {/* <Route path="/user/:id" element={<UserProfile />} /> */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/admin/users" element={<AdminUsers />} />

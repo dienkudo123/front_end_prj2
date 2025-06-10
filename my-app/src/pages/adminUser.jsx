@@ -11,7 +11,9 @@ import {
   IoCheckmark,
   IoWarning,
   IoSearch,
-  IoRefresh
+  IoRefresh,
+  IoCheckmarkCircle,
+  IoAlertCircle
 } from 'react-icons/io5';
 import axiosInstance from '../utils/api';
 import '../styles/adminUser.css';
@@ -27,6 +29,23 @@ export default function AdminUsers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
 
+  // Notification state
+  const [notification, setNotification] = useState({
+    show: false,
+    type: '', // 'success', 'error', 'warning', 'info'
+    title: '',
+    message: ''
+  });
+
+  // Confirmation modal state
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    title: '',
+    message: '',
+    onConfirm: null,
+    onCancel: null
+  });
+
   // Form states
   const [createForm, setCreateForm] = useState({
     displayName: '',
@@ -41,13 +60,35 @@ export default function AdminUsers() {
     displayName: '',
     email: '',
     role: '',
-    bio: '',
-    avatar: '',
+    bio: '',  
   });
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  // Notification functions
+  const showNotification = (type, title, message) => {
+    setNotification({
+      show: true,
+      type,
+      title,
+      message
+    });
+    setTimeout(() => {
+      setNotification(prev => ({ ...prev, show: false }));
+    }, 5000);
+  };
+
+  const showConfirmDialog = (title, message, onConfirm) => {
+    setConfirmModal({
+      show: true,
+      title,
+      message,
+      onConfirm,
+      onCancel: () => setConfirmModal(prev => ({ ...prev, show: false }))
+    });
+  };
 
   const fetchUsers = async () => {
     try {
@@ -61,7 +102,7 @@ export default function AdminUsers() {
       }
     } catch (error) {
       console.error('Error fetching users:', error);
-      alert('Không thể tải danh sách người dùng');
+      showNotification('error', 'Lỗi', 'Không thể tải danh sách người dùng');
     } finally {
       setLoading(false);
     }
@@ -73,8 +114,8 @@ export default function AdminUsers() {
       const response = await axiosInstance.post('/user/create', createForm, {
         withCredentials: true
       });
-      if (response.data?.success) {
-        alert('Tạo người dùng thành công!');
+      if (response.data) {
+        showNotification('success', 'Thành công', 'Tạo người dùng thành công!');
         setShowCreateModal(false);
         setCreateForm({
           username: '',
@@ -89,42 +130,47 @@ export default function AdminUsers() {
       }
     } catch (error) {
       console.error('Error creating user:', error);
-      alert('Không thể tạo người dùng: ' + (error.response?.data?.message || 'Lỗi không xác định'));
+      showNotification('error', 'Lỗi', 'Không thể tạo người dùng: ' + (error.response?.data?.message || 'Lỗi không xác định'));
     }
   };
 
   const handleEditUser = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.put(`/admin/users/${selectedUser.id}`, editForm, {
+      const response = await axiosInstance.patch(`/user/update/${selectedUser.id}/admin`, editForm, {
         withCredentials: true
       });
-      if (response.data?.success) {
-        alert('Cập nhật người dùng thành công!');
+      if (response.data) {
+        showNotification('success', 'Thành công', 'Cập nhật người dùng thành công!');
         setShowEditModal(false);
         fetchUsers();
       }
     } catch (error) {
       console.error('Error updating user:', error);
-      alert('Không thể cập nhật người dùng: ' + (error.response?.data?.message || 'Lỗi không xác định'));
+      showNotification('error', 'Lỗi', 'Không thể cập nhật người dùng: ' + (error.response?.data?.message || 'Lỗi không xác định'));
     }
   };
 
   const handleBanUser = async (userId, currentStatus) => {
     const action = currentStatus ? 'cấm' : 'kích hoạt';
-    if (window.confirm(`Bạn có chắc chắn muốn ${action} người dùng này?`)) {
+    const title = currentStatus ? 'Xác nhận cấm người dùng' : 'Xác nhận kích hoạt người dùng';
+    const message = `Bạn có chắc chắn muốn ${action} người dùng này không?`;
+    
+    showConfirmDialog(title, message, async () => {
       try {
         const response = await axiosInstance.patch(`/user/${userId}/ban`, {
           isActive: !currentStatus
         }, {
           withCredentials: true
         });
+        showNotification('success', 'Thành công', `Đã ${action} người dùng thành công`);
         fetchUsers();
       } catch (error) {
         console.error('Error banning/unbanning user:', error);
-        alert(`Không thể ${action} người dùng: ` + (error.response?.data?.message || 'Lỗi không xác định'));
+        showNotification('error', 'Lỗi', `Không thể ${action} người dùng: ` + (error.response?.data?.message || 'Lỗi không xác định'));
       }
-    }
+      setConfirmModal(prev => ({ ...prev, show: false }));
+    });
   };
 
   const openViewModal = (user) => {
@@ -140,7 +186,6 @@ export default function AdminUsers() {
       role: user.role || 'USER',
       bio: user.bio || '',
       avatar: user.avatar || '',
-      isActive: user.isActive !== false
     });
     setShowEditModal(true);
   };
@@ -154,6 +199,61 @@ export default function AdminUsers() {
 
   return (
     <div className="admin-users-container">
+      {/* Notification */}
+      {notification.show && (
+        <div className={`notification notification-${notification.type}`}>
+          <div className="notification-content">
+            <div className="notification-icon">
+              {notification.type === 'success' && <IoCheckmarkCircle />}
+              {notification.type === 'error' && <IoAlertCircle />}
+              {notification.type === 'warning' && <IoWarning />}
+              {notification.type === 'info' && <IoAlertCircle />}
+            </div>
+            <div className="notification-text">
+              <h4>{notification.title}</h4>
+              <p>{notification.message}</p>
+            </div>
+            <button 
+              className="notification-close"
+              onClick={() => setNotification(prev => ({ ...prev, show: false }))}
+            >
+              <IoClose />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {confirmModal.show && (
+        <div className="modal-overlay">
+          <div className="modal confirmation-modal">
+            <div className="modal-header">
+              <h2>{confirmModal.title}</h2>
+            </div>
+            <div className="modal-body">
+              <div className="confirmation-icon">
+                <IoWarning />
+              </div>
+              <p>{confirmModal.message}</p>
+            </div>
+            <div className="modal-actions">
+              <button 
+                onClick={confirmModal.onCancel} 
+                className="cancel-btn"
+              >
+                Hủy
+              </button>
+              <button 
+                onClick={confirmModal.onConfirm} 
+                className="confirm-btn"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="admin-header">
         <h1 className="admin-title">
           <IoPeople className="title-icon" />
@@ -187,15 +287,6 @@ export default function AdminUsers() {
               className="search-input"
             />
           </div>
-          {/* <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">Tất cả vai trò</option>
-            <option value="USER">Người dùng</option>
-            <option value="ADMIN">Quản trị viên</option>
-          </select> */}
         </div>
         <div className="action-buttons">
           <button onClick={fetchUsers} className="refresh-btn">
@@ -343,14 +434,6 @@ export default function AdminUsers() {
                   <option value="Admin">Quản trị viên</option>
                 </select>
               </div>
-              {/* <div className="form-group">
-                <label>Tiểu sử</label>
-                <textarea
-                  value={createForm.bio}
-                  onChange={(e) => setCreateForm({...createForm, bio: e.target.value})}
-                  rows="3"
-                />
-              </div> */}
               <div className="modal-actions">
                 <button type="button" onClick={() => setShowCreateModal(false)} className="cancel-btn">
                   Hủy
@@ -416,10 +499,6 @@ export default function AdminUsers() {
                   <label>Ngày tạo:</label>
                   <span>{new Date(selectedUser.createdAt).toLocaleDateString('vi-VN')}</span>
                 </div>
-                {/* <div className="info-item full-width">
-                  <label>Tiểu sử:</label>
-                  <span>{selectedUser.bio || 'Chưa có tiểu sử'}</span>
-                </div> */}
                 <div className="info-item">
                   <label>Points:</label>
                   <span>{selectedUser.point}</span>
@@ -484,8 +563,8 @@ export default function AdminUsers() {
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
-                    checked={editForm.isActive}
-                    onChange={(e) => setEditForm({...editForm, isActive: e.target.checked})}
+                    // checked={editForm.isActive}
+                    onChange={(e) => setEditForm({...editForm})}
                   />
                   Tài khoản hoạt động
                 </label>

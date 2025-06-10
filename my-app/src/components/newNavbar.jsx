@@ -77,6 +77,7 @@ export default function NewNavbar() {
         },
         {}
       );
+      await fetchNotifications();
     } catch (error) {
       console.error("Failed to mark all notifications as read", error);
     }

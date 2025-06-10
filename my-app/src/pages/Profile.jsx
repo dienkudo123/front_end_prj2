@@ -57,7 +57,6 @@ export default function Profile() {
       try {
         const response = await axiosInstance.get(`/user/${profileId}`);
         const userData = response.data.data;
-        console.log(userData);
         setDisplayName(userData.user.displayName || paramUsername);
         setEmail(userData.user.email || "");
         setFollowers(userData.followers.length || 0);
@@ -201,6 +200,8 @@ export default function Profile() {
   };
 
   const displayPosts = activeTab === "own" ? posts : sharePosts;
+
+  console.log(sharePosts);
 
   if (loading) return <div></div>;
 

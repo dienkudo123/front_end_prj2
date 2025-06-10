@@ -6,7 +6,10 @@
 }
 
 .post-info {
+  display: flex;
+  flex-direction: column;
   color: black;
+  width: 480px;
   padding: 15px;
   margin-bottom: 30px;
   border-bottom: 1px solid #ccd0d5;
@@ -121,6 +124,7 @@
   width: 400px;
   border-radius: 10px;
   margin-top: 10px;
+  margin: auto;
 }
 
 .post-actions {

@@ -82,7 +82,7 @@
   margin: 0 auto 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  animation: zoomInOut 2s ease-in-out infinite;
+  animation: zoomInOut 3s ease-in-out infinite;
 }
 
 @keyframes zoomInOut {
@@ -90,7 +90,7 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 }
 
@@ -117,7 +117,7 @@
 .ranking-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
   padding: 10px 12px;
   border-radius: 8px;
   background: #f8f9fa;
@@ -172,6 +172,10 @@
   font-size: 14px;
   color: #222;
   font-weight: 500;
+  white-space: nowrap;      
+  overflow: hidden;        
+  text-overflow: ellipsis; 
+  max-width: 65px;
 }
 
 .ranking-score {
@@ -232,8 +236,8 @@
 /* Rank 1: Vương miện trên đầu */
 .crown-icon {
   position: absolute;
-  top: -5px;
-  left: 16px;
+  top: -10px;
+  left: 15px;
   transform: translateX(-50%);
   font-size: 16px;
   z-index: 10;

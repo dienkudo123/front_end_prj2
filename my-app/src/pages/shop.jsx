@@ -38,7 +38,7 @@ const Shop = () => {
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [showUseModal, setShowUseModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  
+
   // Error popup state
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -107,7 +107,7 @@ const Shop = () => {
 
   const handleConfirmPurchase = async () => {
     if (!selectedItem) return;
-    
+
     setPurchasing((prev) => ({ ...prev, [selectedItem.id]: true }));
     try {
       await axiosInstance.post(
@@ -122,26 +122,30 @@ const Shop = () => {
           return [{ itemId: selectedItem.id }];
         }
       });
-      
+
       setShowPurchaseModal(false);
       setSelectedItem(null);
       window.location.reload();
     } catch (err) {
       console.error("Purchase error:", err);
-      
+
       // Check if error is related to insufficient points
       if (err.response && err.response.status === 400) {
         const errorData = err.response.data;
-        if (errorData.message && errorData.message.includes("điểm") || 
-            errorData.message && errorData.message.includes("point")) {
+        if (
+          (errorData.message && errorData.message.includes("điểm")) ||
+          (errorData.message && errorData.message.includes("point"))
+        ) {
           setErrorMessage("Bạn không đủ điểm để mua sản phẩm này!");
         } else {
-          setErrorMessage(errorData.message || "Có lỗi xảy ra khi mua sản phẩm");
+          setErrorMessage(
+            errorData.message || "Có lỗi xảy ra khi mua sản phẩm"
+          );
         }
       } else {
         setErrorMessage("Có lỗi xảy ra khi mua sản phẩm");
       }
-      
+
       setShowErrorModal(true);
       setShowPurchaseModal(false);
       setSelectedItem(null);
@@ -175,10 +179,12 @@ const Shop = () => {
       user.bgrUrl = selectedItem.imageUrl;
       localStorage.setItem("user", JSON.stringify(user));
     }
-    
+
     setShowUseModal(false);
     setSelectedItem(null);
-    window.location.reload();
+    if (selectedItem.type === "BGR") {
+      window.location.reload();
+    }
   };
 
   const handleUploadSubmit = async (e) => {
@@ -207,7 +213,7 @@ const Shop = () => {
       alert("Upload thành công!");
       setShowUploadModal(false);
       setUploadForm({ name: "", price: "", type: "FRAME", image: null });
-      fetchShopItems(); 
+      fetchShopItems();
     } catch (err) {
       console.error("Upload error:", err);
       alert("Lỗi khi upload item");
@@ -226,6 +232,19 @@ const Shop = () => {
 
   const getTypeColor = (type) => {
     return type === "FRAME" ? "type-frame" : "type-image";
+  };
+
+  const handleReset = async () => {
+    await axiosInstance.patch(`http://localhost:3000/user/update`, {
+      frameUrl: null,
+      bgrUrl: null,
+    });
+    user.frameUrl = null;
+    user.bgrUrl = null;
+    localStorage.setItem("user", JSON.stringify(user));
+    setFrameUrlUsed(null);
+    setBgrUrlUsed(null);
+    window.location.reload();
   };
 
   if (loading) {
@@ -278,6 +297,7 @@ const Shop = () => {
         <div className="header">
           <h1 className="header-title">Cửa hàng trang trí</h1>
           <p className="header-subtitle">Khám phá các sản phẩm tuyệt vời</p>
+          <button className="reset-button" onClick={() => handleReset()}>Trở về mặc định</button>
         </div>
 
         {items.length === 0 ? (
@@ -322,11 +342,13 @@ const Shop = () => {
                     {isOwned ? (
                       <button
                         className={`use-button ${
-                          (isFrameUsed || isBgrUsed) ? "used" : "not-used"
+                          isFrameUsed || isBgrUsed ? "used" : "not-used"
                         }`}
                         onClick={() => handleUseClick(item)}
                       >
-                        <span>{(isFrameUsed || isBgrUsed) ? "Đang dùng" : "Sử dụng"}</span>
+                        <span>
+                          {isFrameUsed || isBgrUsed ? "Đang dùng" : "Sử dụng"}
+                        </span>
                         <span></span>
                       </button>
                     ) : (
@@ -433,7 +455,7 @@ const Shop = () => {
                     <p className="product-price">{selectedItem.price} points</p>
                   </div>
                 </div>
-                
+
                 <p className="confirmation-text">
                   Bạn có chắc chắn muốn mua sản phẩm này không?
                 </p>
@@ -495,9 +517,12 @@ const Shop = () => {
                       {selectedItem.type === "FRAME" ? (
                         <div className="frame-demo">
                           <div className="demo-avatar">
-                            <img 
-                              src={`http://localhost:3000${user.avatar}` || "/default-avatar.png"} 
-                              alt="Avatar" 
+                            <img
+                              src={
+                                `http://localhost:3000${user.avatar}` ||
+                                "/default-avatar.png"
+                              }
+                              alt="Avatar"
                               className="avatar-image"
                             />
                             <img
@@ -520,7 +545,7 @@ const Shop = () => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="product-info">
                     <h3>{selectedItem.name}</h3>
                     <p className="product-type">
@@ -529,7 +554,7 @@ const Shop = () => {
                     </p>
                   </div>
                 </div>
-                
+
                 <p className="confirmation-text">
                   Bạn có muốn sử dụng sản phẩm này không?
                 </p>

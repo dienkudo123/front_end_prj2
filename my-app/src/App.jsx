@@ -36,6 +36,7 @@ import "./styles/adminUser.css";
 
 import PartnerSidebar from "./components/PartnerSidebar";
 import NewNavbar from "./components/newNavbar";
+import { FaBlogger } from "react-icons/fa";
 
 function AppContent() {
   const location = useLocation();
@@ -48,7 +49,7 @@ function AppContent() {
     "url(https://media.istockphoto.com/id/183273186/vi/anh/n%E1%BB%81n-tr%E1%BB%ABu-t%C6%B0%E1%BB%A3ng-m%C3%A0u-xanh-nh%E1%BA%A1t-v%C3%A0-xanh-l%C3%A1-c%C3%A2y.jpg?b=1&s=612x612&w=0&k=20&c=sJ2JfahovtKdjNE6Y4wwdpo3iT0yZo5Hs7uSDcZMaqk=)";
 
   if (user?.bgrUrl) {
-    bgrUrl = `url(http://localhost:3000${user.bgrUrl})`;
+    bgrUrl = `url(http://localhost:3000${encodeURI(user.bgrUrl)})`;
   }
   const backGround = !isAuthPage
     ? {

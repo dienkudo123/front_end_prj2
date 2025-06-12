@@ -8,6 +8,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CommentModal from "./CommentModal";
 import { useUser } from "../context/UserContext";
 import { formatTimeAgo } from "../utils/auth";
+import { IoPricetagOutline } from "react-icons/io5";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -494,7 +495,7 @@ export default function PostNoComment({ post, hideUser = false }) {
               </p>
               <span className="create-at">{formatTimeAgo(post.createdAt)}</span>
             </div>
-            {post.user.id === user.id && (
+            {(post.user.id === user.id || user.role === "Admin") && (
               <>
                 <span
                   className="post-menu-btn"
@@ -522,7 +523,11 @@ export default function PostNoComment({ post, hideUser = false }) {
 
         {/* Content */}
         <div className="post-no-cmt-content">
-          <p>{post.content}</p>
+          <p className="post-no-cmt-title">
+            <IoPricetagOutline className="post-no-cmt-title-icon" />
+            {post.title}
+          </p>
+          <p className="post-no-cmt-body">{post.content}</p>
         </div>
 
         {/* Post Image */}

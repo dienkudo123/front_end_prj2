@@ -580,7 +580,7 @@ export default function Post({ post, hideUser = false }) {
               </p>
               <span className="create-at">{formatTimeAgo(post.createdAt)}</span>
             </div>
-            {post.user.id === user.id && (
+            {(post.user.id === user.id || user.role === "Admin") && (
               <>
                 <span
                   className="post-menu-btn"

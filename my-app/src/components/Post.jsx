@@ -293,6 +293,9 @@ export default function Post({ post, hideUser = false }) {
   const [postMenuId, setPostMenuId] = useState(null);
   const postRef = useRef(null);
   const [commentHeight, setCommentHeight] = useState(0);
+  const [editPostId, setEditPostId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedContent, setEditedContent] = useState("");
 
   useEffect(() => {
     if (!postRef.current) return;
@@ -543,6 +546,21 @@ export default function Post({ post, hideUser = false }) {
     }
   };
 
+  const handleSaveEdit = async (postId) => {
+  try {
+    await axiosInstance.patch(`${API_BASE_URL}/post/update/${postId}`, {
+      title: editedTitle,
+      content: editedContent,
+    });
+
+    post.title = editedTitle;
+    post.content = editedContent;
+    setEditPostId(null);
+  } catch (error) {
+    console.error("Lỗi khi chỉnh sửa bài đăng", error);
+  }
+};
+
   return (
     <div className="post">
       <div className="post-info" ref={postRef}>
@@ -594,6 +612,17 @@ export default function Post({ post, hideUser = false }) {
                 {postMenuId === post.id && (
                   <div className="post-menu-dropdown">
                     <button
+                      className="post-edit-btn"
+                      onClick={() => {
+                        setEditPostId(post.id);
+                        setEditedTitle(post.title);
+                        setEditedContent(post.content);
+                        setPostMenuId(null);
+                      }}
+                    >
+                      Chỉnh sửa bài đăng
+                    </button>
+                    <button
                       className="post-delete-btn"
                       onClick={() => handleDeletePost(post.id)}
                     >
@@ -608,11 +637,32 @@ export default function Post({ post, hideUser = false }) {
 
         {/* Content */}
         <div className="post-content">
-          <p className="post-title">
-            <IoPricetagOutline className="post-title-icon" />
-            {post.title}
-          </p>
-          <p className="post-body">{post.content}</p>
+          {editPostId === post.id ? (
+            <>
+              <input
+                className="post-title-edit"
+                value={editedTitle}
+                onChange={(e) => setEditedTitle(e.target.value)}
+              />
+              <textarea
+                className="post-body-edit"
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+              />
+              <div className="edit-post-actions">
+                <button onClick={() => handleSaveEdit(post.id)}>Lưu</button>
+                <button onClick={() => setEditPostId(null)}>Hủy</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="post-title">
+                <IoPricetagOutline className="post-title-icon" />
+                {post.title}
+              </p>
+              <p className="post-body">{post.content}</p>
+            </>
+          )}
         </div>
 
         {/* Post Image */}
